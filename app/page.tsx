@@ -1,4 +1,6 @@
 "use client"
+
+// Toto je malá změna pro vynucení nového commitu a nasazení na Vercel.
 import {
   Sheet,
   SheetTrigger,
