@@ -1,8 +1,8 @@
-import { getPostBySlug, getPostSlugs } from "@/lib/blog-data" // Corrected import path
+import { getPostBySlug, getPostSlugs } from "@/lib/blog-data"
 import { notFound } from "next/navigation"
-import Footer from "@/components/Footer" // Corrected to PascalCase
-import CommentForm from "@/components/ContactForm"
-import CommentsTable from "@/components/CommentsTable"
+import Footer from "@/components/Footer"
+import ContactForm from "@/components/ContactForm" // Správný název komponenty
+import CommentsTable from "@/components/CommentsTable" // Správný název komponenty
 import { Suspense } from "react"
 
 // Generování statických cest pro blogové příspěvky
@@ -28,12 +28,12 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
       <section className="mt-12">
         <h2 className="text-2xl font-bold mb-4">Comments</h2>
         <Suspense fallback={<div>Načítám formulář pro komentáře...</div>}>
-          <CommentForm />
+          <ContactForm /> {/* Použijte správný název komponenty */}
         </Suspense>
 
         <div className="mt-8">
           <Suspense fallback={<div>Načítám komentáře...</div>}>
-            <CommentsTable />
+            <CommentsTable /> {/* Použijte správný název komponenty */}
           </Suspense>
         </div>
       </section>
