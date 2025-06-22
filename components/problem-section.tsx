@@ -37,7 +37,7 @@ export default function ProblemSection() {
   ]
 
   return (
-    <section className="w-full py-16 md:py-24 lg:py-32 bg-gray-50 dark:bg-gray-900">
+    <section className="w-full py-16 md:py-24 lg:py-32 bg-gray-50 dark:bg-gray-900" data-section="problem-section">
       <div className="container px-4 md:px-6">
         {/* Header */}
         <div className="text-center mb-16">

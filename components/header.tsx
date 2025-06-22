@@ -38,14 +38,29 @@ export default function Header() {
   }
 
   const scrollToSection = (sectionId: string) => {
+    console.log("Scrolling to section:", sectionId, "Current pathname:", pathname)
+
     // Pouze pokud jsme na hlavní stránce
     if (pathname === "/") {
       const element = document.querySelector(`[data-section="${sectionId}"]`)
+      console.log("Found element:", element)
+
       if (element) {
-        element.scrollIntoView({ behavior: "smooth" })
+        // Přidat offset pro sticky header (80px)
+        const headerOffset = 80
+        const elementPosition = element.getBoundingClientRect().top
+        const offsetPosition = elementPosition + window.pageYOffset - headerOffset
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: "smooth",
+        })
+      } else {
+        console.warn(`Element with data-section="${sectionId}" not found`)
       }
     } else {
       // Pokud nejsme na hlavní stránce, přejdeme tam
+      console.log("Redirecting to home with hash:", `/#${sectionId}`)
       window.location.href = `/#${sectionId}`
     }
   }
@@ -287,7 +302,7 @@ export default function Header() {
                 {/* Mobile Logo */}
                 <div className="flex items-center gap-3 pb-4 border-b border-gray-200">
                   <Image
-                    src="/placeholder-logo.png"
+                    src="/images/logo/logo.svg"
                     width={60}
                     height={36}
                     alt="webnamíru Logo"

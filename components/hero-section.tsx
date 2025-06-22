@@ -27,7 +27,7 @@ export default function HeroSection() {
   ];
 
   return (
-    <section className="relative w-full py-16 md:py-24 lg:py-32 xl:py-40 overflow-hidden">
+    <section className="relative w-full py-16 md:py-24 lg:py-32 xl:py-40 overflow-hidden" data-section="hero-section">
       {/* Background with gradient and pattern */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
         <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] dark:bg-grid-slate-700/25"></div>

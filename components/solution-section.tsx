@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge"
 
 export default function SolutionSection() {
   return (
-    <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-50 dark:bg-gray-950">
+    <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-50 dark:bg-gray-950" data-section="solution-section">
       <div className="container px-4 md:px-6">
         <div className="flex flex-col items-center justify-center space-y-4 text-center">
           <Badge variant="outline" className="mb-4">
