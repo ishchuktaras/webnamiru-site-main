@@ -28,6 +28,8 @@ import PartnersSection from "@/components/partners-section"
 import ContactForm from "@/components/ContactForm"
 import { Suspense } from "react"
 import PartnersPackagesSection from "@/components/partners-packages-section"
+import CaseStudiesSection from "@/components/case-studies-section"
+import AboutMeContent from "@/components/about-me-content"
 
 export default function Page() {
   return (
@@ -61,11 +63,17 @@ export default function Page() {
       <Suspense fallback={<div>Načítám sekci Partneři...</div>}>
         <PartnersSection />
       </Suspense>
+      <Suspense fallback={<div>Načítám sekci Případové studie...</div>}>
+        <CaseStudiesSection />
+      </Suspense>
       <Suspense fallback={<div>Načítám sekci FAQ...</div>}>
         <FaqSection />
       </Suspense>
       <Suspense fallback={<div>Načítám sekci CTA...</div>}>
         <FinalCtaSection />
+      </Suspense>
+      <Suspense fallback={<div>Načítám sekci O mně...</div>}>
+        <AboutMeContent />
       </Suspense>
       <Suspense fallback={<div>Načítám kontaktní informace...</div>}>
         <ContactInfoSection />
