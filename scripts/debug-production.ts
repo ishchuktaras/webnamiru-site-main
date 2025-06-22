@@ -24,14 +24,9 @@ try {
   console.log("Prisma client creation: SUCCESS")
 
   // Try a simple query
-  interface PrismaClientType {
-    $connect: () => Promise<void>
-    $disconnect: () => Promise<void>
-  }
-
   prisma
     .$connect()
-    .then((): Promise<void> => {
+    .then(() => {
       console.log("Database connection: SUCCESS")
       return prisma.$disconnect()
     })
