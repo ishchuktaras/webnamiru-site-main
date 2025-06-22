@@ -130,16 +130,16 @@ export default function Header() {
             <div className="relative">
               <Image
                 src="/images/logo/logo.svg"
-                width={50}
-                height={50}
+                width={100}
+                height={60}
                 alt="webnamíru - Logo"
-                className="rounded-full transition-all duration-200 group-hover:shadow-lg group-hover:ring-2 group-hover:ring-blue-500/20"
+                className="rounded-lg transition-all duration-200 group-hover:shadow-lg group-hover:ring-2 group-hover:ring-blue-500/20"
                 priority
               />
             </div>
             <div className="flex flex-col">
               <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-                webnamíru
+                webnamíru.site
               </span>
               <span className="text-xs text-gray-600 dark:text-gray-400 hidden sm:block">
                 Strategické weby pro Vysočinu
@@ -178,7 +178,7 @@ export default function Header() {
                       <NavigationMenuLink asChild>
                         <Link
                           className="flex h-full w-full select-none flex-col justify-end rounded-lg bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 p-6 no-underline outline-none focus:shadow-md transition-all duration-200 hover:shadow-lg hover:scale-[1.02] border border-blue-200/50"
-                          href="/sluzby"
+                          href="/sluzby/balicky"
                         >
                           <div className="mb-2 mt-4 text-lg font-semibold text-blue-900 dark:text-blue-100">
                             Web na míru
@@ -230,6 +230,23 @@ export default function Header() {
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <div className="grid gap-3 p-6 w-[400px]">
+                    <div className="row-span-4">
+                      <NavigationMenuLink asChild>
+                        <Link
+                          className="flex h-full w-full select-none flex-col justify-end rounded-lg bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 p-6 no-underline outline-none focus:shadow-md transition-all duration-200 hover:shadow-lg hover:scale-[1.02] border border-blue-200/50"
+                          href="/sluzby/partnerstvi"
+                        >
+                          <div className="mb-2 mt-4 text-lg font-semibold text-blue-900 dark:text-blue-100">
+                            Web na míru
+                          </div>
+                          <p className="text-sm leading-tight text-blue-700 dark:text-blue-300">
+                            Strategické weby, které skutečně vydělávají pro
+                            firmy na Vysočině.
+                          </p>
+                          <ArrowRight className="h-4 w-4 mt-2 text-blue-600" />
+                        </Link>
+                      </NavigationMenuLink>
+                    </div>
                     <div className="space-y-2">
                       <div>
                         <Link
@@ -312,9 +329,9 @@ export default function Header() {
                 {/* Mobile Logo */}
                 <div className="flex items-center gap-3 pb-4 border-b border-gray-200">
                   <Image
-                    src="/placeholder-logo.png"
-                    width={40}
-                    height={40}
+                    src="/images/logo/logo.svg"
+                    width={60}
+                    height={60}
                     alt="webnamíru Logo"
                     className="rounded-full"
                   />
