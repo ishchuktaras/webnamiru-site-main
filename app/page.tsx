@@ -27,6 +27,7 @@ import ContactInfoSection from "@/components/contact-info-section"
 import PartnersSection from "@/components/partners-section"
 import ContactForm from "@/components/ContactForm"
 import { Suspense } from "react"
+import PartnersPackagesSection from "@/components/partners-packages-section"
 
 export default function Page() {
   return (
@@ -62,6 +63,9 @@ export default function Page() {
       </Suspense>
       <Suspense fallback={<div>Načítám kontaktní informace...</div>}>
         <ContactInfoSection />
+      </Suspense>
+      <Suspense fallback={<div>Načítám sekci Partnerské balíčky...</div>}>
+        <PartnersPackagesSection />
       </Suspense>
       <Suspense fallback={<div>Načítám sekci Partneři...</div>}>
         <PartnersSection />

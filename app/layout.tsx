@@ -10,9 +10,18 @@ import { Inter } from "next/font/google"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "v0 App",
-  description: "Created with v0",
+  title: "Web na míru - Strategické weby, které vydělávají | Vysočina",
+  description:
+    "Tvořím weby, které nejsou jen vizitkou, ale funkčním obchodním nástrojem. Váš web od ekonoma na Vysočině.",
   generator: "v0.dev",
+  keywords: "tvorba webů, webové stránky, Vysočina, web na míru, ekonom, strategické weby",
+  authors: [{ name: "Web na míru" }],
+  openGraph: {
+    title: "Web na míru - Strategické weby, které vydělávají",
+    description: "Tvořím weby, které nejsou jen vizitkou, ale funkčním obchodním nástrojem. Váš web od ekonoma.",
+    type: "website",
+    locale: "cs_CZ",
+  },
 }
 
 export default function RootLayout({
@@ -21,7 +30,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="cs">
       {/* 3. Aplikujte třídu fontu na element `<body>`. */}
       <body className={inter.className}>
         <Header />
