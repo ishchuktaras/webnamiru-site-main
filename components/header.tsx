@@ -152,14 +152,14 @@ export default function Header() {
           <Link
             className="flex items-center gap-3 group transition-all duration-200 hover:scale-105"
             href="/"
-            aria-label="webnamíru - Domovská stránka"
+            aria-label="webnamíru.site - Domovská stránka"
           >
             <div className="relative">
               <Image
                 src="/images/logo/logo.svg"
                 width={50}
                 height={50}
-                alt="webnamíru - Logo"
+                alt="webnamíru.site - Logo"
                 className="rounded-full transition-all duration-200 group-hover:shadow-lg group-hover:ring-2 group-hover:ring-blue-500/20"
                 priority
               />
@@ -335,12 +335,12 @@ export default function Header() {
                     src="/images/logo/logo.svg"
                     width={60}
                     height={36}
-                    alt="webnamíru Logo"
+                    alt="webnamíru.site Logo"
                     className="rounded-lg"
                   />
                   <div>
                     <div className="font-bold text-lg bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-                      webnamíru
+                      webnamíru.site
                     </div>
                     <div className="text-sm text-gray-600">Strategické weby</div>
                   </div>
