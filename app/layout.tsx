@@ -32,7 +32,7 @@ export default function RootLayout({
   return (
     <html lang="cs">
       {/* 3. Aplikujte třídu fontu na element `<body>`. */}
-      <body className={inter.className}>
+      <body className={inter.className} suppressHydrationWarning={true}>
         <Header />
         {children}
       </body>
