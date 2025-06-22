@@ -87,11 +87,11 @@ export default function CaseStudiesSection() {
           {/* Success Stats */}
           <div className="grid grid-cols-3 gap-8 mt-12 p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700">
             <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">15+</div>
+              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">3+</div>
               <div className="text-sm text-gray-600 dark:text-gray-400">Úspěšných projektů</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-green-600 dark:text-green-400">95%</div>
+              <div className="text-2xl font-bold text-green-600 dark:text-green-400">98%</div>
               <div className="text-sm text-gray-600 dark:text-gray-400">Spokojených klientů</div>
             </div>
             <div className="text-center">

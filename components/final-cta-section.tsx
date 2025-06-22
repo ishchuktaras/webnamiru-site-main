@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button"
+import Link from "next/dist/client/link"
 
 export default function FinalCtaSection() {
   return (
@@ -12,7 +13,7 @@ export default function FinalCtaSection() {
           Žádné závazky, jen čistá hodnota.
         </p>
         <Button className="inline-flex h-12 items-center justify-center rounded-md bg-white px-8 text-sm font-medium text-black shadow transition-colors hover:bg-gray-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-300 disabled:pointer-events-none disabled:opacity-50">
-          Domluvit nezávaznou konzultaci
+          <Link href="/kontakt">Domluvit nezávaznou konzultaci</Link>
         </Button>
       </div>
     </section>
