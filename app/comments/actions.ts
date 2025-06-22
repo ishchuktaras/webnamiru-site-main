@@ -57,14 +57,15 @@ export async function addComment(
 
 // Server Action pro načtení všech komentářů (adjusted for CommentsTable)
 export async function getComments() {
+  console.log("Attempting to fetch comments...") 
   try {
     const comments = await db.comment.findMany({
-      // Use 'db' instead of 'prisma'
-      orderBy: { createdAt: "desc" }, // Nejnovější komentáře nahoře
+      orderBy: { createdAt: "desc" },
     })
+    console.log("Comments fetched successfully:", comments.length)
     return { success: true, data: comments }
   } catch (error) {
-    console.error("Chyba při načítání komentářů:", error)
+    console.error("Error fetching comments in getComments:", error)
     return { success: false, error: "Nastala chyba při načítání komentářů." }
   }
 }
