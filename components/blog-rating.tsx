@@ -1,9 +1,8 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useTransition } from "react"
 import { Star } from "lucide-react"
 import { addRating, getAverageRating } from "@/app/ratings/actions"
-import { useActionState } from "react"
 
 interface BlogRatingProps {
   postId: string
@@ -14,9 +13,8 @@ export default function BlogRating({ postId }: BlogRatingProps) {
   const [ratingCount, setRatingCount] = useState(0)
   const [userRating, setUserRating] = useState(0)
   const [hoveredRating, setHoveredRating] = useState(0)
-
-  const initialState = { message: "", errors: {} }
-  const [state, formAction, isPending] = useActionState(addRating, initialState)
+  const [message, setMessage] = useState("")
+  const [isPending, startTransition] = useTransition()
 
   useEffect(() => {
     const fetchRating = async () => {
@@ -28,17 +26,34 @@ export default function BlogRating({ postId }: BlogRatingProps) {
   }, [postId])
 
   const handleRatingSubmit = async (rating: number) => {
-    const formData = new FormData()
-    formData.append("postId", postId)
-    formData.append("value", rating.toString())
+    startTransition(async () => {
+      try {
+        const formData = new FormData()
+        formData.append("postId", postId)
+        formData.append("value", rating.toString())
 
-    await formAction(formData)
+        // Správný initial state objekt
+        const initialState = { message: "", errors: {} }
+        const result = await addRating(initialState, formData)
 
-    // Refresh rating after submission
-    const { average, count } = await getAverageRating(postId)
-    setAverageRating(average)
-    setRatingCount(count)
-    setUserRating(rating)
+        if (result.message && !result.errors) {
+          // Úspěch
+          setMessage("Děkujeme za vaše hodnocení!")
+          setUserRating(rating)
+
+          // Refresh rating after submission
+          const { average, count } = await getAverageRating(postId)
+          setAverageRating(average)
+          setRatingCount(count)
+        } else {
+          // Chyba
+          setMessage(result.message || "Došlo k chybě při odesílání hodnocení.")
+        }
+      } catch (error) {
+        setMessage("Došlo k chybě při odesílání hodnocení.")
+        console.error("Rating submission error:", error)
+      }
+    })
   }
 
   return (
@@ -58,7 +73,7 @@ export default function BlogRating({ postId }: BlogRatingProps) {
           ))}
         </div>
         <span className="text-sm text-gray-600 dark:text-gray-400">
-          {averageRating > 0 ? `${averageRating}/5` : "Bez hodnocení"}
+          {averageRating > 0 ? `${averageRating.toFixed(1)}/5` : "Bez hodnocení"}
           {ratingCount > 0 && ` (${ratingCount} ${ratingCount === 1 ? "hodnocení" : "hodnocení"})`}
         </span>
       </div>
@@ -88,6 +103,7 @@ export default function BlogRating({ postId }: BlogRatingProps) {
               </button>
             ))}
           </div>
+          {isPending && <p className="text-sm text-gray-500">Odesílám hodnocení...</p>}
         </div>
       )}
 
@@ -99,9 +115,11 @@ export default function BlogRating({ postId }: BlogRatingProps) {
         </div>
       )}
 
-      {/* Error Message */}
-      {state.message && state.errors && Object.keys(state.errors).length > 0 && (
-        <p className="text-red-500 text-sm">{state.message}</p>
+      {/* Message */}
+      {message && !userRating && (
+        <p className="text-sm text-gray-600 dark:text-gray-400" aria-live="polite">
+          {message}
+        </p>
       )}
     </div>
   )

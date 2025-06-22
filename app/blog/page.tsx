@@ -1,84 +1,311 @@
-"use client" // Označení jako klientský komponent
+"use client";
 
-import Link from "next/link"
-import { blogPosts } from "@/lib/blog-data"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import Footer from "@/components/Footer"
-import BlogSearchInput from "@/components/blog-search-input" // Import nového komponentu
-import { useState, useMemo } from "react"
+import { useState, useMemo } from "react";
+import Link from "next/link";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  blogPosts,
+  blogCategories,
+  getPostsByCategory,
+  searchPosts,
+} from "@/lib/blog-data";
+import BlogSearchInput from "@/components/blog-search-input";
+import BlogCategoryFilter from "@/components/blog-category-filter";
+import BlogReadingTime from "@/components/blog-reading-time";
+import BlogTags from "@/components/blog-tags";
+import BlogNewsletter from "@/components/blog-newsletter";
+import Footer from "@/components/Footer";
 
 export default function BlogPage() {
-  const [searchQuery, setSearchQuery] = useState("")
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
-  // Filtrování blogových příspěvků na základě vyhledávacího dotazu
-  const filteredBlogPosts = useMemo(() => {
-    if (!searchQuery) {
-      return blogPosts
+  // Calculate post counts per category
+  const postCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    blogCategories.forEach((category) => {
+      counts[category.slug] = getPostsByCategory(category.slug).length;
+    });
+    return counts;
+  }, []);
+
+  // Filter posts based on search, category, and tags
+  const filteredPosts = useMemo(() => {
+    let posts = blogPosts;
+
+    // Apply search filter
+    if (searchQuery.trim()) {
+      posts = searchPosts(searchQuery);
     }
-    const lowerCaseQuery = searchQuery.toLowerCase()
-    return blogPosts.filter(
-      (post) =>
-        post.title.toLowerCase().includes(lowerCaseQuery) ||
-        post.excerpt.toLowerCase().includes(lowerCaseQuery) ||
-        post.content.toLowerCase().includes(lowerCaseQuery), // Hledání i v obsahu
-    )
-  }, [searchQuery])
+
+    // Apply category filter
+    if (selectedCategory) {
+      posts = posts.filter((post) => post.category === selectedCategory);
+    }
+
+    // Apply tag filter
+    if (selectedTags.length > 0) {
+      posts = posts.filter((post) =>
+        selectedTags.some((tag) => post.tags.includes(tag))
+      );
+    }
+
+    // Sort by date (newest first)
+    return posts.sort(
+      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+    );
+  }, [searchQuery, selectedCategory, selectedTags]);
+
+  const handleTagClick = (tag: string) => {
+    setSelectedTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+    );
+  };
+
+  const featuredPosts = blogPosts.filter((post) => post.featured);
 
   return (
-    <main className="flex flex-col min-h-[calc(100svh-64px)]">
-      <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-50 dark:bg-gray-950">
-        <div className="container px-4 md:px-6 text-center">
-          <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl">Novinky a články</h1>
-          <p className="max-w-[900px] mx-auto text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400 mt-4">
-            Zde najdete nejnovější články, tipy a postřehy ze světa webdevelopmentu a online marketingu.
+    <>
+      <main className="container mx-auto px-4 py-8">
+        {/* Hero Section */}
+        <section className="text-center mb-12">
+          <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl mb-4">
+            Blog o webdevelopmentu
+          </h1>
+          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-8">
+            Praktické tipy, návody a poznatky ze světa tvorby webů. Od strategie
+            po technickou realizaci.
           </p>
-          <div className="mt-8">
-            <BlogSearchInput onSearch={setSearchQuery} /> {/* Vyhledávací pole */}
-          </div>
-        </div>
-      </section>
 
-      <section className="w-full py-12 md:py-24 lg:py-32 flex-grow">
-        <div className="container px-4 md:px-6 grid gap-8 md:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
-          {filteredBlogPosts.length > 0 ? (
-            filteredBlogPosts.map((post) => (
-              <Card key={post.slug} className="flex flex-col shadow-md dark:bg-gray-900">
-                <CardHeader>
-                  <CardTitle className="text-2xl font-bold">
-                    <Link href={`/blog/${post.slug}`} className="hover:underline">
-                      {post.title}
-                    </Link>
-                  </CardTitle>
-                  <CardDescription className="text-gray-500 dark:text-gray-400 mt-2">
-                    {post.author} |{" "}
-                    {new Date(post.date).toLocaleDateString("cs-CZ", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="flex-grow">
-                  <p className="text-gray-700 dark:text-gray-300">{post.excerpt}</p>
-                </CardContent>
-                <div className="p-6 pt-0">
-                  <Link
-                    className="inline-flex h-10 items-center justify-center rounded-md bg-black px-8 text-sm font-medium text-white shadow transition-colors hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-200 dark:focus-visible:ring-gray-300"
-                    href={`/blog/${post.slug}`}
+          {/* Search */}
+          <div className="mb-8">
+            <BlogSearchInput onSearch={setSearchQuery} />
+          </div>
+        </section>
+
+        {/* Featured Posts */}
+        {featuredPosts.length > 0 &&
+          !searchQuery &&
+          !selectedCategory &&
+          selectedTags.length === 0 && (
+            <section className="mb-12">
+              <h2 className="text-2xl font-bold mb-6">Doporučené články</h2>
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {featuredPosts.map((post) => (
+                  <Card
+                    key={post.slug}
+                    className="group hover:shadow-lg transition-shadow border-2 border-blue-200"
                   >
-                    Číst dále
-                  </Link>
-                </div>
-              </Card>
-            ))
+                    <CardHeader className="pb-3">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Badge variant="default" className="bg-blue-600">
+                          Doporučeno
+                        </Badge>
+                        <BlogReadingTime readingTime={post.readingTime} />
+                      </div>
+                      <CardTitle className="text-xl leading-tight">
+                        <Link
+                          href={`/blog/${post.slug}`}
+                          className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                        >
+                          {post.title}
+                        </Link>
+                      </CardTitle>
+                      <CardDescription className="text-sm">
+                        {post.author} •{" "}
+                        {new Date(post.date).toLocaleDateString("cs-CZ", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3 mb-4">
+                        {post.excerpt}
+                      </p>
+                      <div className="flex flex-wrap gap-1 mb-3">
+                        {post.tags.slice(0, 3).map((tag) => (
+                          <Badge
+                            key={tag}
+                            variant="secondary"
+                            className="text-xs cursor-pointer hover:bg-blue-100"
+                            onClick={() => handleTagClick(tag)}
+                          >
+                            #{tag}
+                          </Badge>
+                        ))}
+                      </div>
+                      <Link
+                        href={`/blog/${post.slug}`}
+                        className="inline-flex items-center text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline"
+                      >
+                        Číst více →
+                      </Link>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </section>
+          )}
+
+        {/* Filters */}
+        <section className="mb-8">
+          <div className="flex flex-col gap-4">
+            <BlogCategoryFilter
+              selectedCategory={selectedCategory}
+              onCategoryChange={setSelectedCategory}
+              postCounts={postCounts}
+            />
+
+            {selectedTags.length > 0 && (
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium">Vybrané tagy:</span>
+                <BlogTags
+                  selectedTags={selectedTags}
+                  onTagClick={handleTagClick}
+                />
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* All Posts */}
+        <section className="mb-12">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold">
+              {searchQuery
+                ? `Výsledky hledání: "${searchQuery}"`
+                : selectedCategory
+                ? `Kategorie: ${
+                    blogCategories.find((c) => c.slug === selectedCategory)
+                      ?.name
+                  }`
+                : "Všechny články"}
+            </h2>
+            <span className="text-sm text-gray-500">
+              {filteredPosts.length}{" "}
+              {filteredPosts.length === 1 ? "článek" : "článků"}
+            </span>
+          </div>
+
+          {filteredPosts.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-gray-500 dark:text-gray-400 mb-4">
+                {searchQuery || selectedCategory || selectedTags.length > 0
+                  ? "Nenašli jsme žádné články odpovídající vašim kritériím."
+                  : "Zatím nejsou k dispozici žádné články."}
+              </p>
+              {(searchQuery || selectedCategory || selectedTags.length > 0) && (
+                <button
+                  onClick={() => {
+                    setSearchQuery("");
+                    setSelectedCategory(null);
+                    setSelectedTags([]);
+                  }}
+                  className="text-blue-600 hover:underline"
+                >
+                  Zobrazit všechny články
+                </button>
+              )}
+            </div>
           ) : (
-            <div className="col-span-full text-center text-gray-500 dark:text-gray-400 text-xl">
-              Nenalezeny žádné blogové příspěvky odpovídající vašemu dotazu.
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {filteredPosts.map((post) => (
+                <Card
+                  key={post.slug}
+                  className="group hover:shadow-lg transition-shadow"
+                >
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Badge
+                        variant="secondary"
+                        className={`text-xs ${
+                          blogCategories.find((c) => c.slug === post.category)
+                            ?.color === "blue"
+                            ? "bg-blue-100 text-blue-800"
+                            : blogCategories.find(
+                                (c) => c.slug === post.category
+                              )?.color === "green"
+                            ? "bg-green-100 text-green-800"
+                            : blogCategories.find(
+                                (c) => c.slug === post.category
+                              )?.color === "purple"
+                            ? "bg-purple-100 text-purple-800"
+                            : blogCategories.find(
+                                (c) => c.slug === post.category
+                              )?.color === "orange"
+                            ? "bg-orange-100 text-orange-800"
+                            : "bg-red-100 text-red-800"
+                        }`}
+                      >
+                        {
+                          blogCategories.find((c) => c.slug === post.category)
+                            ?.name
+                        }
+                      </Badge>
+                      <BlogReadingTime readingTime={post.readingTime} />
+                    </div>
+                    <CardTitle className="text-lg leading-tight">
+                      <Link
+                        href={`/blog/${post.slug}`}
+                        className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                      >
+                        {post.title}
+                      </Link>
+                    </CardTitle>
+                    <CardDescription className="text-sm">
+                      {post.author} •{" "}
+                      {new Date(post.date).toLocaleDateString("cs-CZ", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3 mb-4">
+                      {post.excerpt}
+                    </p>
+                    <div className="flex flex-wrap gap-1 mb-3">
+                      {post.tags.slice(0, 3).map((tag) => (
+                        <Badge
+                          key={tag}
+                          variant="secondary"
+                          className="text-xs cursor-pointer hover:bg-blue-100"
+                          onClick={() => handleTagClick(tag)}
+                        >
+                          #{tag}
+                        </Badge>
+                      ))}
+                    </div>
+                    <Link
+                      href={`/blog/${post.slug}`}
+                      className="inline-flex items-center text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline"
+                    >
+                      Číst více →
+                    </Link>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           )}
-        </div>
-      </section>
+        </section>
+
+        {/* Newsletter */}
+        <section className="mb-12">
+          <BlogNewsletter />
+        </section>
+      </main>
       <Footer />
-    </main>
-  )
+    </>
+  );
 }
