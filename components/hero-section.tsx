@@ -1,24 +1,30 @@
-"use client"
+"use client";
 
-import Image from "next/image"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { ArrowRight, CheckCircle, TrendingUp, Users, Award } from "lucide-react"
-import { useEffect, useState } from "react"
+import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  ArrowRight,
+  CheckCircle,
+  TrendingUp,
+  Users,
+  Award,
+} from "lucide-react";
+import { useEffect, useState } from "react";
 
 export default function HeroSection() {
-  const [isVisible, setIsVisible] = useState(false)
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    setIsVisible(true)
-  }, [])
+    setIsVisible(true);
+  }, []);
 
   const trustSignals = [
     { icon: Users, text: "Specializace na startupy" },
     { icon: TrendingUp, text: "Výhodné startovní ceny" },
     { icon: Award, text: "Ekonomické vzdělání + IT" },
-  ]
+  ];
 
   return (
     <section className="relative w-full py-16 md:py-24 lg:py-32 xl:py-40 overflow-hidden">
@@ -34,7 +40,9 @@ export default function HeroSection() {
           {/* Badge */}
           <div
             className={`transform transition-all duration-700 ${
-              isVisible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
+              isVisible
+                ? "translate-y-0 opacity-100"
+                : "translate-y-4 opacity-0"
             }`}
           >
             <Badge className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-900 dark:text-green-100 text-sm font-medium">
@@ -46,7 +54,9 @@ export default function HeroSection() {
           {/* Main Heading */}
           <div
             className={`transform transition-all duration-700 delay-200 ${
-              isVisible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
+              isVisible
+                ? "translate-y-0 opacity-100"
+                : "translate-y-4 opacity-0"
             }`}
           >
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
@@ -63,27 +73,39 @@ export default function HeroSection() {
           {/* Subtitle */}
           <div
             className={`transform transition-all duration-700 delay-300 ${
-              isVisible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
+              isVisible
+                ? "translate-y-0 opacity-100"
+                : "translate-y-4 opacity-0"
             }`}
           >
             <p className="max-w-[600px] text-lg md:text-xl text-gray-600 dark:text-gray-300 mx-auto lg:mx-0 leading-relaxed">
               Začínáte podnikat? Nabízím{" "}
-              <span className="font-semibold text-blue-700 dark:text-blue-300">výhodné startovní podmínky</span> pro
-              tvorbu profesionálních webů, které porostou s vaším byznysem na Vysočině.
+              <span className="font-semibold text-blue-700 dark:text-blue-300">
+                výhodné startovní podmínky
+              </span>{" "}
+              pro tvorbu profesionálních webů, které porostou s vaším byznysem
+              na Vysočině.
             </p>
           </div>
 
           {/* Trust Signals */}
           <div
             className={`transform transition-all duration-700 delay-400 ${
-              isVisible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
+              isVisible
+                ? "translate-y-0 opacity-100"
+                : "translate-y-4 opacity-0"
             }`}
           >
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center lg:text-left">
               {trustSignals.map((signal, index) => (
-                <div key={index} className="flex items-center justify-center lg:justify-start gap-2">
+                <div
+                  key={index}
+                  className="flex items-center justify-center lg:justify-start gap-2"
+                >
                   <signal.icon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{signal.text}</span>
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    {signal.text}
+                  </span>
                 </div>
               ))}
             </div>
@@ -92,7 +114,9 @@ export default function HeroSection() {
           {/* CTA Buttons */}
           <div
             className={`transform transition-all duration-700 delay-500 ${
-              isVisible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
+              isVisible
+                ? "translate-y-0 opacity-100"
+                : "translate-y-4 opacity-0"
             }`}
           >
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
@@ -122,7 +146,9 @@ export default function HeroSection() {
           {/* Social Proof */}
           <div
             className={`transform transition-all duration-700 delay-600 ${
-              isVisible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
+              isVisible
+                ? "translate-y-0 opacity-100"
+                : "translate-y-4 opacity-0"
             }`}
           >
             <div className="flex items-center justify-center lg:justify-start gap-4 text-sm text-gray-600 dark:text-gray-400">
@@ -141,7 +167,9 @@ export default function HeroSection() {
         {/* Image Content */}
         <div
           className={`transform transition-all duration-1000 delay-300 ${
-            isVisible ? "translate-y-0 opacity-100 scale-100" : "translate-y-8 opacity-0 scale-95"
+            isVisible
+              ? "translate-y-0 opacity-100 scale-100"
+              : "translate-y-8 opacity-0 scale-95"
           }`}
         >
           <div className="relative flex justify-center lg:justify-end">
@@ -150,30 +178,36 @@ export default function HeroSection() {
             <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-blue-700 rounded-2xl transform -rotate-2 scale-110 opacity-10"></div>
 
             {/* Main image */}
-            <div className="relative z-10">
+            <div className="relative z-0 max-w-lg mx-auto lg:max-w-none">
               <Image
                 src="/placeholder.svg?height=600&width=600"
                 width={600}
                 height={600}
                 alt="Profesionální fotografie - ekonom a webový vývojář analyzující obchodní grafy a webové metriky, symbolizující strategický přístup k tvorbě webů"
-                className="relative z-10 mx-auto aspect-square overflow-hidden rounded-2xl object-cover shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-105"
+                className="relative w-full h-auto aspect-square overflow-hidden rounded-2xl object-cover shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-105"
                 priority
               />
-
               {/* Floating elements */}
-              <div className="absolute -top-4 -right-4 bg-white dark:bg-gray-800 rounded-xl p-3 shadow-xl">
+              <div className="absolute -top-4 -right-4 bg-white dark:bg-gray-800 rounded-xl p-3 shadow-xl z-10">
                 <div className="flex items-center gap-2">
                   <TrendingUp className="h-5 w-5 text-green-500" />
-                  <span className="text-sm font-bold text-green-600">Startovní ceny</span>
+                  <span className="text-sm font-bold text-green-600">
+                    Startovní ceny
+                  </span>
                 </div>
               </div>
 
-              <div className="absolute -bottom-4 -left-4 bg-white dark:bg-gray-800 rounded-xl p-3 shadow-xl">
+              <div className="absolute -bottom-4 -left-4 bg-white dark:bg-gray-800 rounded-xl p-3 shadow-xl z-10">
                 <div className="flex items-center gap-2">
                   <Users className="h-5 w-5 text-blue-500" />
-                  <span className="text-sm font-bold text-blue-600">Pro startupy</span>
+                  <span className="text-sm font-bold text-blue-600">
+                    Pro startupy
+                  </span>
                 </div>
               </div>
+              {/* Background decoration */}
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-blue-600 rounded-2xl transform rotate-3 scale-105 opacity-20 -z-10"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-blue-700 rounded-2xl transform -rotate-2 scale-110 opacity-10 -z-20"></div>
             </div>
           </div>
         </div>
@@ -187,7 +221,8 @@ export default function HeroSection() {
             "@context": "https://schema.org",
             "@type": "WebSite",
             name: "Web na míru",
-            description: "Strategické weby, které vydělávají pro firmy v Kraji Vysočina",
+            description:
+              "Strategické weby, které vydělávají pro firmy v Kraji Vysočina",
             url: "https://webnamiru.site",
             areaServed: {
               "@type": "State",
@@ -202,5 +237,5 @@ export default function HeroSection() {
         }}
       />
     </section>
-  )
+  );
 }
