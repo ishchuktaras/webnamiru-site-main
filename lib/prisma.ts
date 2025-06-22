@@ -1,33 +1,26 @@
 import { PrismaClient } from "@prisma/client"
 
-// Add prisma to the global type to avoid re-instantiating PrismaClient in development
-declare global {
-  var prisma: PrismaClient | undefined
+const globalForPrisma = globalThis as unknown as {
+  prisma: PrismaClient | undefined
 }
 
-let prisma: PrismaClient
+export const prisma =
+  globalForPrisma.prisma ??
+  new PrismaClient({
+    log: process.env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
+    errorFormat: "pretty",
+  })
 
-if (process.env.NODE_ENV === "production") {
-  console.log("Initializing PrismaClient in production...") 
-  try {
-    prisma = new PrismaClient()
-    console.log("PrismaClient initialized successfully in production.") 
-  } catch (e) {
-    console.error("Error initializing PrismaClient in production:", e) 
-    throw e // Znovu vyhodit chybu, aby se projevila
-  }
-} else {
-  if (!global.prisma) {
-    console.log("Initializing PrismaClient in development (global instance)...") 
-    try {
-      global.prisma = new PrismaClient()
-      console.log("PrismaClient initialized successfully in development.") 
-    } catch (e) {
-      console.error("Error initializing PrismaClient in development:", e) 
-      throw e
-    }
-  }
-  prisma = global.prisma as PrismaClient
-}
+if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma
+
+// Test connection on startup
+prisma
+  .$connect()
+  .then(() => {
+    console.log("✅ Database connected successfully")
+  })
+  .catch((error) => {
+    console.error("❌ Database connection failed:", error)
+  })
 
 export default prisma

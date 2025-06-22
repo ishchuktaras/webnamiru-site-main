@@ -5,10 +5,8 @@ import Footer from "@/components/Footer"
 import BlogBreadcrumbs from "@/components/blog-breadcrumbs"
 import BlogReadingTime from "@/components/blog-reading-time"
 import BlogSocialShare from "@/components/blog-social-share"
-import BlogRating from "@/components/blog-rating"
+import BlogRatingSafe from "@/components/blog-rating-safe"
 import RelatedPosts from "@/components/related-posts"
-import CommentForm from "@/components/CommentForm"
-import CommentsTable from "@/components/CommentsTable"
 import { Badge } from "@/components/ui/badge"
 import { blogCategories } from "@/lib/blog-data"
 
@@ -39,20 +37,6 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     return {
       title: post.seoTitle || post.title,
       description: post.seoDescription || post.excerpt,
-      openGraph: {
-        title: post.seoTitle || post.title,
-        description: post.seoDescription || post.excerpt,
-        type: "article",
-        publishedTime: post.date,
-        authors: [post.author],
-        images: post.image ? [{ url: post.image }] : [],
-      },
-      twitter: {
-        card: "summary_large_image",
-        title: post.seoTitle || post.title,
-        description: post.seoDescription || post.excerpt,
-        images: post.image ? [post.image] : [],
-      },
     }
   } catch (error) {
     console.error("Error generating metadata:", error)
@@ -136,11 +120,9 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
             <div dangerouslySetInnerHTML={{ __html: post.content }} />
           </div>
 
-          {/* Rating */}
+          {/* Safe Rating Component */}
           <div className="mb-12">
-            <Suspense fallback={<div>Načítám hodnocení...</div>}>
-              <BlogRating postId={post.slug} />
-            </Suspense>
+            <BlogRatingSafe postId={post.slug} />
           </div>
 
           {/* Related Posts */}
@@ -148,23 +130,6 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
             <RelatedPosts currentPostSlug={post.slug} />
           </Suspense>
         </article>
-
-        {/* Comments Section */}
-        <section className="bg-gray-50 dark:bg-gray-900 py-12">
-          <div className="container mx-auto px-4 max-w-4xl">
-            <h2 className="text-2xl font-bold mb-8">Komentáře</h2>
-
-            <Suspense fallback={<div>Načítám formulář pro komentáře...</div>}>
-              <CommentForm postId={post.slug} />
-            </Suspense>
-
-            <div className="mt-12">
-              <Suspense fallback={<div>Načítám komentáře...</div>}>
-                <CommentsTable />
-              </Suspense>
-            </div>
-          </div>
-        </section>
 
         <Footer />
       </main>
