@@ -10,14 +10,14 @@ import { Inter } from "next/font/google"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Web na míru - Strategické weby, které vydělávají | Vysočina",
+  title: "webnamiru.site - Strategické weby, které vydělávají | Vysočina",
   description:
     "Tvořím weby, které nejsou jen vizitkou, ale funkčním obchodním nástrojem. Váš web od ekonoma na Vysočině.",
   generator: "v0.dev",
   keywords: "tvorba webů, webové stránky, Vysočina, web na míru, ekonom, strategické weby",
   authors: [{ name: "Web na míru" }],
   openGraph: {
-    title: "Web na míru - Strategické weby, které vydělávají",
+    title: "webnamiru.site - Strategické weby, které vydělávají",
     description: "Tvořím weby, které nejsou jen vizitkou, ale funkčním obchodním nástrojem. Váš web od ekonoma.",
     type: "website",
     locale: "cs_CZ",

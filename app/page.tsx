@@ -55,6 +55,12 @@ export default function Page() {
       <Suspense fallback={<div>Načítám sekci Balíčky služeb...</div>}>
         <ServicePackagesSection />
       </Suspense>
+      <Suspense fallback={<div>Načítám sekci Partnerské balíčky...</div>}>
+        <PartnersPackagesSection />
+      </Suspense>
+      <Suspense fallback={<div>Načítám sekci Partneři...</div>}>
+        <PartnersSection />
+      </Suspense>
       <Suspense fallback={<div>Načítám sekci FAQ...</div>}>
         <FaqSection />
       </Suspense>
@@ -64,12 +70,7 @@ export default function Page() {
       <Suspense fallback={<div>Načítám kontaktní informace...</div>}>
         <ContactInfoSection />
       </Suspense>
-      <Suspense fallback={<div>Načítám sekci Partnerské balíčky...</div>}>
-        <PartnersPackagesSection />
-      </Suspense>
-      <Suspense fallback={<div>Načítám sekci Partneři...</div>}>
-        <PartnersSection />
-      </Suspense>
+      
       <Footer />
       {/* New Sheet component for Contact Form */}
       <Sheet>
