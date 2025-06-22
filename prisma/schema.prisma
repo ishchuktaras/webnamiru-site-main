@@ -13,16 +13,70 @@ model Comment {
   author    String
   email     String
   content   String
+  approved  Boolean  @default(false) // Moderace komentářů
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  @@index([postId]) // Index pro rychlejší vyhledávání komentářů k příspěvku
+  @@index([postId])
+  @@index([approved])
 }
 
 model Rating {
   id        String   @id @default(uuid())
   postId    String   // Odkazuje na slug blogového příspěvku
-  value     Int      // Hodnota hodnocení (např. 1-5 hvězdiček)
+  value     Int      // Hodnota hodnocení (1-5 hvězdiček)
+  ipAddress String?  // Pro prevenci duplicitních hodnocení
   createdAt DateTime @default(now())
 
-  @@index([postId]) // Index pro rychlejší vyhledávání hodnocení k příspěvku
+  @@index([postId])
+  @@unique([postId, ipAddress]) // Jedno hodnocení na IP adresu
+}
+
+model BlogView {
+  id        String   @id @default(uuid())
+  postId    String   // Odkazuje na slug blogového příspěvku
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@index([postId])
+  @@index([createdAt])
+}
+
+model Newsletter {
+  id          String   @id @default(uuid())
+  email       String   @unique
+  name        String?
+  active      Boolean  @default(true)
+  source      String?  // Odkud se přihlásil (blog, homepage, etc.)
+  preferences Json?    // Preference kategorií
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([active])
+  @@index([createdAt])
+}
+
+model ContactSubmission {
+  id              String   @id @default(uuid())
+  name            String
+  email           String
+  phone           String?
+  message         String
+  inquiryType     String?  // "service" nebo "partnership"
+  servicePackage  String?  // START, RŮST, EXPANZE, INDIVIDUÁLNÍ
+  partnerType     String?  // KREATIVNÍ, MARKETING, PROJEKTOVÝ
+  budget          String?
+  timeline        String?
+  businessType    String?
+  location        String?
+  source          String?  // Odkud přišel (blog, homepage, etc.)
+  status          String   @default("new") // new, contacted, closed
+  notes           String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([status])
+  @@index([inquiryType])
+  @@index([createdAt])
 }
