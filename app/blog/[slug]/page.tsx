@@ -1,8 +1,8 @@
 import { getPostBySlug, getPostSlugs } from "@/lib/blog-data"
 import { notFound } from "next/navigation"
 import Footer from "@/components/Footer"
-import ContactForm from "@/components/ContactForm" // Správný název komponenty
-import CommentsTable from "@/components/CommentsTable" // Správný název komponenty
+import ContactForm from "@/components/ContactForm"  
+import CommentsTable from "@/components/CommentsTable" 
 import { Suspense } from "react"
 
 // Generování statických cest pro blogové příspěvky
@@ -12,7 +12,8 @@ export async function generateStaticParams() {
 }
 
 export default async function BlogPostPage({ params }: { params: { slug: string } }) {
-  const post = await getPostBySlug(params.slug)
+  const { slug } = await params
+  const post = await getPostBySlug(slug)
 
   if (!post) {
     notFound()
