@@ -1,12 +1,14 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { CheckCircle } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { CheckCircle, Star, Zap, Crown } from "lucide-react"
 
 export default function ServicePackagesSection() {
   const packages = [
     {
       name: "START",
       price: "od 6 000 Kč",
+      originalPrice: null,
       description:
         "Ideální pro živnostníky a jednotlivce, kteří potřebují profesionální online vizitku – rychle a efektivně.",
       features: [
@@ -19,10 +21,15 @@ export default function ServicePackagesSection() {
         "Nasazení na vaši doménu a hosting",
       ],
       targetAudience: "Řemeslníci, kadeřnice, fotografové, poradci, OSVČ ve službách.",
+      icon: Star,
+      popular: false,
+      timeline: "1-2 týdny",
+      support: "Email podpora",
     },
     {
       name: "RŮST",
       price: "od 12 000 Kč",
+      originalPrice: "15 000 Kč",
       description:
         "Pro malé firmy a ambiciózní podnikatele, kteří chtějí nejen informovat, ale také aktivně prezentovat svou práci a budovat značku.",
       features: [
@@ -35,10 +42,15 @@ export default function ServicePackagesSection() {
         "Rozšířená on-page SEO optimalizace",
       ],
       targetAudience: "Kosmetické salony, menší stavební firmy, restaurace, penziony, designová studia.",
+      icon: Zap,
+      popular: true,
+      timeline: "2-3 týdny",
+      support: "Email + telefonní podpora",
     },
     {
       name: "EXPANZE",
       price: "Individuální",
+      originalPrice: null,
       description:
         "Pro střední a větší firmy, e-shopy a projekty s komplexními požadavky, které chtějí dominovat svému trhu a maximalizovat online potenciál.",
       features: [
@@ -52,6 +64,10 @@ export default function ServicePackagesSection() {
       ],
       targetAudience:
         "Střední a větší e-shopy, výrobní firmy s komplexním portfoliem, realitní kanceláře, vzdělávací instituce.",
+      icon: Crown,
+      popular: false,
+      timeline: "4-6 týdnů",
+      support: "Prioritní podpora 24/7",
     },
   ]
 
@@ -70,33 +86,103 @@ export default function ServicePackagesSection() {
           </div>
         </div>
         <div className="mx-auto grid max-w-6xl items-start gap-8 py-12 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
-          {packages.map((pkg, index) => (
-            <Card key={index} className="flex flex-col p-6 shadow-lg dark:bg-gray-950">
-              <CardHeader className="pb-4">
-                <CardTitle className="text-2xl font-bold text-black dark:text-gray-50">{pkg.name}</CardTitle>
-                <CardDescription className="text-gray-600 dark:text-gray-400 mt-2">{pkg.description}</CardDescription>
-                <p className="text-3xl font-extrabold text-black dark:text-gray-50 mt-4">{pkg.price}</p>
-              </CardHeader>
-              <CardContent className="flex-grow">
-                <ul className="space-y-2 text-gray-700 dark:text-gray-300">
-                  {pkg.features.map((feature, i) => (
-                    <li key={i} className="flex items-center">
-                      <CheckCircle className="h-5 w-5 text-green-500 mr-2 shrink-0" />
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-4">
-                  **Cílová skupina:** {pkg.targetAudience}
-                </p>
-              </CardContent>
-              <div className="mt-auto pt-6">
-                <Button className="w-full inline-flex h-12 items-center justify-center rounded-md bg-black px-8 text-sm font-medium text-white shadow transition-colors hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-200 dark:focus-visible:ring-gray-300">
-                  Zjistit více
-                </Button>
+          {packages.map((pkg, index) => {
+            const IconComponent = pkg.icon
+            return (
+              <Card
+                key={index}
+                className={`flex flex-col p-6 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 dark:bg-gray-950 relative ${
+                  pkg.popular ? "border-2 border-blue-500 dark:border-blue-400" : ""
+                }`}
+              >
+                {pkg.popular && (
+                  <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white px-4 py-1">
+                    Nejpopulárnější
+                  </Badge>
+                )}
+
+                <CardHeader className="pb-4">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div
+                      className={`p-2 rounded-lg ${pkg.popular ? "bg-blue-100 dark:bg-blue-900/20" : "bg-gray-100 dark:bg-gray-800"}`}
+                    >
+                      <IconComponent
+                        className={`h-6 w-6 ${pkg.popular ? "text-blue-600 dark:text-blue-400" : "text-gray-600 dark:text-gray-400"}`}
+                      />
+                    </div>
+                    <CardTitle className="text-2xl font-bold text-black dark:text-gray-50">{pkg.name}</CardTitle>
+                  </div>
+
+                  <CardDescription className="text-gray-600 dark:text-gray-400 mt-2">{pkg.description}</CardDescription>
+
+                  <div className="flex items-baseline gap-2 mt-4">
+                    <p className="text-3xl font-extrabold text-black dark:text-gray-50">{pkg.price}</p>
+                    {pkg.originalPrice && <p className="text-lg text-gray-500 line-through">{pkg.originalPrice}</p>}
+                  </div>
+
+                  <div className="flex flex-wrap gap-2 mt-3">
+                    <Badge variant="outline" className="text-xs">
+                      ⏱️ {pkg.timeline}
+                    </Badge>
+                    <Badge variant="outline" className="text-xs">
+                      🎧 {pkg.support}
+                    </Badge>
+                  </div>
+                </CardHeader>
+
+                <CardContent className="flex-grow">
+                  <ul className="space-y-3 text-gray-700 dark:text-gray-300">
+                    {pkg.features.map((feature, i) => (
+                      <li key={i} className="flex items-start gap-3">
+                        <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 shrink-0" />
+                        <span className="text-sm leading-relaxed">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                    <p className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-1">Cílová skupina:</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">{pkg.targetAudience}</p>
+                  </div>
+                </CardContent>
+
+                <div className="mt-auto pt-6">
+                  <Button
+                    className={`w-full inline-flex h-12 items-center justify-center rounded-md px-8 text-sm font-medium shadow transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50 ${
+                      pkg.popular
+                        ? "bg-blue-600 text-white hover:bg-blue-700 focus-visible:ring-blue-950 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus-visible:ring-blue-300"
+                        : "bg-black text-white hover:bg-gray-800 focus-visible:ring-gray-950 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-200 dark:focus-visible:ring-gray-300"
+                    }`}
+                  >
+                    {pkg.price === "Individuální" ? "Získat nabídku" : "Zjistit více"}
+                  </Button>
+                </div>
+              </Card>
+            )
+          })}
+        </div>
+
+        {/* Additional Info Section */}
+        <div className="mt-16 text-center">
+          <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-8 max-w-4xl mx-auto">
+            <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+              Co je zahrnuto ve všech balíčcích?
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm text-gray-600 dark:text-gray-300">
+              <div className="flex items-center gap-2">
+                <CheckCircle className="h-4 w-4 text-green-500" />
+                <span>Bezplatná konzultace</span>
               </div>
-            </Card>
-          ))}
+              <div className="flex items-center gap-2">
+                <CheckCircle className="h-4 w-4 text-green-500" />
+                <span>30 dní záruka</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="h-4 w-4 text-green-500" />
+                <span>Školení obsluhy</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
