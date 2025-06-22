@@ -15,13 +15,14 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { MenuIcon, Phone, Mail, ArrowRight, Users, Handshake } from "lucide-react"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { cn } from "@/lib/utils"
 
 export default function Header() {
   const pathname = usePathname()
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const headerRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -46,17 +47,45 @@ export default function Header() {
       console.log("Found element:", element)
 
       if (element) {
-        // Přidat offset pro sticky header (80px)
-        const headerOffset = 80
+        // Dynamicky vypočítat výšku headeru
+        const headerHeight = headerRef.current?.offsetHeight || 0
+        const topBarHeight = 40 // Výška top baru (hidden na mobile)
+        const totalHeaderHeight = headerHeight + (window.innerWidth >= 1024 ? topBarHeight : 0)
+
+        // Přidat extra padding pro lepší viditelnost
+        const extraPadding = 20
+        const totalOffset = totalHeaderHeight + extraPadding
+
+        console.log("Header height:", headerHeight)
+        console.log("Total offset:", totalOffset)
+
         const elementPosition = element.getBoundingClientRect().top
-        const offsetPosition = elementPosition + window.pageYOffset - headerOffset
+        const offsetPosition = elementPosition + window.pageYOffset - totalOffset
 
         window.scrollTo({
-          top: offsetPosition,
+          top: Math.max(0, offsetPosition), // Zajistit, že nescrollujeme nad začátek stránky
           behavior: "smooth",
         })
       } else {
         console.warn(`Element with data-section="${sectionId}" not found`)
+        // Fallback - zkusit najít element podle ID
+        const fallbackElement = document.getElementById(sectionId)
+        if (fallbackElement) {
+          console.log("Found fallback element by ID:", fallbackElement)
+          const headerHeight = headerRef.current?.offsetHeight || 0
+          const topBarHeight = 40
+          const totalHeaderHeight = headerHeight + (window.innerWidth >= 1024 ? topBarHeight : 0)
+          const extraPadding = 20
+          const totalOffset = totalHeaderHeight + extraPadding
+
+          const elementPosition = fallbackElement.getBoundingClientRect().top
+          const offsetPosition = elementPosition + window.pageYOffset - totalOffset
+
+          window.scrollTo({
+            top: Math.max(0, offsetPosition),
+            behavior: "smooth",
+          })
+        }
       }
     } else {
       // Pokud nejsme na hlavní stránce, přejdeme tam
@@ -110,6 +139,7 @@ export default function Header() {
 
       {/* Main header */}
       <header
+        ref={headerRef}
         className={cn(
           "sticky top-0 z-50 w-full transition-all duration-300 ease-in-out",
           isScrolled
@@ -297,7 +327,7 @@ export default function Header() {
                 <MenuIcon className="h-6 w-6" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-[320px] sm:w-[400px]">
+            <SheetContent side="right" className="w-[320px] sm:w-[400px] overflow-y-auto">
               <div className="flex flex-col gap-6 py-6">
                 {/* Mobile Logo */}
                 <div className="flex items-center gap-3 pb-4 border-b border-gray-200">
