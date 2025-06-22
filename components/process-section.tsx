@@ -35,11 +35,17 @@ export default function ProcessSection() {
             </p>
           </div>
         </div>
-        <div className="mx-auto grid max-w-5xl items-start gap-8 py-12 sm:grid-cols-1 md:grid-cols-3 lg:gap-12">
+        <div className="mx-auto grid max-w-6xl items-start gap-8 py-12 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 lg:gap-12">
           {processSteps.map((step, index) => (
-            <Card key={index} className="flex flex-col items-center text-center p-6 shadow-md dark:bg-gray-950">
+            <Card
+              key={index}
+              className="flex flex-col items-center text-center p-6 shadow-md hover:shadow-lg transition-all duration-300 dark:bg-gray-950 border-l-4 border-l-blue-500 relative"
+            >
+              <div className="absolute -top-3 -right-3 bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">
+                {index + 1}
+              </div>
               <CardHeader>
-                {step.icon}
+                <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-full mb-4">{step.icon}</div>
                 <CardTitle className="mt-4 text-xl font-bold">{step.title}</CardTitle>
               </CardHeader>
               <CardContent className="text-gray-500 dark:text-gray-400">{step.description}</CardContent>
