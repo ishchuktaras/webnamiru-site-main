@@ -37,32 +37,24 @@ console.log(
 
 console.log("\n🔧 Suggested .env file:")
 console.log(`NODE_ENV=development
-DATABASE_URL="postgresql://webnamiru_owner:npg_2m4ujoDGSwBJ@ep-late-band-a9bkromw-pooler.gwc.azure.neon.tech/webnamiru?sslmode=require"
-POSTGRES_URL="postgresql://webnamiru_owner:npg_2m4ujoDGSwBJ@ep-late-band-a9bkromw-pooler.gwc.azure.neon.tech/webnamiru?sslmode=require"
-POSTGRES_PRISMA_URL="postgresql://webnamiru_owner:npg_2m4ujoDGSwBJ@ep-late-band-a9bkromw-pooler.gwc.azure.neon.tech/webnamiru?connect_timeout=15&sslmode=require"
-POSTGRES_URL_NON_POOLING="postgresql://webnamiru_owner:npg_2m4ujoDGSwBJ@ep-late-band-a9bkromw.gwc.azure.neon.tech/webnamiru?sslmode=require"
-POSTGRES_USER=webnamiru_owner
-POSTGRES_PASSWORD=npg_2m4ujoDGSwBJ
-POSTGRES_HOST=ep-late-band-a9bkromw-pooler.gwc.azure.neon.tech
-POSTGRES_DATABASE=webnamiru
-NEON_PROJECT_ID=gentle-wave-17018717`)
+DATABASE_URL="postgresql://username:password@host/database?sslmode=require"
+POSTGRES_URL="postgresql://username:password@host/database?sslmode=require"
+POSTGRES_PRISMA_URL="postgresql://username:password@host/database?connect_timeout=15&sslmode=require"
+POSTGRES_URL_NON_POOLING="postgresql://username:password@host/database?sslmode=require"
+POSTGRES_USER=username
+POSTGRES_PASSWORD=password
+POSTGRES_HOST=host
+POSTGRES_DATABASE=database
+NEON_PROJECT_ID=project-id`)
 
-console.log("\n📋 For Vercel (copy these):")
+console.log("\n📋 For Vercel (copy these from your local .env):")
 console.log("NODE_ENV=production")
-console.log(
-  `DATABASE_URL=postgresql://webnamiru_owner:npg_2m4ujoDGSwBJ@ep-late-band-a9bkromw-pooler.gwc.azure.neon.tech/webnamiru?sslmode=require`,
-)
-console.log(
-  `POSTGRES_URL=postgresql://webnamiru_owner:npg_2m4ujoDGSwBJ@ep-late-band-a9bkromw-pooler.gwc.azure.neon.tech/webnamiru?sslmode=require`,
-)
-console.log(
-  `POSTGRES_PRISMA_URL=postgresql://webnamiru_owner:npg_2m4ujoDGSwBJ@ep-late-band-a9bkromw-pooler.gwc.azure.neon.tech/webnamiru?connect_timeout=15&sslmode=require`,
-)
-console.log(
-  `POSTGRES_URL_NON_POOLING=postgresql://webnamiru_owner:npg_2m4ujoDGSwBJ@ep-late-band-a9bkromw.gwc.azure.neon.tech/webnamiru?sslmode=require`,
-)
-console.log(`POSTGRES_USER=webnamiru_owner`)
-console.log(`POSTGRES_PASSWORD=npg_2m4ujoDGSwBJ`)
-console.log(`POSTGRES_HOST=ep-late-band-a9bkromw-pooler.gwc.azure.neon.tech`)
-console.log(`POSTGRES_DATABASE=webnamiru`)
-console.log(`NEON_PROJECT_ID=gentle-wave-17018717`)
+console.log("DATABASE_URL=[copy from your .env file]")
+console.log("POSTGRES_URL=[copy from your .env file]")
+console.log("POSTGRES_PRISMA_URL=[copy from your .env file]")
+console.log("POSTGRES_URL_NON_POOLING=[copy from your .env file]")
+console.log("POSTGRES_USER=[copy from your .env file]")
+console.log("POSTGRES_PASSWORD=[copy from your .env file]")
+console.log("POSTGRES_HOST=[copy from your .env file]")
+console.log("POSTGRES_DATABASE=[copy from your .env file]")
+console.log("NEON_PROJECT_ID=[copy from your .env file]")
