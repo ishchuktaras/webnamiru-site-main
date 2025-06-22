@@ -205,7 +205,7 @@ export default function Header() {
                       <NavigationMenuLink asChild>
                         <Link
                           className="flex h-full w-full select-none flex-col justify-end rounded-lg bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 p-6 no-underline outline-none focus:shadow-md transition-all duration-200 hover:shadow-lg hover:scale-[1.02] border border-blue-200/50"
-                          href="/sluzby"
+                          href="/sluzby/balicky"
                         >
                           <div className="mb-2 mt-4 text-lg font-semibold text-blue-900 dark:text-blue-100">
                             Web na míru
@@ -254,6 +254,22 @@ export default function Header() {
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <div className="grid gap-3 p-6 w-[400px]">
+                    <div className="row-span-4">
+                      <NavigationMenuLink asChild>
+                        <Link
+                          className="flex h-full w-full select-none flex-col justify-end rounded-lg bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 p-6 no-underline outline-none focus:shadow-md transition-all duration-200 hover:shadow-lg hover:scale-[1.02] border border-blue-200/50"
+                          href="/sluzby/partnerstvi"
+                        >
+                          <div className="mb-2 mt-4 text-lg font-semibold text-blue-900 dark:text-blue-100">
+                            Web na míru
+                          </div>
+                          <p className="text-sm leading-tight text-blue-700 dark:text-blue-300">
+                            Strategické weby, které skutečně vydělávají pro firmy na Vysočině.
+                          </p>
+                          <ArrowRight className="h-4 w-4 mt-2 text-blue-600" />
+                        </Link>
+                      </NavigationMenuLink>
+                    </div>
                     <div className="space-y-2">
                       <div>
                         <Link href="/sluzby/partnerstvi" legacyBehavior passHref>
