@@ -124,7 +124,7 @@ export default function HeroSection() {
                 className="group h-12 px-8 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 text-base font-medium"
                 asChild
               >
-                <Link href="/kontakt">
+                <Link href="/sluzby/balicky">
                   Zjistit startovní podmínky
                   <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
                 </Link>

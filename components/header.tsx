@@ -129,7 +129,7 @@ export default function Header() {
           >
             <div className="relative">
               <Image
-                src="/placeholder-logo.png"
+                src="/images/logo/logo.svg"
                 width={50}
                 height={50}
                 alt="webnamíru - Logo"
