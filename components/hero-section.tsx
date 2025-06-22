@@ -180,7 +180,7 @@ export default function HeroSection() {
             {/* Main image */}
             <div className="relative z-0 max-w-lg mx-auto lg:max-w-none">
               <Image
-                src="/placeholder.svg?height=600&width=600"
+                src="/images/website-hero.jpg"
                 width={600}
                 height={600}
                 alt="Profesionální fotografie - ekonom a webový vývojář analyzující obchodní grafy a webové metriky, symbolizující strategický přístup k tvorbě webů"
