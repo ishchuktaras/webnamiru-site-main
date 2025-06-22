@@ -1,75 +1,80 @@
-import { getPostBySlug, getPostSlugs } from "@/lib/blog-data";
-import { notFound } from "next/navigation";
-import { Suspense } from "react";
-import Footer from "@/components/Footer";
-import BlogBreadcrumbs from "@/components/blog-breadcrumbs";
-import BlogReadingTime from "@/components/blog-reading-time";
-import BlogSocialShare from "@/components/blog-social-share";
-import BlogRating from "@/components/blog-rating";
-import RelatedPosts from "@/components/related-posts";
-import CommentForm from "@/components/CommentForm";
-import CommentsTable from "@/components/CommentsTable";
-import { Badge } from "@/components/ui/badge";
-import { blogCategories } from "@/lib/blog-data";
+import { getPostBySlug, getPostSlugs } from "@/lib/blog-data"
+import { notFound } from "next/navigation"
+import { Suspense } from "react"
+import Footer from "@/components/Footer"
+import BlogBreadcrumbs from "@/components/blog-breadcrumbs"
+import BlogReadingTime from "@/components/blog-reading-time"
+import BlogSocialShare from "@/components/blog-social-share"
+import BlogRating from "@/components/blog-rating"
+import RelatedPosts from "@/components/related-posts"
+import CommentForm from "@/components/CommentForm"
+import CommentsTable from "@/components/CommentsTable"
+import { Badge } from "@/components/ui/badge"
+import { blogCategories } from "@/lib/blog-data"
 
 // Generování statických cest pro blogové příspěvky
 export async function generateStaticParams() {
-  const slugs = await getPostSlugs();
-  return slugs.map((slug) => ({ slug }));
+  try {
+    const slugs = await getPostSlugs()
+    return slugs.map((slug) => ({ slug }))
+  } catch (error) {
+    console.error("Error generating static params:", error)
+    return []
+  }
 }
 
 // Metadata pro SEO
-export async function generateMetadata({
-  params,
-}: {
-  params: { slug: string };
-}) {
-  const { slug } = await params;
-  const post = await getPostBySlug(slug);
+export async function generateMetadata({ params }: { params: { slug: string } }) {
+  try {
+    const { slug } = await params
+    const post = await getPostBySlug(slug)
 
-  if (!post) {
+    if (!post) {
+      return {
+        title: "Článek nenalezen",
+        description: "Požadovaný článek nebyl nalezen.",
+      }
+    }
+
     return {
-      title: "Článek nenalezen",
-      description: "Požadovaný článek nebyl nalezen.",
-    };
+      title: post.seoTitle || post.title,
+      description: post.seoDescription || post.excerpt,
+      openGraph: {
+        title: post.seoTitle || post.title,
+        description: post.seoDescription || post.excerpt,
+        type: "article",
+        publishedTime: post.date,
+        authors: [post.author],
+        images: post.image ? [{ url: post.image }] : [],
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: post.seoTitle || post.title,
+        description: post.seoDescription || post.excerpt,
+        images: post.image ? [post.image] : [],
+      },
+    }
+  } catch (error) {
+    console.error("Error generating metadata:", error)
+    return {
+      title: "Chyba při načítání článku",
+      description: "Došlo k chybě při načítání článku.",
+    }
   }
-
-  return {
-    title: post.seoTitle || post.title,
-    description: post.seoDescription || post.excerpt,
-    openGraph: {
-      title: post.seoTitle || post.title,
-      description: post.seoDescription || post.excerpt,
-      type: "article",
-      publishedTime: post.date,
-      authors: [post.author],
-      images: post.image ? [{ url: post.image }] : [],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: post.seoTitle || post.title,
-      description: post.seoDescription || post.excerpt,
-      images: post.image ? [post.image] : [],
-    },
-  };
 }
 
-export default async function BlogPostPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
-  const { slug } = await params;
-  const post = await getPostBySlug(slug);
+export default async function BlogPostPage({ params }: { params: { slug: string } }) {
+  try {
+    const { slug } = await params
+    const post = await getPostBySlug(slug)
 
-  if (!post) {
-    notFound();
-  }
+    if (!post) {
+      notFound()
+    }
 
-  const categoryInfo = blogCategories.find((c) => c.slug === post.category);
+    const categoryInfo = blogCategories.find((c) => c.slug === post.category)
 
-  return (
-    <>
+    return (
       <main className="min-h-screen">
         <article className="container mx-auto px-4 py-8 max-w-4xl">
           {/* Breadcrumbs */}
@@ -84,12 +89,12 @@ export default async function BlogPostPage({
                   categoryInfo?.color === "blue"
                     ? "bg-blue-100 text-blue-800"
                     : categoryInfo?.color === "green"
-                    ? "bg-green-100 text-green-800"
-                    : categoryInfo?.color === "purple"
-                    ? "bg-purple-100 text-purple-800"
-                    : categoryInfo?.color === "orange"
-                    ? "bg-orange-100 text-orange-800"
-                    : "bg-red-100 text-red-800"
+                      ? "bg-green-100 text-green-800"
+                      : categoryInfo?.color === "purple"
+                        ? "bg-purple-100 text-purple-800"
+                        : categoryInfo?.color === "orange"
+                          ? "bg-orange-100 text-orange-800"
+                          : "bg-red-100 text-red-800"
                 }`}
               >
                 {categoryInfo?.name}
@@ -139,7 +144,9 @@ export default async function BlogPostPage({
           </div>
 
           {/* Related Posts */}
-          <RelatedPosts currentPostSlug={post.slug} />
+          <Suspense fallback={<div>Načítám související články...</div>}>
+            <RelatedPosts currentPostSlug={post.slug} />
+          </Suspense>
         </article>
 
         {/* Comments Section */}
@@ -158,8 +165,19 @@ export default async function BlogPostPage({
             </div>
           </div>
         </section>
+
+        <Footer />
       </main>
-      <Footer />
-    </>
-  );
+    )
+  } catch (error) {
+    console.error("Error rendering blog post page:", error)
+    return (
+      <main className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-4">Došlo k chybě</h1>
+          <p className="text-gray-600">Omlouváme se, došlo k chybě při načítání článku.</p>
+        </div>
+      </main>
+    )
+  }
 }

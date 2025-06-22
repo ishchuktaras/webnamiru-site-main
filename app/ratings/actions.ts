@@ -1,7 +1,7 @@
 "use server"
 
 import { z } from "zod"
-import prisma from "@/lib/prisma" // Import Prisma klienta
+import prisma from "@/lib/prisma"
 
 // Schéma pro validaci hodnocení
 const ratingSchema = z.object({
@@ -11,21 +11,27 @@ const ratingSchema = z.object({
 
 // Server Action pro přidání hodnocení
 export async function addRating(prevState: { message: string; errors?: Record<string, string[]> }, formData: FormData) {
-  const validatedFields = ratingSchema.safeParse({
-    postId: formData.get("postId"),
-    value: Number.parseInt(formData.get("value") as string), // Převedeme string na číslo
-  })
-
-  if (!validatedFields.success) {
-    return {
-      message: "Chyba validace hodnocení.",
-      errors: validatedFields.error.flatten().fieldErrors,
-    }
-  }
-
-  const { postId, value } = validatedFields.data
-
   try {
+    const validatedFields = ratingSchema.safeParse({
+      postId: formData.get("postId"),
+      value: Number.parseInt(formData.get("value") as string),
+    })
+
+    if (!validatedFields.success) {
+      return {
+        message: "Chyba validace hodnocení.",
+        errors: validatedFields.error.flatten().fieldErrors,
+      }
+    }
+
+    const { postId, value } = validatedFields.data
+
+    // Zkontrolujeme, jestli Prisma klient existuje
+    if (!prisma) {
+      console.error("Prisma client is not available")
+      return { message: "Databáze není dostupná. Zkuste to prosím později." }
+    }
+
     await prisma.rating.create({
       data: {
         postId,
@@ -44,6 +50,12 @@ export async function addRating(prevState: { message: string; errors?: Record<st
 // Server Action pro načtení průměrného hodnocení a počtu hodnocení
 export async function getAverageRating(postId: string) {
   try {
+    // Zkontrolujeme, jestli Prisma klient existuje
+    if (!prisma) {
+      console.error("Prisma client is not available")
+      return { average: 0, count: 0 }
+    }
+
     const ratings = await prisma.rating.findMany({
       where: { postId },
       select: { value: true },
@@ -59,6 +71,6 @@ export async function getAverageRating(postId: string) {
     return { average: Number.parseFloat(average.toFixed(1)), count: ratings.length }
   } catch (error) {
     console.error("Chyba při načítání hodnocení:", error)
-    return { average: 0, count: 0 } // V případě chyby vrátíme 0
+    return { average: 0, count: 0 }
   }
 }

@@ -1,18 +1,14 @@
 "use server"
 
 import { z } from "zod"
-import prisma from "@/lib/prisma" // Import the singleton Prisma client
-
-// Use a non-null assertion to tell TypeScript that prisma will be defined
-// This is safe because of the singleton pattern in lib/prisma.ts
-const db = prisma!
+import prisma from "@/lib/prisma"
 
 // Schéma pro validaci komentáře
 const commentSchema = z.object({
   postId: z.string().min(1, { message: "ID příspěvku je povinné." }),
-  author: z.string().min(2, { message: "Jméno musí mít alespoň 2 znaky." }),
-  email: z.string().email({ message: "Neplatný formát e-mailu." }),
-  content: z.string().min(5, { message: "Komentář musí mít alespoň 5 znaků." }),
+  author: z.string().min(1, { message: "Jméno je povinné." }),
+  email: z.string().email({ message: "Neplatný e-mail." }),
+  content: z.string().min(1, { message: "Obsah komentáře je povinný." }),
 })
 
 // Server Action pro přidání komentáře
@@ -20,25 +16,30 @@ export async function addComment(
   prevState: { message: string; errors?: Record<string, string[]> },
   formData: FormData,
 ) {
-  const validatedFields = commentSchema.safeParse({
-    postId: formData.get("postId"),
-    author: formData.get("author"),
-    email: formData.get("email"),
-    content: formData.get("content"),
-  })
-
-  if (!validatedFields.success) {
-    return {
-      message: "Chyba validace komentáře.",
-      errors: validatedFields.error.flatten().fieldErrors,
-    }
-  }
-
-  const { postId, author, email, content } = validatedFields.data
-
   try {
-    await db.comment.create({
-      // Use 'db' instead of 'prisma'
+    const validatedFields = commentSchema.safeParse({
+      postId: formData.get("postId"),
+      author: formData.get("author"),
+      email: formData.get("email"),
+      content: formData.get("content"),
+    })
+
+    if (!validatedFields.success) {
+      return {
+        message: "Chyba validace komentáře.",
+        errors: validatedFields.error.flatten().fieldErrors,
+      }
+    }
+
+    const { postId, author, email, content } = validatedFields.data
+
+    // Zkontrolujeme, jestli Prisma klient existuje
+    if (!prisma) {
+      console.error("Prisma client is not available")
+      return { message: "Databáze není dostupná. Zkuste to prosím později." }
+    }
+
+    await prisma.comment.create({
       data: {
         postId,
         author,
@@ -55,17 +56,23 @@ export async function addComment(
   }
 }
 
-// Server Action pro načtení všech komentářů (adjusted for CommentsTable)
+// Server Action pro načtení komentářů
 export async function getComments() {
-  console.log("Attempting to fetch comments...") 
   try {
-    const comments = await db.comment.findMany({
+    // Zkontrolujeme, jestli Prisma klient existuje
+    if (!prisma) {
+      console.error("Prisma client is not available")
+      return { success: false, error: "Databáze není dostupná.", data: [] }
+    }
+
+    const comments = await prisma.comment.findMany({
       orderBy: { createdAt: "desc" },
+      take: 50, // Omezíme na 50 nejnovějších komentářů
     })
-    console.log("Comments fetched successfully:", comments.length)
+
     return { success: true, data: comments }
   } catch (error) {
-    console.error("Error fetching comments in getComments:", error)
-    return { success: false, error: "Nastala chyba při načítání komentářů." }
+    console.error("Chyba při načítání komentářů:", error)
+    return { success: false, error: "Chyba při načítání komentářů.", data: [] }
   }
 }
