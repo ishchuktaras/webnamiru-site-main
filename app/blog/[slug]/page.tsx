@@ -9,6 +9,8 @@ import BlogRatingSafe from "@/components/blog-rating-safe"
 import RelatedPosts from "@/components/related-posts"
 import { Badge } from "@/components/ui/badge"
 import { blogCategories } from "@/lib/blog-data"
+import CommentForm from "@/components/CommentForm"
+import CommentsTable from "@/components/CommentsTable"
 
 // Generování statických cest pro blogové příspěvky
 export async function generateStaticParams() {
@@ -124,6 +126,12 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
           <div className="mb-12">
             <BlogRatingSafe postId={post.slug} />
           </div>
+
+          {/* Comment Form */}
+          <CommentForm postId={post.slug} />
+
+          {/* Comments Table */}
+          <CommentsTable postId={post.slug} />
 
           {/* Related Posts */}
           <Suspense fallback={<div>Načítám související články...</div>}>

@@ -15,7 +15,11 @@ interface Comment {
   createdAt: Date // Assuming it's a Date object from Prisma
 }
 
-export default function CommentsTable() {
+interface CommentsTableProps {
+  postId: string
+}
+
+export default function CommentsTable({ postId }: CommentsTableProps)  {
   const [comments, setComments] = useState<Comment[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
