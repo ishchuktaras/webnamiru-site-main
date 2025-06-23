@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 // Toto je malá změna pro vynucení nového commitu a nasazení na Vercel.
 import {
@@ -9,27 +9,27 @@ import {
   SheetTitle,
   SheetDescription,
   SheetFooter,
-} from "@/components/ui/sheet"
-import { Button } from "@/components/ui/button"
+} from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
 
 // Corrected import paths for custom components (assuming PascalCase filenames)
-import Footer from "@/components/Footer"
-import HeroSection from "@/components/hero-section"
-import ProblemSection from "@/components/problem-section"
-import SolutionSection from "@/components/solution-section"
-import ForWhomSection from "@/components/for-whom-section"
-import TestimonialsSection from "@/components/testimonials-section"
-import ProcessSection from "@/components/process-section"
-import ServicePackagesSection from "@/components/service-packages-section"
-import FaqSection from "@/components/faq-section"
-import FinalCtaSection from "@/components/final-cta-section"
-import ContactInfoSection from "@/components/contact-info-section"
-import PartnersSection from "@/components/partners-section"
-import ContactForm from "@/components/ContactForm"
-import { Suspense } from "react"
-import PartnersPackagesSection from "@/components/partners-packages-section"
-import CaseStudiesSection from "@/components/case-studies-section"
-import AboutMeContent from "@/components/about-me-content"
+import Footer from "@/components/Footer";
+import HeroSection from "@/components/hero-section";
+import ProblemSection from "@/components/problem-section";
+import SolutionSection from "@/components/solution-section";
+import ForWhomSection from "@/components/for-whom-section";
+import TestimonialsSection from "@/components/testimonials-section";
+import ProcessSection from "@/components/process-section";
+import ServicePackagesSection from "@/components/service-packages-section";
+import FaqSection from "@/components/faq-section";
+import FinalCtaSection from "@/components/final-cta-section";
+import ContactInfoSection from "@/components/contact-info-section";
+import PartnersSection from "@/components/partners-section";
+import ContactForm from "@/components/ContactForm";
+import { Suspense } from "react";
+import PartnersPackagesSection from "@/components/partners-packages-section";
+import CaseStudiesSection from "@/components/case-studies-section";
+import AboutMeContent from "@/components/about-me-content";
 
 export default function Page() {
   return (
@@ -44,10 +44,7 @@ export default function Page() {
       <Suspense fallback={<div>Načítám sekci Pro koho...</div>}>
         <ForWhomSection />
       </Suspense>
-      {/* <Suspense fallback={<div>Načítám sekci Případové studie...</div>}>
-        <CaseStudiesSection />
-      </Suspense> */}{" "}
-      {/* Tuto sekci jsme přesunuli na samostatnou stránku */}
+
       <Suspense fallback={<div>Načítám sekci Reference...</div>}>
         <TestimonialsSection />
       </Suspense>
@@ -78,20 +75,16 @@ export default function Page() {
       <Suspense fallback={<div>Načítám kontaktní informace...</div>}>
         <ContactInfoSection />
       </Suspense>
-      
+
       <Footer />
       {/* New Sheet component for Contact Form */}
       <Sheet>
-        <SheetTrigger asChild>
-          <Button variant="default" className="fixed bottom-4 right-4 z-50 px-6 py-3 text-lg font-semibold shadow-lg">
-            Chci zjistit potenciál svého webu
-          </Button>
-        </SheetTrigger>
         <SheetContent side="right" className="w-full sm:max-w-md">
           <SheetHeader>
             <SheetTitle>Získejte bezplatnou konzultaci</SheetTitle>
             <SheetDescription>
-              Vyplňte formulář a zjistěte, jak může váš web generovat skutečný obchodní růst.
+              Vyplňte formulář a zjistěte, jak může váš web generovat skutečný
+              obchodní růst.
             </SheetDescription>
           </SheetHeader>
           <div className="py-4">
@@ -99,9 +92,11 @@ export default function Page() {
               <ContactForm />
             </Suspense>
           </div>
-          <SheetFooter>{/* You can add additional actions or information here if needed */}</SheetFooter>
+          <SheetFooter>
+            {/* You can add additional actions or information here if needed */}
+          </SheetFooter>
         </SheetContent>
       </Sheet>
     </main>
-  )
+  );
 }

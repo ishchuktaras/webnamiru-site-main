@@ -20,7 +20,9 @@ import { cn } from "@/lib/utils"
 
 type HeaderProps = {}
 
-export default function Header({}: HeaderProps) {
+import React from "react"
+
+export default function Header({}: HeaderProps): React.JSX.Element {
   const pathname = usePathname()
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -43,18 +45,14 @@ export default function Header({}: HeaderProps) {
   const scrollToSection = (sectionId: string) => {
     console.log("Scrolling to section:", sectionId, "Current pathname:", pathname)
 
-    // Pouze pokud jsme na hlavní stránce
     if (pathname === "/") {
       const element = document.querySelector(`[data-section="${sectionId}"]`)
       console.log("Found element:", element)
 
       if (element) {
-        // Dynamicky vypočítat výšku headeru
         const headerHeight = headerRef.current?.offsetHeight || 0
-        const topBarHeight = 40 // Výška top baru (hidden na mobile)
+        const topBarHeight = 40
         const totalHeaderHeight = headerHeight + (window.innerWidth >= 1024 ? topBarHeight : 0)
-
-        // Přidat extra padding pro lepší viditelnost
         const extraPadding = 20
         const totalOffset = totalHeaderHeight + extraPadding
 
@@ -65,12 +63,11 @@ export default function Header({}: HeaderProps) {
         const offsetPosition = elementPosition + window.pageYOffset - totalOffset
 
         window.scrollTo({
-          top: Math.max(0, offsetPosition), // Zajistit, že nescrollujeme nad začátek stránky
+          top: Math.max(0, offsetPosition),
           behavior: "smooth",
         })
       } else {
         console.warn(`Element with data-section="${sectionId}" not found`)
-        // Fallback - zkusit najít element podle ID
         const fallbackElement = document.getElementById(sectionId)
         if (fallbackElement) {
           console.log("Found fallback element by ID:", fallbackElement)
@@ -90,7 +87,6 @@ export default function Header({}: HeaderProps) {
         }
       }
     } else {
-      // Pokud nejsme na hlavní stránce, přejdeme tam
       console.log("Redirecting to home with hash:", `/#${sectionId}`)
       window.location.href = `/#${sectionId}`
     }
@@ -106,7 +102,6 @@ export default function Header({}: HeaderProps) {
 
   return (
     <>
-      {/* Top bar s kontaktními informacemi */}
       <div className="hidden lg:block bg-gradient-to-r from-blue-900 to-blue-800 text-white py-2">
         <div className="container mx-auto px-4 flex justify-between items-center text-sm">
           <div className="flex items-center gap-6">
@@ -139,7 +134,6 @@ export default function Header({}: HeaderProps) {
         </div>
       </div>
 
-      {/* Main header */}
       <header
         ref={headerRef}
         className={cn(
@@ -150,7 +144,6 @@ export default function Header({}: HeaderProps) {
         )}
       >
         <div className="container mx-auto px-4 lg:px-6 h-16 flex items-center justify-between">
-          {/* Logo */}
           <Link
             className="flex items-center gap-3 group transition-all duration-200 hover:scale-105"
             href="/"
@@ -176,7 +169,6 @@ export default function Header({}: HeaderProps) {
             </div>
           </Link>
 
-          {/* Desktop Navigation */}
           <NavigationMenu className="hidden lg:flex">
             <NavigationMenuList>
               {navigationItems.map((item) => (
@@ -196,7 +188,6 @@ export default function Header({}: HeaderProps) {
                 </NavigationMenuItem>
               ))}
 
-              {/* Services dropdown */}
               <NavigationMenuItem>
                 <NavigationMenuTrigger className="transition-all duration-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-700 dark:hover:text-blue-300">
                   Služby
@@ -249,7 +240,6 @@ export default function Header({}: HeaderProps) {
                 </NavigationMenuContent>
               </NavigationMenuItem>
 
-              {/* Partnership dropdown */}
               <NavigationMenuItem>
                 <NavigationMenuTrigger className="transition-all duration-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-700 dark:hover:text-blue-300">
                   Partnerství
@@ -286,35 +276,6 @@ export default function Header({}: HeaderProps) {
                           </NavigationMenuLink>
                         </Link>
                       </div>
-
-                      <div>
-                        <NavigationMenuLink
-                          className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-all duration-200 hover:bg-blue-50 hover:text-blue-700 focus:bg-blue-50 focus:text-blue-700 border border-transparent hover:border-blue-200 cursor-pointer"
-                          onClick={() => scrollToSection("partners")}
-                        >
-                          <div className="text-sm font-medium leading-none flex items-center gap-2">
-                            <Users className="h-4 w-4" />
-                            Naši partneři
-                          </div>
-                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                            Připojte se k našim partnerům a klientům.
-                          </p>
-                        </NavigationMenuLink>
-                      </div>
-
-                      <div>
-                        <Link href="/partners-section" legacyBehavior passHref>
-                          <NavigationMenuLink className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-all duration-200 hover:bg-blue-50 hover:text-blue-700 focus:bg-blue-50 focus:text-blue-700 border border-transparent hover:border-blue-200">
-                            <div className="text-sm font-medium leading-none flex items-center gap-2">
-                              <Mail className="h-4 w-4" />
-                              Kontakt pro partnery
-                            </div>
-                            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                              partnerstvi@webnamiru.site
-                            </p>
-                          </NavigationMenuLink>
-                        </Link>
-                      </div>
                     </div>
                   </div>
                 </NavigationMenuContent>
@@ -322,7 +283,6 @@ export default function Header({}: HeaderProps) {
             </NavigationMenuList>
           </NavigationMenu>
 
-          {/* CTA Button for Desktop */}
           <Button
             className="hidden lg:inline-flex h-10 items-center justify-center rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-2 text-sm font-medium text-white shadow-lg transition-all duration-200 hover:from-blue-700 hover:to-blue-800 hover:shadow-xl hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 group"
             asChild
@@ -333,7 +293,6 @@ export default function Header({}: HeaderProps) {
             </Link>
           </Button>
 
-          {/* Mobile Navigation */}
           <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
             <SheetTrigger asChild>
               <Button
@@ -347,7 +306,6 @@ export default function Header({}: HeaderProps) {
             </SheetTrigger>
             <SheetContent side="right" className="w-[320px] sm:w-[400px] overflow-y-auto">
               <div className="flex flex-col gap-6 py-6">
-                {/* Mobile Logo */}
                 <div className="flex items-center gap-3 pb-4 border-b border-gray-200">
                   <Image
                     src="/images/logo/logo.svg"
@@ -364,7 +322,6 @@ export default function Header({}: HeaderProps) {
                   </div>
                 </div>
 
-                {/* Mobile Navigation */}
                 <nav className="flex flex-col gap-2">
                   {navigationItems.map((item) => (
                     <Link
@@ -382,7 +339,6 @@ export default function Header({}: HeaderProps) {
                     </Link>
                   ))}
 
-                  {/* Služby sekce */}
                   <div className="border-t border-gray-200 pt-2 mt-2">
                     <div className="text-sm font-semibold text-gray-500 px-4 py-2 uppercase tracking-wide">Služby</div>
 
@@ -394,20 +350,8 @@ export default function Header({}: HeaderProps) {
                       📦 Balíčky služeb
                       <ArrowRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-all duration-200 group-hover:translate-x-1" />
                     </Link>
-
-                    <button
-                      className="w-full text-left text-lg font-medium transition-all duration-200 hover:text-blue-600 dark:hover:text-blue-400 py-3 px-4 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 flex items-center justify-between group"
-                      onClick={() => {
-                        scrollToSection("service-packages-section")
-                        setIsMobileMenuOpen(false)
-                      }}
-                    >
-                      ⚡ Individuální řešení
-                      <ArrowRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-all duration-200 group-hover:translate-x-1" />
-                    </button>
                   </div>
 
-                  {/* Partnerství sekce */}
                   <div className="border-t border-gray-200 pt-2 mt-2">
                     <div className="text-sm font-semibold text-gray-500 px-4 py-2 uppercase tracking-wide">
                       Partnerství
@@ -424,6 +368,12 @@ export default function Header({}: HeaderProps) {
                       </div>
                       <ArrowRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-all duration-200 group-hover:translate-x-1" />
                     </Link>
+                  </div>
+
+                  <div className="border-t border-gray-200 pt-2 mt-2">
+                    <div className="text-sm font-semibold text-gray-500 px-4 py-2 uppercase tracking-wide">
+                      Rychlé odkazy na hlavní stránce
+                    </div>
 
                     <button
                       className="w-full text-left text-lg font-medium transition-all duration-200 hover:text-blue-600 dark:hover:text-blue-400 py-3 px-4 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 flex items-center justify-between group"
@@ -453,71 +403,8 @@ export default function Header({}: HeaderProps) {
                       <ArrowRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-all duration-200 group-hover:translate-x-1" />
                     </button>
                   </div>
-
-                  {/* Rychlé odkazy na sekce */}
-                  <div className="border-t border-gray-200 pt-2 mt-2">
-                    <div className="text-sm font-semibold text-gray-500 px-4 py-2 uppercase tracking-wide">
-                      Rychlé odkazy
-                    </div>
-
-                    <button
-                      className="w-full text-left text-lg font-medium transition-all duration-200 hover:text-blue-600 dark:hover:text-blue-400 py-3 px-4 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 flex items-center justify-between group"
-                      onClick={() => {
-                        scrollToSection("hero-section")
-                        setIsMobileMenuOpen(false)
-                      }}
-                    >
-                      🎯 Úvod
-                      <ArrowRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-all duration-200 group-hover:translate-x-1" />
-                    </button>
-
-                    <button
-                      className="w-full text-left text-lg font-medium transition-all duration-200 hover:text-blue-600 dark:hover:text-blue-400 py-3 px-4 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 flex items-center justify-between group"
-                      onClick={() => {
-                        scrollToSection("problem-section")
-                        setIsMobileMenuOpen(false)
-                      }}
-                    >
-                      ❓ Problém
-                      <ArrowRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-all duration-200 group-hover:translate-x-1" />
-                    </button>
-
-                    <button
-                      className="w-full text-left text-lg font-medium transition-all duration-200 hover:text-blue-600 dark:hover:text-blue-400 py-3 px-4 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 flex items-center justify-between group"
-                      onClick={() => {
-                        scrollToSection("solution-section")
-                        setIsMobileMenuOpen(false)
-                      }}
-                    >
-                      ✅ Řešení
-                      <ArrowRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-all duration-200 group-hover:translate-x-1" />
-                    </button>
-
-                    <button
-                      className="w-full text-left text-lg font-medium transition-all duration-200 hover:text-blue-600 dark:hover:text-blue-400 py-3 px-4 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 flex items-center justify-between group"
-                      onClick={() => {
-                        scrollToSection("process-section")
-                        setIsMobileMenuOpen(false)
-                      }}
-                    >
-                      🔄 Proces
-                      <ArrowRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-all duration-200 group-hover:translate-x-1" />
-                    </button>
-
-                    <button
-                      className="w-full text-left text-lg font-medium transition-all duration-200 hover:text-blue-600 dark:hover:text-blue-400 py-3 px-4 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 flex items-center justify-between group"
-                      onClick={() => {
-                        scrollToSection("testimonials-section")
-                        setIsMobileMenuOpen(false)
-                      }}
-                    >
-                      💬 Reference
-                      <ArrowRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-all duration-200 group-hover:translate-x-1" />
-                    </button>
-                  </div>
                 </nav>
 
-                {/* Mobile CTA and Contact */}
                 <div className="pt-4 border-t border-gray-200 space-y-4">
                   <Button
                     className="w-full inline-flex h-12 items-center justify-center rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-2 text-sm font-medium text-white shadow-lg transition-all duration-200 hover:from-blue-700 hover:to-blue-800 hover:shadow-xl group"
