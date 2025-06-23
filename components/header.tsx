@@ -18,7 +18,9 @@ import { usePathname } from "next/navigation"
 import { useState, useEffect, useRef } from "react"
 import { cn } from "@/lib/utils"
 
-export default function Header() {
+type HeaderProps = {}
+
+export default function Header({}: HeaderProps) {
   const pathname = usePathname()
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -166,7 +168,7 @@ export default function Header() {
             </div>
             <div className="flex flex-col">
               <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-                webnamíru
+                webnamíru.site
               </span>
               <span className="text-xs text-gray-600 dark:text-gray-400 hidden sm:block">
                 Strategické weby pro Vysočinu
