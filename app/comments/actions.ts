@@ -45,34 +45,42 @@ export async function addComment(
         author,
         email,
         content,
+        approved: false, // Nové komentáře jsou defaultně neschválené
       },
     })
 
     console.log(`Komentář přidán pro příspěvek ${postId} od ${author}`)
-    return { message: "Váš komentář byl úspěšně přidán!" }
+    return { message: "Váš komentář byl úspěšně přidán! Bude zobrazen po schválení administrátorem." }
   } catch (error) {
     console.error("Chyba při přidávání komentáře:", error)
     return { message: "Nastala chyba při přidávání komentáře. Zkuste to prosím znovu." }
   }
 }
 
-// Server Action pro načtení komentářů
-export async function getComments() {
+// Server Action pro načtení komentářů s filtrováním a limitováním
+export async function getComments(postId: string, limit: number, offset = 0) {
   try {
-    // Zkontrolujeme, jestli Prisma klient existuje
     if (!prisma) {
       console.error("Prisma client is not available")
-      return { success: false, error: "Databáze není dostupná.", data: [] }
+      return { success: false, error: "Databáze není dostupná.", data: [], hasMore: false }
     }
 
     const comments = await prisma.comment.findMany({
+      where: {
+        postId: postId,
+        approved: true, // Zobrazujeme pouze schválené komentáře
+      },
       orderBy: { createdAt: "desc" },
-      take: 50, // Omezíme na 50 nejnovějších komentářů
+      take: limit + 1, // Načteme o jeden více, abychom zjistili, zda existují další
+      skip: offset,
     })
 
-    return { success: true, data: comments }
+    const hasMore = comments.length > limit
+    const data = hasMore ? comments.slice(0, limit) : comments
+
+    return { success: true, data: data, hasMore: hasMore }
   } catch (error) {
     console.error("Chyba při načítání komentářů:", error)
-    return { success: false, error: "Chyba při načítání komentářů.", data: [] }
+    return { success: false, error: "Chyba při načítání komentářů.", data: [], hasMore: false }
   }
 }

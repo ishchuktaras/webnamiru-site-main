@@ -149,13 +149,12 @@ export default function Header({}: HeaderProps): React.JSX.Element {
             href="/"
             aria-label="webnamíru.site - Domovská stránka"
           >
-            <div className="relative">
+            <div className="relative w-[50px] h-[50px]">
               <Image
                 src="/images/logo/logo.svg"
-                width={50}
-                height={50}
                 alt="webnamíru.site - Logo"
-                className="rounded-full transition-all duration-200 group-hover:shadow-lg group-hover:ring-2 group-hover:ring-blue-500/20"
+                fill
+                className="rounded-full object-contain transition-all duration-200 group-hover:shadow-lg group-hover:ring-2 group-hover:ring-blue-500/20"
                 priority
               />
             </div>
