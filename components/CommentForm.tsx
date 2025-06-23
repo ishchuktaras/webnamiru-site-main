@@ -1,11 +1,11 @@
 "use client"
 
-import { useActionState, useRef } from "react"
+import { useActionState, useRef, useEffect } from "react"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
-import { addComment } from "@/app/comments/actions" // Import Server Action
+import { addComment } from "@/app/comments/actions"
 import { useRouter } from "next/navigation"
 
 interface CommentFormProps {
@@ -19,20 +19,28 @@ export default function CommentForm({ postId }: CommentFormProps) {
   }
   const [state, formAction, isPending] = useActionState(addComment, initialState)
   const formRef = useRef<HTMLFormElement>(null)
-
   const router = useRouter()
-  // Reset formuláře po úspěšném odeslání
-  if (state.message && !state.errors && formRef.current) {
-    formRef.current.reset()
-    router.refresh() // Aktualizujeme stránku pro zobrazení nového komentáře
-    state.message = "" // Vyčistíme zprávu, aby se nezobrazovala po resetu
-  }
+  const prevMessageRef = useRef<string>("")
+
+  useEffect(() => {
+    // Only reset and refresh if we have a new success message
+    if (
+      state.message &&
+      state.message !== prevMessageRef.current &&
+      Object.keys(state.errors || {}).length === 0 &&
+      state.message.includes("úspěšně")
+    ) {
+      formRef.current?.reset()
+      router.refresh()
+      prevMessageRef.current = state.message
+    }
+  }, [state.message, state.errors, router])
 
   return (
     <div className="mt-12 border-t pt-8">
       <h2 className="text-2xl font-bold mb-6">Přidat komentář</h2>
       <form ref={formRef} action={formAction} className="space-y-6">
-        <input type="hidden" name="postId" value={postId} /> {/* Skryté pole pro postId */}
+        <input type="hidden" name="postId" value={postId} />
         <div>
           <Label htmlFor="author" className="sr-only">
             Jméno
@@ -71,7 +79,7 @@ export default function CommentForm({ postId }: CommentFormProps) {
         {state.message && (
           <p
             className={`mt-4 text-center ${
-              state.errors && Object.keys(state.errors).length > 0 ? "text-red-500" : "text-green-500"
+              state.errors && Object.keys(state.errors || {}).length > 0 ? "text-red-500" : "text-green-500"
             }`}
             aria-live="polite"
           >
