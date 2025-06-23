@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { CheckCircle, Camera, Palette, TrendingUp, Users, Handshake, Star } from "lucide-react"
+import Link from "next/link" // Ujistěte se, že je importován Link
 
 export default function PartnersPackagesSection() {
   const partnerPackages = [
@@ -76,7 +77,10 @@ export default function PartnersPackagesSection() {
   ]
 
   return (
-    <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-50 dark:bg-gray-800" data-section="partners-packages-section">
+    <section
+      className="w-full py-12 md:py-24 lg:py-32 bg-gray-50 dark:bg-gray-800"
+      data-section="partners-packages-section"
+    >
       <div className="container px-4 md:px-6">
         <div className="flex flex-col items-center justify-center space-y-4 text-center">
           <div className="space-y-2">
@@ -165,14 +169,18 @@ export default function PartnersPackagesSection() {
                 </CardContent>
 
                 <div className="mt-auto pt-6">
+                  {/* Zde je oprava: Obalení Button komponentou Link s asChild */}
                   <Button
                     className={`w-full inline-flex h-12 items-center justify-center rounded-md px-8 text-sm font-medium shadow transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50 ${
                       pkg.popular
                         ? "bg-blue-600 text-white hover:bg-blue-700 focus-visible:ring-blue-950 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus-visible:ring-blue-300"
                         : "bg-black text-white hover:bg-gray-800 focus-visible:ring-gray-950 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-200 dark:focus-visible:ring-gray-300"
                     }`}
+                    asChild // Důležité: předá props z Button na Link
                   >
-                    {pkg.commission === "Individuální" ? "Domluvit spolupráci" : "Začít spolupráci"}
+                    <Link href="/kontakt?type=partnership">
+                      {pkg.commission === "Individuální" ? "Domluvit spolupráci" : "Začít spolupráci"}
+                    </Link>
                   </Button>
                 </div>
               </Card>
@@ -225,8 +233,9 @@ export default function PartnersPackagesSection() {
               Máte otázky nebo chcete projednat konkrétní podmínky spolupráce? Napište mi a domluvíme si nezávaznou
               konzultaci.
             </p>
-            <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 font-semibold px-8">
-              Kontaktovat pro partnerství
+            {/* Zde je oprava: Obalení Button komponentou Link s asChild */}
+            <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 font-semibold px-8" asChild>
+              <Link href="/kontakt?type=partnership">Kontaktovat pro partnerství</Link>
             </Button>
           </div>
         </div>

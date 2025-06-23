@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { ArrowRight, Camera, TrendingUp, Users, Instagram, MapPin } from "lucide-react"
+import Link from "next/link"
 
 export default function CaseStudiesSection() {
   const caseStudies = [
@@ -22,7 +23,7 @@ export default function CaseStudiesSection() {
         { label: "Doba načítání", value: "< 2s" },
         { label: "Mobile optimalizace", value: "100%" },
       ],
-      link: "#",
+      link: "/pripadove-studie/coming-soon", // Změněno
       icon: Camera,
       color: "from-pink-500 to-purple-600",
     },
@@ -41,7 +42,7 @@ export default function CaseStudiesSection() {
         { label: "Přímé rezervace", value: "+40%" },
         { label: "SEO ranking", value: "Top 3" },
       ],
-      link: "#",
+      link: "/pripadove-studie/coming-soon", // Změněno
       icon: TrendingUp,
       color: "from-blue-500 to-cyan-600",
     },
@@ -60,7 +61,7 @@ export default function CaseStudiesSection() {
         { label: "Konverzní poměr", value: "3.2%" },
         { label: "Zákazníci", value: "150+" },
       ],
-      link: "#",
+      link: "/pripadove-studie/coming-soon", // Změněno
       icon: Users,
       color: "from-green-500 to-emerald-600",
     },
@@ -205,10 +206,10 @@ export default function CaseStudiesSection() {
                     className={`w-full bg-gradient-to-r ${study.color} hover:shadow-lg transition-all duration-300 text-white border-0 group-hover:scale-105`}
                     asChild
                   >
-                    <a href={study.link}>
+                    <Link href={study.link}>
                       Zobrazit detaily projektu
                       <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                    </a>
+                    </Link>
                   </Button>
                 </CardContent>
               </Card>

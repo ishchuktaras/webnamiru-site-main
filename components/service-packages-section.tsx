@@ -1,7 +1,10 @@
+"use client"
+
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { CheckCircle, Star, Zap, Crown } from "lucide-react"
+import Link from "next/link" // Importujte Link
 
 export default function ServicePackagesSection() {
   const packages = [
@@ -72,7 +75,10 @@ export default function ServicePackagesSection() {
   ]
 
   return (
-    <section className="w-full py-12 md:py-24 lg:py-32 bg-white dark:bg-gray-900" data-section="service-packages-section">
+    <section
+      className="w-full py-12 md:py-24 lg:py-32 bg-white dark:bg-gray-900"
+      data-section="service-packages-section"
+    >
       <div className="container px-4 md:px-6">
         <div className="flex flex-col items-center justify-center space-y-4 text-center">
           <div className="space-y-2">
@@ -147,14 +153,18 @@ export default function ServicePackagesSection() {
                 </CardContent>
 
                 <div className="mt-auto pt-6">
+                  {/* Zde je oprava: Obalení Button komponentou Link s asChild */}
                   <Button
                     className={`w-full inline-flex h-12 items-center justify-center rounded-md px-8 text-sm font-medium shadow transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50 ${
                       pkg.popular
                         ? "bg-blue-600 text-white hover:bg-blue-700 focus-visible:ring-blue-950 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus-visible:ring-blue-300"
                         : "bg-black text-white hover:bg-gray-800 focus-visible:ring-gray-950 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-200 dark:focus-visible:ring-gray-300"
                     }`}
+                    asChild // Důležité: předá props z Button na Link
                   >
-                    {pkg.price === "Individuální" ? "Získat nabídku" : "Zjistit více"}
+                    <Link href="/kontakt?type=service">
+                      {pkg.price === "Individuální" ? "Získat nabídku" : "Zjistit více"}
+                    </Link>
                   </Button>
                 </div>
               </Card>
