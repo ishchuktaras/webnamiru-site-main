@@ -4,6 +4,7 @@ import "./globals.css"
 import Header from "../components/header"
 import { ThemeProvider } from "@/components/theme-provider" // <-- Importuj ThemeProvider
 import { Toaster } from "@/components/ui/sonner"
+import GdprConsent from "@/components/gdpr-consent";
 
 // 1. Importujte font Inter z Google Fonts.
 import { Inter } from "next/font/google"
@@ -44,6 +45,7 @@ export default function RootLayout({
           <Header />
           {children}
           <Toaster />
+          <GdprConsent />
         </ThemeProvider>
       </body>
     </html>
