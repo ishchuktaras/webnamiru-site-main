@@ -64,67 +64,26 @@
 
   /* === ANIMACE PRO JEDNOTLIVÉ SEKCE === */
 
-  /* Animace pro Hero sekci */
-  [data-section="hero-section"].mounted [data-animate-item] {
+  [data-section].mounted [data-animate-item] {
     opacity: 1;
     transform: translateY(0);
   }
+
   [data-section="hero-section"] [data-animate-item] {
     opacity: 0;
     transform: translateY(1rem);
     transition: opacity 0.7s ease, transform 0.7s ease;
   }
-
-  /* Animace pro Problem sekci */
-  [data-section="problem-section"].mounted [data-animate-item] {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  [data-section="problem-section"] [data-animate-item] {
-    opacity: 0;
-    transform: translateY(1.5rem);
-    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-  }
   
-  /* Animace pro Solution sekci */
-  [data-section="solution-section"].mounted [data-animate-item] {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  [data-section="solution-section"] [data-animate-item] {
-    opacity: 0;
-    transform: translateY(1.5rem);
-    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-  }
-
-  /* Animace pro For Whom sekci */
-  [data-section="for-whom-section"].mounted [data-animate-item] {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  [data-section="for-whom-section"] [data-animate-item] {
-    opacity: 0;
-    transform: translateY(1.5rem);
-    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-  }
-  
-  /* Animace pro Testimonials sekci */
-  [data-section="testimonials-section"].mounted [data-animate-item] {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  [data-section="testimonials-section"] [data-animate-item] {
-    opacity: 0;
-    transform: translateY(1.5rem);
-    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-  }
-
-  /* === NOVÉ: Animace pro Process sekci === */
-  [data-section="process-section"].mounted [data-animate-item] {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  [data-section="process-section"] [data-animate-item] {
+  /* Společné styly pro většinu sekcí */
+  [data-section="problem-section"] [data-animate-item],
+  [data-section="solution-section"] [data-animate-item],
+  [data-section="for-whom-section"] [data-animate-item],
+  [data-section="testimonials-section"] [data-animate-item],
+  [data-section="process-section"] [data-animate-item],
+  [data-section="partners-packages-section"] [data-animate-item],
+  [data-section="service-packages-section"] [data-animate-item],
+  [data-section="partners-section"] [data-animate-item] { /* <- Přidáno */
     opacity: 0;
     transform: translateY(1.5rem);
     transition: opacity 0.6s ease-out, transform 0.6s ease-out;
