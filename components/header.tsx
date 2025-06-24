@@ -17,6 +17,7 @@ import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { useState, useEffect, useRef } from "react"
 import { cn } from "@/lib/utils"
+import { ThemeToggle } from "./theme-toggle" // Předpokládám, že soubor je v components/theme-toggle.tsx
 
 type HeaderProps = {}
 
@@ -43,51 +44,22 @@ export default function Header({}: HeaderProps): React.JSX.Element {
   }
 
   const scrollToSection = (sectionId: string) => {
-    console.log("Scrolling to section:", sectionId, "Current pathname:", pathname)
-
     if (pathname === "/") {
       const element = document.querySelector(`[data-section="${sectionId}"]`)
-      console.log("Found element:", element)
-
       if (element) {
         const headerHeight = headerRef.current?.offsetHeight || 0
         const topBarHeight = 40
         const totalHeaderHeight = headerHeight + (window.innerWidth >= 1024 ? topBarHeight : 0)
         const extraPadding = 20
         const totalOffset = totalHeaderHeight + extraPadding
-
-        console.log("Header height:", headerHeight)
-        console.log("Total offset:", totalOffset)
-
         const elementPosition = element.getBoundingClientRect().top
         const offsetPosition = elementPosition + window.pageYOffset - totalOffset
-
         window.scrollTo({
           top: Math.max(0, offsetPosition),
           behavior: "smooth",
         })
-      } else {
-        console.warn(`Element with data-section="${sectionId}" not found`)
-        const fallbackElement = document.getElementById(sectionId)
-        if (fallbackElement) {
-          console.log("Found fallback element by ID:", fallbackElement)
-          const headerHeight = headerRef.current?.offsetHeight || 0
-          const topBarHeight = 40
-          const totalHeaderHeight = headerHeight + (window.innerWidth >= 1024 ? topBarHeight : 0)
-          const extraPadding = 20
-          const totalOffset = totalHeaderHeight + extraPadding
-
-          const elementPosition = fallbackElement.getBoundingClientRect().top
-          const offsetPosition = elementPosition + window.pageYOffset - totalOffset
-
-          window.scrollTo({
-            top: Math.max(0, offsetPosition),
-            behavior: "smooth",
-          })
-        }
       }
     } else {
-      console.log("Redirecting to home with hash:", `/#${sectionId}`)
       window.location.href = `/#${sectionId}`
     }
   }
@@ -115,18 +87,6 @@ export default function Header({}: HeaderProps): React.JSX.Element {
               <Mail className="h-4 w-4" />
               <a href="mailto:poptavka@webnamiru.site" className="hover:text-blue-200 transition-colors">
                 poptavka@webnamiru.site
-              </a>
-            </div>
-            <div className="flex items-center gap-2 hover:text-blue-200 transition-colors">
-              <Mail className="h-4 w-4" />
-              <a href="mailto:partnerstvi@webnamiru.site" className="hover:text-blue-200 transition-colors">
-                partnerstvi@webnamiru.site
-              </a>
-            </div>
-            <div className="flex items-center gap-2 hover:text-blue-200 transition-colors">
-              <Mail className="h-4 w-4" />
-              <a href="mailto:tech-podpora@webnamiru.site" className="hover:text-blue-200 transition-colors">
-                tech-podpora@webnamiru.site
               </a>
             </div>
           </div>
@@ -168,6 +128,7 @@ export default function Header({}: HeaderProps): React.JSX.Element {
             </div>
           </Link>
 
+          {/* === ZMĚNA ZDE: Kompletní desktopová navigace obnovena === */}
           <NavigationMenu className="hidden lg:flex">
             <NavigationMenuList>
               {navigationItems.map((item) => (
@@ -211,29 +172,24 @@ export default function Header({}: HeaderProps): React.JSX.Element {
                     </div>
 
                     <div className="space-y-2">
-                      <div>
-                        <Link href="/sluzby/balicky" legacyBehavior passHref>
-                          <NavigationMenuLink className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-all duration-200 hover:bg-blue-50 hover:text-blue-700 focus:bg-blue-50 focus:text-blue-700 border border-transparent hover:border-blue-200">
-                            <div className="text-sm font-medium leading-none flex items-center gap-2">
-                              📦 Balíčky služeb
-                            </div>
-                            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                              START, RŮST, EXPANZE - vyberte si podle potřeb.
-                            </p>
-                          </NavigationMenuLink>
-                        </Link>
-                      </div>
-
-                      <div>
-                        <Link href="/kontakt" legacyBehavior passHref>
-                          <NavigationMenuLink className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-all duration-200 hover:bg-blue-50 hover:text-blue-700 focus:bg-blue-50 focus:text-blue-700 border border-transparent hover:border-blue-200">
-                            <div className="text-sm font-medium leading-none">⚡ Individuální řešení</div>
-                            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                              Řešení na míru pro specifické projekty.
-                            </p>
-                          </NavigationMenuLink>
-                        </Link>
-                      </div>
+                      <Link href="/sluzby/balicky" legacyBehavior passHref>
+                        <NavigationMenuLink className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-all duration-200 hover:bg-blue-50 hover:text-blue-700 focus:bg-blue-50 focus:text-blue-700 border border-transparent hover:border-blue-200">
+                          <div className="text-sm font-medium leading-none flex items-center gap-2">
+                            📦 Balíčky služeb
+                          </div>
+                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                            START, RŮST, EXPANZE - vyberte si podle potřeb.
+                          </p>
+                        </NavigationMenuLink>
+                      </Link>
+                      <Link href="/kontakt" legacyBehavior passHref>
+                        <NavigationMenuLink className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-all duration-200 hover:bg-blue-50 hover:text-blue-700 focus:bg-blue-50 focus:text-blue-700 border border-transparent hover:border-blue-200">
+                          <div className="text-sm font-medium leading-none">⚡ Individuální řešení</div>
+                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                            Řešení na míru pro specifické projekty.
+                          </p>
+                        </NavigationMenuLink>
+                      </Link>
                     </div>
                   </div>
                 </NavigationMenuContent>
@@ -245,206 +201,98 @@ export default function Header({}: HeaderProps): React.JSX.Element {
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <div className="grid gap-3 p-6 w-[400px]">
-                    <div className="row-span-4">
-                      <NavigationMenuLink asChild>
-                        <Link
-                          className="flex h-full w-full select-none flex-col justify-end rounded-lg bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 p-6 no-underline outline-none focus:shadow-md transition-all duration-200 hover:shadow-lg hover:scale-[1.02] border border-blue-200/50"
-                          href="/sluzby/partnerstvi"
-                        >
-                          <div className="mb-2 mt-4 text-lg font-semibold text-blue-900 dark:text-blue-100">
-                            Web na míru
+                      <Link href="/sluzby/partnerstvi" legacyBehavior passHref>
+                        <NavigationMenuLink className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-all duration-200 hover:bg-blue-50 hover:text-blue-700 focus:bg-blue-50 focus:text-blue-700 border border-transparent hover:border-blue-200">
+                          <div className="text-sm font-medium leading-none flex items-center gap-2">
+                            <Handshake className="h-4 w-4" />
+                            Partnerské balíčky
                           </div>
-                          <p className="text-sm leading-tight text-blue-700 dark:text-blue-300">
-                            Strategické weby, které skutečně vydělávají pro firmy na Vysočině.
+                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                            Výhodné podmínky spolupráce pro kreativce.
                           </p>
-                          <ArrowRight className="h-4 w-4 mt-2 text-blue-600" />
-                        </Link>
-                      </NavigationMenuLink>
-                    </div>
-                    <div className="space-y-2">
-                      <div>
-                        <Link href="/sluzby/partnerstvi" legacyBehavior passHref>
-                          <NavigationMenuLink className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-all duration-200 hover:bg-blue-50 hover:text-blue-700 focus:bg-blue-50 focus:text-blue-700 border border-transparent hover:border-blue-200">
-                            <div className="text-sm font-medium leading-none flex items-center gap-2">
-                              <Handshake className="h-4 w-4" />
-                              Partnerské balíčky
-                            </div>
-                            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                              Výhodné podmínky spolupráce pro kreativce.
-                            </p>
-                          </NavigationMenuLink>
-                        </Link>
-                      </div>
-                    </div>
+                        </NavigationMenuLink>
+                      </Link>
                   </div>
                 </NavigationMenuContent>
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
 
-          <Button
-            className="hidden lg:inline-flex h-10 items-center justify-center rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-2 text-sm font-medium text-white shadow-lg transition-all duration-200 hover:from-blue-700 hover:to-blue-800 hover:shadow-xl hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 group"
-            asChild
-          >
-            <Link href="/kontakt">
-              Nezávazná konzultace
-              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </Link>
-          </Button>
+          <div className="hidden lg:flex items-center gap-4">
+            <ThemeToggle />
+            <Button
+              className="h-10 items-center justify-center rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-2 text-sm font-medium text-white shadow-lg transition-all duration-200 hover:from-blue-700 hover:to-blue-800 hover:shadow-xl hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 group"
+              asChild
+            >
+              <Link href="/kontakt">
+                Nezávazná konzultace
+                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </Link>
+            </Button>
+          </div>
 
-          <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-            <SheetTrigger asChild>
-              <Button
-                variant="outline"
-                size="icon"
-                className="lg:hidden transition-all duration-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-300"
-                aria-label="Otevřít navigační menu"
-              >
-                <MenuIcon className="h-6 w-6" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-[320px] sm:w-[400px] overflow-y-auto">
-              <div className="flex flex-col gap-6 py-6">
-                <div className="flex items-center gap-3 pb-4 border-b border-gray-200">
-                  <Image
-                    src="/images/logo/logo.svg"
-                    width={60}
-                    height={36}
-                    alt="webnamíru.site Logo"
-                    className="rounded-lg"
-                  />
-                  <div>
-                    <div className="font-bold text-lg bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-                      webnamíru.site
+          <div className="flex items-center gap-4 lg:hidden">
+            <ThemeToggle />
+            <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+              <SheetTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="transition-all duration-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-300"
+                  aria-label="Otevřít navigační menu"
+                >
+                  <MenuIcon className="h-6 w-6" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[320px] sm:w-[400px] overflow-y-auto">
+                <div className="flex flex-col gap-6 py-6">
+                  <div className="flex items-center gap-3 pb-4 border-b border-gray-200 dark:border-gray-700">
+                    <Image
+                      src="/images/logo/logo.svg"
+                      width={60}
+                      height={36}
+                      alt="webnamíru.site Logo"
+                      className="rounded-lg"
+                    />
+                    <div>
+                      <div className="font-bold text-lg bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+                        webnamíru.site
+                      </div>
+                      <div className="text-sm text-gray-600 dark:text-gray-400">Strategické weby</div>
                     </div>
-                    <div className="text-sm text-gray-600">Strategické weby</div>
+                  </div>
+                  <nav className="flex flex-col gap-2">
+                    {navigationItems.map((item) => (
+                      <Link
+                        key={item.href}
+                        className={cn(
+                          "text-lg font-medium transition-all duration-200 hover:text-blue-600 dark:hover:text-blue-400 py-3 px-4 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 flex items-center justify-between group",
+                          isActivePath(item.href) &&
+                            "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 font-semibold",
+                        )}
+                        href={item.href}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        {item.label}
+                        <ArrowRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-all duration-200 group-hover:translate-x-1" />
+                      </Link>
+                    ))}
+                  </nav>
+                  <div className="pt-4 border-t border-gray-200 dark:border-gray-700 space-y-4">
+                    <Button
+                      className="w-full inline-flex h-12 items-center justify-center rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-2 text-sm font-medium text-white shadow-lg transition-all duration-200 hover:from-blue-700 hover:to-blue-800 hover:shadow-xl group"
+                      asChild
+                    >
+                      <Link href="/kontakt" onClick={() => setIsMobileMenuOpen(false)}>
+                        Nezávazná konzultace
+                        <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                      </Link>
+                    </Button>
                   </div>
                 </div>
-
-                <nav className="flex flex-col gap-2">
-                  {navigationItems.map((item) => (
-                    <Link
-                      key={item.href}
-                      className={cn(
-                        "text-lg font-medium transition-all duration-200 hover:text-blue-600 dark:hover:text-blue-400 py-3 px-4 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 flex items-center justify-between group",
-                        isActivePath(item.href) &&
-                          "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 font-semibold",
-                      )}
-                      href={item.href}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      {item.label}
-                      <ArrowRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-all duration-200 group-hover:translate-x-1" />
-                    </Link>
-                  ))}
-
-                  <div className="border-t border-gray-200 pt-2 mt-2">
-                    <div className="text-sm font-semibold text-gray-500 px-4 py-2 uppercase tracking-wide">Služby</div>
-
-                    <Link
-                      className="text-lg font-medium transition-all duration-200 hover:text-blue-600 dark:hover:text-blue-400 py-3 px-4 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 flex items-center justify-between group"
-                      href="/sluzby/balicky"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      📦 Balíčky služeb
-                      <ArrowRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-all duration-200 group-hover:translate-x-1" />
-                    </Link>
-                  </div>
-
-                  <div className="border-t border-gray-200 pt-2 mt-2">
-                    <div className="text-sm font-semibold text-gray-500 px-4 py-2 uppercase tracking-wide">
-                      Partnerství
-                    </div>
-
-                    <Link
-                      className="text-lg font-medium transition-all duration-200 hover:text-blue-600 dark:hover:text-blue-400 py-3 px-4 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 flex items-center justify-between group"
-                      href="/sluzby/partnerstvi"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      <div className="flex items-center gap-2">
-                        <Handshake className="h-4 w-4" />
-                        Partnerské balíčky
-                      </div>
-                      <ArrowRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-all duration-200 group-hover:translate-x-1" />
-                    </Link>
-                  </div>
-
-                  <div className="border-t border-gray-200 pt-2 mt-2">
-                    <div className="text-sm font-semibold text-gray-500 px-4 py-2 uppercase tracking-wide">
-                      Rychlé odkazy na hlavní stránce
-                    </div>
-
-                    <button
-                      className="w-full text-left text-lg font-medium transition-all duration-200 hover:text-blue-600 dark:hover:text-blue-400 py-3 px-4 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 flex items-center justify-between group"
-                      onClick={() => {
-                        scrollToSection("partners-section")
-                        setIsMobileMenuOpen(false)
-                      }}
-                    >
-                      <div className="flex items-center gap-2">
-                        <Users className="h-4 w-4" />
-                        Naši partneři
-                      </div>
-                      <ArrowRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-all duration-200 group-hover:translate-x-1" />
-                    </button>
-
-                    <button
-                      className="w-full text-left text-lg font-medium transition-all duration-200 hover:text-blue-600 dark:hover:text-blue-400 py-3 px-4 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 flex items-center justify-between group"
-                      onClick={() => {
-                        scrollToSection("partners-packages-section")
-                        setIsMobileMenuOpen(false)
-                      }}
-                    >
-                      <div className="flex items-center gap-2">
-                        <Mail className="h-4 w-4" />
-                        Partnerské balíčky (sekce)
-                      </div>
-                      <ArrowRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-all duration-200 group-hover:translate-x-1" />
-                    </button>
-                  </div>
-                </nav>
-
-                <div className="pt-4 border-t border-gray-200 space-y-4">
-                  <Button
-                    className="w-full inline-flex h-12 items-center justify-center rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-2 text-sm font-medium text-white shadow-lg transition-all duration-200 hover:from-blue-700 hover:to-blue-800 hover:shadow-xl group"
-                    asChild
-                  >
-                    <Link href="/kontakt" onClick={() => setIsMobileMenuOpen(false)}>
-                      Nezávazná konzultace
-                      <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                    </Link>
-                  </Button>
-
-                  <div className="space-y-3 text-sm text-gray-600 dark:text-gray-400">
-                    <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-                      <Phone className="h-4 w-4 text-blue-600" />
-                      <a href="tel:+420777596216" className="hover:text-blue-600 transition-colors">
-                        +420 777 596 216
-                      </a>
-                    </div>
-                    <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-                      <Mail className="h-4 w-4 text-blue-600" />
-                      <a href="mailto:poptavka@webnamiru.site" className="hover:text-blue-600 transition-colors">
-                        poptavka@webnamiru.site
-                      </a>
-                    </div>
-                    <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-                      <Mail className="h-4 w-4 text-blue-600" />
-                      <a href="mailto:partnerstvi@webnamiru.site" className="hover:text-blue-600 transition-colors">
-                        partnerstvi@webnamiru.site
-                      </a>
-                    </div>
-                    <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-                      <Mail className="h-4 w-4 text-blue-600" />
-                      <a href="mailto:tech-podpora@webnamiru.site" className="hover:text-blue-600 transition-colors">
-                        tech-podpora@webnamiru.site
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </SheetContent>
-          </Sheet>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
       </header>
     </>

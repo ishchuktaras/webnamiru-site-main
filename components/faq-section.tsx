@@ -86,11 +86,11 @@ export default function FaqSection() {
   }, [searchQuery, faqs])
 
   // Funkce pro zvýraznění textu
-  const highlightText = (text: string, query: string) => {
-    if (!query.trim()) return text
+ const highlightText = (text: string, query: string) => {
+    if (!query.trim()) return text;
 
-    const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`, "gi")
-    const parts = text.split(regex)
+    const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`, "gi");
+    const parts = text.split(regex);
 
     return parts.map((part, index) =>
       regex.test(part) ? (
@@ -99,13 +99,13 @@ export default function FaqSection() {
         </mark>
       ) : (
         part
-      ),
-    )
-  }
+      )
+    );
+  };
 
   const clearSearch = () => {
-    setSearchQuery("")
-  }
+    setSearchQuery("");
+  };
 
   return (
     <section className="w-full py-12 md:py-24 lg:py-32 bg-white dark:bg-gray-900">

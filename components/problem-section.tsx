@@ -1,6 +1,15 @@
+"use client"
+
+import { useEffect, useState } from "react"
 import { TrendingDown, Users, Globe, CreditCard } from "lucide-react"
 
 export default function ProblemSection() {
+  const [isMounted, setIsMounted] = useState(false)
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+  
   const problems = [
     {
       icon: Globe,
@@ -37,7 +46,10 @@ export default function ProblemSection() {
   ]
 
   return (
-    <section className="w-full py-16 md:py-24 lg:py-32 bg-gray-50 dark:bg-gray-900" data-section="problem-section">
+    <section 
+      className={`w-full py-16 md:py-24 lg:py-32 bg-gray-50 dark:bg-gray-900 transition-opacity duration-1000 ${isMounted ? "mounted" : "opacity-0"}`} 
+      data-section="problem-section"
+    >
       <div className="container px-4 md:px-6">
         {/* Header */}
         <div className="text-center mb-16">
@@ -57,7 +69,9 @@ export default function ProblemSection() {
             return (
               <div
                 key={index}
-                className="bg-white dark:bg-gray-800 p-8 rounded-lg border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all duration-300"
+                data-animate-item
+                style={{ transitionDelay: `${index * 150}ms` }}
+                className="bg-white dark:bg-gray-800 p-8 rounded-xl border border-gray-200 dark:border-gray-700 shadow-custom-lg hover:shadow-custom-xl transition-all duration-300 hover:-translate-y-2"
               >
                 {/* Header */}
                 <div className="flex items-start justify-between mb-6">
@@ -81,7 +95,7 @@ export default function ProblemSection() {
         </div>
 
         {/* Economic Impact */}
-        <div className="mt-16 bg-white dark:bg-gray-800 rounded-lg p-8 border border-gray-200 dark:border-gray-700">
+        <div className="mt-16 bg-white dark:bg-gray-800 rounded-xl p-8 border border-gray-200 dark:border-gray-700 shadow-custom-lg">
           <div className="text-center">
             <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Ekonomický dopad</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

@@ -2,6 +2,8 @@ import type React from "react"
 import type { Metadata } from "next"
 import "./globals.css"
 import Header from "../components/header"
+import { ThemeProvider } from "@/components/theme-provider" // <-- Importuj ThemeProvider
+import { Toaster } from "@/components/ui/sonner"
 
 // 1. Importujte font Inter z Google Fonts.
 import { Inter } from "next/font/google"
@@ -31,10 +33,18 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="cs">
-      <body className={inter.className} suppressHydrationWarning={true}>
-        <Header />
-        {children}
+    <html lang="cs" suppressHydrationWarning>
+      <body className={inter.className}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Header />
+          {children}
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   )
