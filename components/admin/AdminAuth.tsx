@@ -56,11 +56,7 @@ export function AdminAuth({ onAuthenticated }: AdminAuthProps) {
               Přihlásit se
             </Button>
           </form>
-          <div className="mt-4 p-3 bg-muted rounded-lg">
-            <p className="text-xs text-muted-foreground">
-              <strong>Demo heslo:</strong> admin123
-            </p>
-          </div>
+          
         </CardContent>
       </Card>
     </div>
