@@ -1,10 +1,17 @@
 "use server"
 
 import { z } from "zod"
-// V reálné aplikaci byste zde importovali Resend nebo jinou emailovou službu
-// import { Resend } from 'resend';
-// Odkomentujte import Resend a přidejte inicializaci
 import { Resend } from "resend"
+
+// Zkontrolujeme, zda je API klíč dostupný v prostředí.
+if (!process.env.RESEND_API_KEY) {
+  console.error("Chybějící RESEND_API_KEY v environment variables.")
+  // Můžeme se rozhodnout, zda chceme, aby aplikace spadla při startu, nebo jen logovala chybu.
+  // V tomto případě jen logujeme, ale odesílání selže.
+}
+
+// Inicializace klienta Resend s API klíčem z environment variables.
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Definice schématu pro validaci formuláře pomocí Zod
 const contactFormSchema = z.object({
@@ -34,32 +41,46 @@ export async function submitContactForm(
       errors: validatedFields.error.flatten().fieldErrors,
     }
   }
+  
+  // Zkontrolujeme znovu existenci API klíče před pokusem o odeslání
+  if (!process.env.RESEND_API_KEY) {
+      return { message: "Chyba konfigurace serveru: Služba pro odesílání e-mailů není nastavena." }
+  }
+
 
   // Získání validovaných dat
   const { name, email, phone, message } = validatedFields.data
 
   try {
-    // Simulace odesílání e-mailu (v reálné aplikaci by zde byla integrace s Resend)
-    await new Promise((resolve) => setTimeout(resolve, 1500)) // Simulace síťové latence
-
-    console.log("Odesílání kontaktní zprávy:")
-    console.log(`Jméno: ${name}`)
-    console.log(`E-mail: ${email}`)
-    console.log(`Telefon: ${phone || "Nezadán"}`)
-    console.log(`Zpráva: ${message}`)
-
-    // Příklad použití Resend (odkomentujte a nakonfigurujte, pokud používáte)
-    const resend = new Resend(process.env.RESEND_API_KEY)
-    await resend.emails.send({
-      from: "onboarding@resend.dev", // Změňte na ověřenou doménu Resend
-      to: "poptavka@webnamiru.site", // Změňte na Váš e-mail, kam chcete dostávat poptávky
+    const { data, error } = await resend.emails.send({
+      // DŮLEŽITÉ: Nahraďte 'onboarding@resend.dev' e-mailem z vaší ověřené domény.
+      // Například 'poptavka@webnamiru.site'
+      from: "Web na míru <poptavka@webnamiru.site>", 
+      to: ["poptavka@webnamiru.site"], // Zde je váš e-mail, kam chcete dostávat poptávky
       subject: `Nová poptávka z webnamiru.site od ${name}`,
-      html: `<p>Jméno: ${name}</p><p>E-mail: ${email}</p><p>Telefon: ${phone || "Nezadán"}</p><p>Zpráva: ${message}</p>`,
-    })
+      replyTo: email, // Odpověď půjde přímo na email odesílatele
+      // Můžeme použít i textovou verzi nebo React komponentu pro hezčí e-mail
+      html: `
+        <p><strong>Nová poptávka z kontaktního formuláře:</strong></p>
+        <ul>
+          <li><strong>Jméno:</strong> ${name}</li>
+          <li><strong>E-mail:</strong> ${email}</li>
+          <li><strong>Telefon:</strong> ${phone || "Nezadán"}</li>
+        </ul>
+        <p><strong>Zpráva:</strong></p>
+        <p>${message}</p>
+      `,
+    });
 
+    if (error) {
+      console.error("Chyba při odesílání z Resend:", error);
+      return { message: "Nastala chyba při odesílání zprávy. Zkuste to prosím znovu." };
+    }
+
+    console.log("E-mail úspěšně odeslán:", data);
     return { message: "Vaše zpráva byla úspěšně odeslána! Brzy se Vám ozveme." }
   } catch (error) {
-    console.error("Chyba při odesílání zprávy:", error)
-    return { message: "Nastala chyba při odesílání zprávy. Zkuste to prosím znovu." }
+    console.error("Neočekávaná chyba při odesílání zprávy:", error)
+    return { message: "Nastala neočekávaná chyba serveru. Zkuste to prosím znovu." }
   }
 }

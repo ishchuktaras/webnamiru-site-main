@@ -1,8 +1,18 @@
+"use client"
+
+import { useEffect, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { GraduationCap, Heart, Target, Users, Lightbulb, Shield } from "lucide-react"
 
 export default function TestimonialsSection() {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => setIsMounted(true), 100);
+    return () => clearTimeout(timeout);
+  }, []);
+
   const values = [
     {
       icon: GraduationCap,
@@ -55,9 +65,15 @@ export default function TestimonialsSection() {
   ]
 
   return (
-    <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-50 dark:bg-gray-950" data-section="testimonials-section">
+    <section 
+      className={`w-full py-12 md:py-24 lg:py-32 bg-gray-50 dark:bg-gray-950 transition-opacity duration-1000 ${isMounted ? 'mounted' : 'opacity-0'}`} 
+      data-section="testimonials-section"
+    >
       <div className="container px-4 md:px-6">
-        <div className="flex flex-col items-center justify-center space-y-4 text-center">
+        <div 
+          className="flex flex-col items-center justify-center space-y-4 text-center"
+          data-animate-item
+        >
           <div className="space-y-2">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
               Proč si vybrat <span className="text-blue-600">Web na míru</span>?
@@ -73,36 +89,44 @@ export default function TestimonialsSection() {
           {values.map((value, index) => {
             const IconComponent = value.icon
             return (
-              <Card
+              <div 
                 key={index}
-                className="flex flex-col p-6 shadow-md hover:shadow-lg transition-all duration-300 dark:bg-gray-900 border-l-4 border-l-blue-500"
+                data-animate-item
+                style={{ transitionDelay: `${150 + index * 100}ms` }}
               >
-                <CardHeader className="pb-4">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className={`p-3 rounded-lg ${value.color.split(" ")[0]} ${value.color.split(" ")[1]}`}>
-                      <IconComponent className={`h-6 w-6 ${value.color.split(" ")[2]} ${value.color.split(" ")[3]}`} />
+                <Card
+                  className="flex flex-col h-full p-6 shadow-custom-md hover:shadow-custom-lg transition-all duration-300 dark:bg-gray-900 border-l-4 border-l-blue-500 hover:-translate-y-2"
+                >
+                  <CardHeader className="pb-4">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className={`p-3 rounded-lg ${value.color.split(" ")[0]} ${value.color.split(" ")[1]}`}>
+                        <IconComponent className={`h-6 w-6 ${value.color.split(" ")[2]} ${value.color.split(" ")[3]}`} />
+                      </div>
+                      <Badge variant="secondary" className="text-xs">
+                        {value.badge}
+                      </Badge>
                     </div>
-                    <Badge variant="secondary" className="text-xs">
-                      {value.badge}
-                    </Badge>
-                  </div>
-                  <CardTitle className="text-lg font-bold text-left">{value.title}</CardTitle>
-                </CardHeader>
-                <CardContent className="pt-0">
-                  <p className="text-gray-600 dark:text-gray-300 text-left leading-relaxed">{value.description}</p>
-                </CardContent>
-              </Card>
+                    <CardTitle className="text-lg font-bold text-left">{value.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <p className="text-gray-600 dark:text-gray-300 text-left leading-relaxed">{value.description}</p>
+                  </CardContent>
+                </Card>
+              </div>
             )
           })}
         </div>
 
-        {/* Personal commitment section */}
-        <div className="mt-16 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-lg p-8 border border-blue-200 dark:border-blue-800">
+        <div 
+          className="mt-16 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-lg p-8 border border-blue-200 dark:border-blue-800"
+          data-animate-item
+          style={{ transitionDelay: '900ms' }}
+        >
           <div className="text-center max-w-4xl mx-auto">
             <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Můj závazek vůči vám</h3>
             <p className="text-gray-700 dark:text-gray-300 text-lg leading-relaxed mb-6">
               Jako začínající podnikatel si uvědomuji, že každý projekt je pro mě příležitostí dokázat svou hodnotu.
-              Proto do každého webu vkládám maximum energie, kreativity a odborných znalostí. Vaš úspěch je můj úspěch.
+              Proto do každého webu vkládám maximum energie, kreativity a odborných znalostí. Váš úspěch je můj úspěch.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Badge variant="outline" className="px-4 py-2 text-sm">

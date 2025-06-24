@@ -1,7 +1,17 @@
+"use client"
+
+import { useEffect, useState } from "react"
 import { Factory, Utensils, Sprout, Globe } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 export default function ForWhomSection() {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => setIsMounted(true), 100);
+    return () => clearTimeout(timeout);
+  }, []);
+
   const segments = [
     {
       icon: Factory,
@@ -35,9 +45,15 @@ export default function ForWhomSection() {
   ]
 
   return (
-    <section className="w-full py-12 md:py-24 lg:py-32 bg-white dark:bg-gray-900">
+    <section 
+      className={`w-full py-12 md:py-24 lg:py-32 bg-white dark:bg-gray-900 transition-opacity duration-1000 ${isMounted ? "mounted" : "opacity-0"}`}
+      data-section="for-whom-section"
+    >
       <div className="container px-4 md:px-6">
-        <div className="flex flex-col items-center justify-center space-y-4 text-center">
+        <div 
+          className="flex flex-col items-center justify-center space-y-4 text-center"
+          data-animate-item
+        >
           <div className="space-y-2">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
               Řešení šité na míru <span className="text-blue-600">vašemu segmentu</span>
@@ -53,42 +69,50 @@ export default function ForWhomSection() {
           {segments.map((segment, index) => {
             const IconComponent = segment.icon
             return (
-              <Card
+              <div 
                 key={index}
-                className="flex flex-col text-center p-6 shadow-md hover:shadow-lg transition-all duration-300 dark:bg-gray-950 border-l-4 border-l-blue-600"
+                data-animate-item
+                style={{ transitionDelay: `${150 + index * 150}ms` }}
               >
-                <CardHeader className="pb-4">
-                  <div className="mx-auto p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg mb-4">
-                    <IconComponent className="h-8 w-8 text-blue-600 dark:text-blue-400" />
-                  </div>
-                  <CardTitle className="text-lg font-bold">{segment.title}</CardTitle>
-                  <div className="text-sm text-red-600 dark:text-red-400 font-medium">⚠️ {segment.problem}</div>
-                </CardHeader>
-                <CardContent className="flex-1 space-y-4">
-                  <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">{segment.solution}</p>
-                  <div className="space-y-2">
-                    <div className="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wide">
-                      Klíčové funkce:
+                <Card
+                  className="flex flex-col h-full text-center p-6 shadow-custom-md hover:shadow-custom-lg transition-all duration-300 dark:bg-gray-950 border-l-4 border-l-blue-600 hover:-translate-y-2"
+                >
+                  <CardHeader className="pb-4">
+                    <div className="mx-auto p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg mb-4">
+                      <IconComponent className="h-8 w-8 text-blue-600 dark:text-blue-400" />
                     </div>
-                    <div className="flex flex-wrap gap-1 justify-center">
-                      {segment.features.map((feature, featureIndex) => (
-                        <span
-                          key={featureIndex}
-                          className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs rounded-full"
-                        >
-                          {feature}
-                        </span>
-                      ))}
+                    <CardTitle className="text-lg font-bold">{segment.title}</CardTitle>
+                    <div className="text-sm text-red-600 dark:text-red-400 font-medium">⚠️ {segment.problem}</div>
+                  </CardHeader>
+                  <CardContent className="flex-1 flex flex-col justify-between space-y-4">
+                    <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">{segment.solution}</p>
+                    <div className="space-y-2 pt-4">
+                      <div className="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wide">
+                        Klíčové funkce:
+                      </div>
+                      <div className="flex flex-wrap gap-1 justify-center">
+                        {segment.features.map((feature, featureIndex) => (
+                          <span
+                            key={featureIndex}
+                            className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs rounded-full"
+                          >
+                            {feature}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              </div>
             )
           })}
         </div>
 
-        {/* Solution Summary */}
-        <div className="mt-16 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg p-8 border border-blue-200 dark:border-blue-800">
+        <div 
+          className="mt-16 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg p-8 border border-blue-200 dark:border-blue-800"
+          data-animate-item
+          style={{ transitionDelay: "750ms" }}
+        >
           <div className="text-center">
             <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
               Proč strategický přístup funguje
