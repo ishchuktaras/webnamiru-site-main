@@ -22,7 +22,7 @@ import TestimonialsSection from "@/components/testimonials-section";
 import ProcessSection from "@/components/process-section";
 import ServicePackagesSection from "@/components/service-packages-section";
 import FaqSection from "@/components/faq-section";
-import FinalCtaSection from "@/components/final-cta-section";
+
 import ContactInfoSection from "@/components/contact-info-section";
 import PartnersSection from "@/components/partners-section";
 import ContactForm from "@/components/ContactForm";
@@ -66,9 +66,7 @@ export default function Page() {
       <Suspense fallback={<div>Načítám sekci FAQ...</div>}>
         <FaqSection />
       </Suspense>
-      <Suspense fallback={<div>Načítám sekci CTA...</div>}>
-        <FinalCtaSection />
-      </Suspense>
+      
       <Suspense fallback={<div>Načítám sekci O mně...</div>}>
         <AboutMeContent />
       </Suspense>
