@@ -12,12 +12,18 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { MenuIcon, Phone, Mail, ArrowRight, Users, Handshake } from "lucide-react"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion" // <-- PŘIDANÝ IMPORT
+import { MenuIcon, Phone, Mail, ArrowRight, Users, Handshake, Package, Zap } from "lucide-react" // Přidal jsem ikony
 import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { useState, useEffect, useRef } from "react"
 import { cn } from "@/lib/utils"
-import { ThemeToggle } from "./theme-toggle" // Předpokládám, že soubor je v components/theme-toggle.tsx
+import { ThemeToggle } from "./theme-toggle"
 
 type HeaderProps = {}
 
@@ -68,9 +74,13 @@ export default function Header({}: HeaderProps): React.JSX.Element {
     { href: "/", label: "Domů" },
     { href: "/o-mne", label: "O mně" },
     { href: "/pripadove-studie", label: "Případové studie" },
-    { href: "/kontakt", label: "Kontakt" },
     { href: "/blog", label: "Blog" },
   ]
+
+  // === Struktura pro mobilní menu - pro přehlednost ===
+  const mobileLinkClasses = "text-lg font-medium transition-all duration-200 hover:text-blue-600 dark:hover:text-blue-400 py-3 px-4 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 flex items-center justify-between group";
+  const mobileActiveLinkClasses = "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 font-semibold";
+
 
   return (
     <>
@@ -128,7 +138,6 @@ export default function Header({}: HeaderProps): React.JSX.Element {
             </div>
           </Link>
 
-          {/* === ZMĚNA ZDE: Kompletní desktopová navigace obnovena === */}
           <NavigationMenu className="hidden lg:flex">
             <NavigationMenuList>
               {navigationItems.map((item) => (
@@ -175,7 +184,7 @@ export default function Header({}: HeaderProps): React.JSX.Element {
                       <Link href="/sluzby/balicky" legacyBehavior passHref>
                         <NavigationMenuLink className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-all duration-200 hover:bg-blue-50 hover:text-blue-700 focus:bg-blue-50 focus:text-blue-700 border border-transparent hover:border-blue-200">
                           <div className="text-sm font-medium leading-none flex items-center gap-2">
-                            📦 Balíčky služeb
+                            <Package className="h-4 w-4" /> Balíčky služeb
                           </div>
                           <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
                             START, RŮST, EXPANZE - vyberte si podle potřeb.
@@ -184,7 +193,9 @@ export default function Header({}: HeaderProps): React.JSX.Element {
                       </Link>
                       <Link href="/kontakt" legacyBehavior passHref>
                         <NavigationMenuLink className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-all duration-200 hover:bg-blue-50 hover:text-blue-700 focus:bg-blue-50 focus:text-blue-700 border border-transparent hover:border-blue-200">
-                          <div className="text-sm font-medium leading-none">⚡ Individuální řešení</div>
+                          <div className="text-sm font-medium leading-none flex items-center gap-2">
+                            <Zap className="h-4 w-4" /> Individuální řešení
+                          </div>
                           <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
                             Řešení na míru pro specifické projekty.
                           </p>
@@ -245,8 +256,8 @@ export default function Header({}: HeaderProps): React.JSX.Element {
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-[320px] sm:w-[400px] overflow-y-auto">
-                <div className="flex flex-col gap-6 py-6">
-                  <div className="flex items-center gap-3 pb-4 border-b border-gray-200 dark:border-gray-700">
+                <div className="flex flex-col gap-4 py-6">
+                  <div className="flex items-center gap-3 pb-4 border-b border-gray-200 dark:border-gray-700 px-4">
                     <Image
                       src="/images/logo/logo.svg"
                       width={60}
@@ -261,15 +272,11 @@ export default function Header({}: HeaderProps): React.JSX.Element {
                       <div className="text-sm text-gray-600 dark:text-gray-400">Strategické weby</div>
                     </div>
                   </div>
-                  <nav className="flex flex-col gap-2">
+                  <nav className="flex flex-col gap-1">
                     {navigationItems.map((item) => (
                       <Link
                         key={item.href}
-                        className={cn(
-                          "text-lg font-medium transition-all duration-200 hover:text-blue-600 dark:hover:text-blue-400 py-3 px-4 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 flex items-center justify-between group",
-                          isActivePath(item.href) &&
-                            "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 font-semibold",
-                        )}
+                        className={cn(mobileLinkClasses, isActivePath(item.href) && mobileActiveLinkClasses)}
                         href={item.href}
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
@@ -278,7 +285,46 @@ export default function Header({}: HeaderProps): React.JSX.Element {
                       </Link>
                     ))}
                   </nav>
-                  <div className="pt-4 border-t border-gray-200 dark:border-gray-700 space-y-4">
+
+                  {/* === ZMĚNA ZDE: Přidání rozbalovacího menu pro mobilní verzi === */}
+                  <div className="px-2">
+                    <Accordion type="single" collapsible className="w-full">
+                      <AccordionItem value="sluzby">
+                        <AccordionTrigger className={cn(mobileLinkClasses, "py-3")}>Služby</AccordionTrigger>
+                        <AccordionContent className="pb-1">
+                            <Link href="/sluzby/balicky" className="flex items-center gap-3 p-3 rounded-md hover:bg-blue-50 dark:hover:bg-blue-900/20" onClick={() => setIsMobileMenuOpen(false)}>
+                                <Package className="h-5 w-5 text-blue-600" />
+                                <div className="flex flex-col">
+                                    <span className="font-medium">Balíčky služeb</span>
+                                    <span className="text-sm text-muted-foreground">START, RŮST, EXPANZE</span>
+                                </div>
+                            </Link>
+                            <Link href="/kontakt" className="flex items-center gap-3 p-3 rounded-md hover:bg-blue-50 dark:hover:bg-blue-900/20" onClick={() => setIsMobileMenuOpen(false)}>
+                                <Zap className="h-5 w-5 text-blue-600" />
+                                <div className="flex flex-col">
+                                    <span className="font-medium">Individuální řešení</span>
+                                    <span className="text-sm text-muted-foreground">Pro specifické projekty</span>
+                                </div>
+                            </Link>
+                        </AccordionContent>
+                      </AccordionItem>
+                      <AccordionItem value="partnerstvi">
+                        <AccordionTrigger className={cn(mobileLinkClasses, "py-3")}>Partnerství</AccordionTrigger>
+                        <AccordionContent className="pb-1">
+                           <Link href="/sluzby/partnerstvi" className="flex items-center gap-3 p-3 rounded-md hover:bg-blue-50 dark:hover:bg-blue-900/20" onClick={() => setIsMobileMenuOpen(false)}>
+                                <Handshake className="h-5 w-5 text-blue-600" />
+                                <div className="flex flex-col">
+                                    <span className="font-medium">Partnerské balíčky</span>
+                                    <span className="text-sm text-muted-foreground">Pro kreativce</span>
+                                </div>
+                            </Link>
+                        </AccordionContent>
+                      </AccordionItem>
+                    </Accordion>
+                  </div>
+                  {/* === KONEC ZMĚNY === */}
+
+                  <div className="pt-4 border-t border-gray-200 dark:border-gray-700 space-y-4 px-4">
                     <Button
                       className="w-full inline-flex h-12 items-center justify-center rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-2 text-sm font-medium text-white shadow-lg transition-all duration-200 hover:from-blue-700 hover:to-blue-800 hover:shadow-xl group"
                       asChild
