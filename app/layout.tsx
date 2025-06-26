@@ -16,7 +16,7 @@ const inter = Inter({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "webnamiru.site - Strategické weby, které vydělávají | Vysočina",
   description:
-    "Tvořím weby, které nejsou jen vizitkou, ale funkčním obchodním nástrojem. Váš web od ekonoma na Vysočině.",
+    "Tvořím weby, které nejsou jen vizitkou, ale funkčním obchodním nástrojem.",
   generator: "v0.dev",
   keywords: "tvorba webů, webové stránky, Vysočina, web na míru, ekonom, strategické weby",
   authors: [{ name: "webnamiru.site" }],
