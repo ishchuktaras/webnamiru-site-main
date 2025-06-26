@@ -1,8 +1,15 @@
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { ArrowRight, Camera, TrendingUp, Users, Instagram, MapPin } from "lucide-react"
-import Link from "next/link"
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  ArrowRight,
+  Camera,
+  TrendingUp,
+  Users,
+  Instagram,
+  MapPin,
+} from "lucide-react";
+import Link from "next/link";
 
 export default function CaseStudiesSection() {
   const caseStudies = [
@@ -16,8 +23,14 @@ export default function CaseStudiesSection() {
         "Mladá talentovaná fotografka potřebovala profesionální web portfolio pro prezentaci své práce a získání nových klientů.",
       solution:
         "Vytvořil jsem moderní, responzivní portfolio web s galerií, kontaktním formulářem a integrací se sociálními sítěmi. Design zdůrazňuje její fotografickou práci.",
-      result: "+60% nových klientů během 4 měsíců a profesionální online prezence.",
-      technologies: ["Next.js", "Tailwind CSS", "Lightbox Gallery", "Contact Forms"],
+      result:
+        "+60% nových klientů během 4 měsíců a profesionální online prezence.",
+      technologies: [
+        "Next.js",
+        "Tailwind CSS",
+        "Lightbox Gallery",
+        "Contact Forms",
+      ],
       metrics: [
         { label: "Nárůst klientů", value: "+60%" },
         { label: "Doba načítání", value: "< 2s" },
@@ -32,11 +45,18 @@ export default function CaseStudiesSection() {
       subtitle: "Ubytování v Telči",
       category: "Tourism",
       location: "Telč",
-      challenge: "Nízká obsazenost mimo sezónu a nedostatečná online viditelnost v konkurenčním prostředí.",
+      challenge:
+        "Nízká obsazenost mimo sezónu a nedostatečná online viditelnost v konkurenčním prostředí.",
       solution:
         "Optimalizoval jsem web pro lokální SEO, integroval moderní rezervační systém a spustil cílené marketingové kampaně.",
-      result: "+25% obsazenosti v mimosezónních měsících a nárůst přímých rezervací.",
-      technologies: ["WordPress", "Booking System", "SEO Optimization", "Google Analytics"],
+      result:
+        "+25% obsazenosti v mimosezónních měsících a nárůst přímých rezervací.",
+      technologies: [
+        "WordPress",
+        "Booking System",
+        "SEO Optimization",
+        "Google Analytics",
+      ],
       metrics: [
         { label: "Obsazenost", value: "+25%" },
         { label: "Přímé rezervace", value: "+40%" },
@@ -51,11 +71,18 @@ export default function CaseStudiesSection() {
       subtitle: "Ekologická farma",
       category: "E-commerce",
       location: "Třebíč",
-      challenge: "Chyběla online platforma pro prodej lokálních produktů a vyprávění příběhu farmy.",
+      challenge:
+        "Chyběla online platforma pro prodej lokálních produktů a vyprávění příběhu farmy.",
       solution:
         "Vytvořil jsem e-shop s jednoduchou správou produktů, integroval platební bránu a navrhl vizuální identitu zdůrazňující autentičnost.",
-      result: "Spuštění online prodeje s průměrným měsíčním obratem 30 000 Kč během prvních 3 měsíců.",
-      technologies: ["Shopify", "Payment Gateway", "Inventory Management", "Brand Design"],
+      result:
+        "Spuštění online prodeje s průměrným měsíčním obratem 30 000 Kč během prvních 3 měsíců.",
+      technologies: [
+        "Shopify",
+        "Payment Gateway",
+        "Inventory Management",
+        "Brand Design",
+      ],
       metrics: [
         { label: "Měsíční obrat", value: "30k Kč" },
         { label: "Konverzní poměr", value: "3.2%" },
@@ -65,14 +92,17 @@ export default function CaseStudiesSection() {
       icon: Users,
       color: "from-green-500 to-emerald-600",
     },
-  ]
+  ];
 
   return (
     <section className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-br from-gray-50 via-white to-blue-50 dark:from-gray-950 dark:via-gray-900 dark:to-blue-950">
       <div className="container px-4 md:px-6">
         {/* Hero Section */}
         <div className="flex flex-col items-center justify-center space-y-4 text-center mb-16">
-          <Badge variant="outline" className="px-4 py-2 text-sm font-medium bg-blue-50 text-blue-700 border-blue-200">
+          <Badge
+            variant="outline"
+            className="px-4 py-2 text-sm font-medium bg-blue-50 text-blue-700 border-blue-200"
+          >
             Úspěšné projekty
           </Badge>
           <div className="space-y-4">
@@ -80,24 +110,36 @@ export default function CaseStudiesSection() {
               Místo prázdných slov, měřitelné výsledky
             </h2>
             <p className="max-w-[900px] text-gray-600 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-300">
-              Podívejte se na konkrétní příklady, jak mé strategické weby pomohly klientům na Vysočině dosáhnout jejich
-              obchodních cílů.
+              Podívejte se na konkrétní příklady, jak mé strategické weby
+              pomohly klientům na Vysočině dosáhnout jejich obchodních cílů.
             </p>
           </div>
 
           {/* Success Stats */}
           <div className="grid grid-cols-3 gap-8 mt-12 p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700">
             <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">3+</div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Úspěšných projektů</div>
+              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                3+
+              </div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">
+                Úspěšných projektů
+              </div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-green-600 dark:text-green-400">98%</div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Spokojených klientů</div>
+              <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+                98%
+              </div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">
+                Spokojených klientů
+              </div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">3x</div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Průměrný nárůst</div>
+              <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">
+                3x
+              </div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">
+                Průměrný nárůst
+              </div>
             </div>
           </div>
         </div>
@@ -105,7 +147,7 @@ export default function CaseStudiesSection() {
         {/* Case Studies Grid */}
         <div className="mx-auto grid max-w-7xl items-start gap-8 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
           {caseStudies.map((study, index) => {
-            const IconComponent = study.icon
+            const IconComponent = study.icon;
             return (
               <Card
                 key={index}
@@ -126,7 +168,9 @@ export default function CaseStudiesSection() {
                       <CardTitle className="text-xl font-bold text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                         {study.client}
                       </CardTitle>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{study.subtitle}</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                        {study.subtitle}
+                      </p>
 
                       {/* Location and Social */}
                       <div className="flex items-center gap-4 mt-2 text-xs text-gray-500 dark:text-gray-400">
@@ -153,7 +197,9 @@ export default function CaseStudiesSection() {
                     <h4 className="font-semibold text-red-600 dark:text-red-400 mb-2 flex items-center gap-2">
                       🎯 Výzva
                     </h4>
-                    <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">{study.challenge}</p>
+                    <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                      {study.challenge}
+                    </p>
                   </div>
 
                   {/* Solution */}
@@ -161,7 +207,9 @@ export default function CaseStudiesSection() {
                     <h4 className="font-semibold text-blue-600 dark:text-blue-400 mb-2 flex items-center gap-2">
                       💡 Řešení
                     </h4>
-                    <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">{study.solution}</p>
+                    <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                      {study.solution}
+                    </p>
                   </div>
 
                   {/* Technologies */}
@@ -171,7 +219,11 @@ export default function CaseStudiesSection() {
                     </h4>
                     <div className="flex flex-wrap gap-1">
                       {study.technologies.map((tech, techIndex) => (
-                        <Badge key={techIndex} variant="outline" className="text-xs px-2 py-1">
+                        <Badge
+                          key={techIndex}
+                          variant="outline"
+                          className="text-xs px-2 py-1"
+                        >
                           {tech}
                         </Badge>
                       ))}
@@ -189,8 +241,12 @@ export default function CaseStudiesSection() {
                           key={metricIndex}
                           className="flex justify-between items-center p-2 bg-gray-50 dark:bg-gray-800 rounded-lg"
                         >
-                          <span className="text-xs text-gray-600 dark:text-gray-400">{metric.label}</span>
-                          <span className="text-sm font-bold text-green-600 dark:text-green-400">{metric.value}</span>
+                          <span className="text-xs text-gray-600 dark:text-gray-400">
+                            {metric.label}
+                          </span>
+                          <span className="text-sm font-bold text-green-600 dark:text-green-400">
+                            {metric.value}
+                          </span>
                         </div>
                       ))}
                     </div>
@@ -198,7 +254,9 @@ export default function CaseStudiesSection() {
 
                   {/* Main Result */}
                   <div className="p-4 bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 rounded-xl border border-green-200 dark:border-green-800">
-                    <p className="text-sm font-semibold text-green-800 dark:text-green-300">🎉 {study.result}</p>
+                    <p className="text-sm font-semibold text-green-800 dark:text-green-300">
+                      🎉 {study.result}
+                    </p>
                   </div>
 
                   {/* CTA Button */}
@@ -213,7 +271,7 @@ export default function CaseStudiesSection() {
                   </Button>
                 </CardContent>
               </Card>
-            )
+            );
           })}
         </div>
 
@@ -224,18 +282,22 @@ export default function CaseStudiesSection() {
               Chcete podobné výsledky pro svůj projekt?
             </h3>
             <p className="text-gray-600 dark:text-gray-400 max-w-md">
-              Pojďme společně vytvořit web, který skutečně funguje pro váš byznys.
+              Pojďme společně vytvořit web, který skutečně funguje pro váš
+              byznys.
             </p>
             <Button
               size="lg"
               className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3"
             >
-              Nezávazná konzultace
-              <ArrowRight className="ml-2 h-5 w-5" />
+              <Link href="/kontakt">
+                {" "}
+                Nezávazná konzultace
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
             </Button>
           </div>
         </div>
       </div>
     </section>
-  )
+  );
 }
