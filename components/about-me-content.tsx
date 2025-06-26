@@ -24,7 +24,7 @@ const certificates = [
     title: "Příloha k diplomu",
     type: "Vysokoškolský diplom",
     image: "/images/certificates/statni-sluzba-priloha.png",
-    description: "Detaily studia a hodnocení",
+    description: "Detaily studia a specializace",
   },
   {
     id: 3,
