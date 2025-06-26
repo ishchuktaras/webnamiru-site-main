@@ -1,5 +1,3 @@
-// /components/PartnershipForm.tsx (profesionální verze)
-
 "use client"
 
 import { useState } from "react"
@@ -15,13 +13,13 @@ import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Handshake, User, Mail, Phone, Link as LinkIcon, Loader2 } from "lucide-react"
+import { Handshake, Loader2 } from "lucide-react"
 
 // 1. Definice schématu pro validaci pomocí Zod
 const partnershipSchema = z.object({
   package: z.string().min(1, { message: "Prosím, vyberte typ partnerství." }),
   name: z.string().min(2, { message: "Jméno nebo název firmy musí mít alespoň 2 znaky." }),
-  portfolio: z.string().url({ message: "Zadejte prosím platnou URL adresu." }),
+  portfolio: z.string().url({ message: "Zadejte prosím platnou URL adresu (včetně https://)." }),
   email: z.string().email({ message: "Zadejte prosím platnou e-mailovou adresu." }),
   phone: z.string().min(9, { message: "Telefonní číslo musí mít alespoň 9 číslic." }),
   reason: z.string().min(20, { message: "Popište prosím vaši motivaci alespoň 20 znaky." }),
@@ -35,7 +33,7 @@ interface PartnershipFormProps {
 export default function PartnershipForm({ selectedPackage }: PartnershipFormProps) {
   const [isLoading, setIsLoading] = useState(false);
 
-  // 2. Inicializace formuláře pomocí React Hook Form
+  // 2. Inicializace formuláře
   const form = useForm<z.infer<typeof partnershipSchema>>({
     resolver: zodResolver(partnershipSchema),
     defaultValues: {
@@ -49,22 +47,39 @@ export default function PartnershipForm({ selectedPackage }: PartnershipFormProp
     },
   });
 
-  // 3. Funkce pro odeslání dat
+  // 3. Funkce pro odeslání dat (volá stejnou API route)
   async function onSubmit(values: z.infer<typeof partnershipSchema>) {
     setIsLoading(true);
-    console.log("Odesílám validní data partnerství:", values);
     
-    // Simulace odesílání na server
-    await new Promise(resolve => setTimeout(resolve, 1500)); 
+    try {
+      const response = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(values),
+      });
 
-    setIsLoading(false);
-    toast.success("Váš zájem o partnerství byl úspěšně zaznamenán!", {
-      description: "Děkuji! Brzy se vám ozvu s dalšími informacemi.",
-    });
-    form.reset();
+      if (!response.ok) {
+        throw new Error('Něco se pokazilo při odesílání.');
+      }
+
+      toast.success("Váš zájem o partnerství byl úspěšně zaznamenán!", {
+        description: "Děkuji! Brzy se vám ozvu s dalšími informacemi.",
+      });
+      form.reset();
+
+    } catch (error) {
+      console.error(error);
+      toast.error("Chyba!", {
+        description: "E-mail se nepodařilo odeslat. Zkuste to prosím později.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   }
 
-  // 4. Nová, čistší struktura JSX
+  // 4. Vylepšená struktura JSX
   return (
     <>
       <Toaster richColors position="top-center" />
@@ -82,17 +97,11 @@ export default function PartnershipForm({ selectedPackage }: PartnershipFormProp
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <CardContent className="space-y-6 p-4 md:p-6">
-              {/* Typ partnerství */}
-              <FormField
-                control={form.control}
-                name="package"
-                render={({ field }) => (
+              <FormField control={form.control} name="package" render={({ field }) => (
                   <FormItem>
                     <FormLabel>Typ partnerství</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger><SelectValue placeholder="Vyberte typ spolupráce..." /></SelectTrigger>
-                      </FormControl>
+                      <FormControl><SelectTrigger><SelectValue placeholder="Vyberte typ spolupráce..." /></SelectTrigger></FormControl>
                       <SelectContent>
                         <SelectItem value="KREATIVNÍ PARTNER">Kreativní partner</SelectItem>
                         <SelectItem value="MARKETING EXPERT">Marketing expert</SelectItem>
@@ -101,55 +110,30 @@ export default function PartnershipForm({ selectedPackage }: PartnershipFormProp
                     </Select>
                     <FormMessage />
                   </FormItem>
-                )}
-              />
+              )} />
               
-              {/* Jméno a Portfolio */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormField control={form.control} name="name" render={({ field }) => (
-                      <FormItem>
-                          <FormLabel>Jméno a příjmení / Firma</FormLabel>
-                          <FormControl><Input placeholder="Jan Novák / Agency s.r.o." {...field} /></FormControl>
-                          <FormMessage />
-                      </FormItem>
+                      <FormItem><FormLabel>Jméno a příjmení / Firma</FormLabel><FormControl><Input placeholder="Jan Novák / Agency s.r.o." {...field} /></FormControl><FormMessage /></FormItem>
                   )} />
                   <FormField control={form.control} name="portfolio" render={({ field }) => (
-                      <FormItem>
-                          <FormLabel>Odkaz na portfolio / web</FormLabel>
-                          <FormControl><Input placeholder="https://mojeprace.cz" {...field} /></FormControl>
-                          <FormMessage />
-                      </FormItem>
+                      <FormItem><FormLabel>Odkaz na portfolio / web</FormLabel><FormControl><Input placeholder="https://mojeprace.cz" {...field} /></FormControl><FormMessage /></FormItem>
                   )} />
               </div>
 
-              {/* Email a Telefon */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormField control={form.control} name="email" render={({ field }) => (
-                      <FormItem>
-                          <FormLabel>E-mail</FormLabel>
-                          <FormControl><Input type="email" placeholder="partner@email.cz" {...field} /></FormControl>
-                          <FormMessage />
-                      </FormItem>
+                      <FormItem><FormLabel>E-mail</FormLabel><FormControl><Input type="email" placeholder="partner@email.cz" {...field} /></FormControl><FormMessage /></FormItem>
                   )} />
                   <FormField control={form.control} name="phone" render={({ field }) => (
-                      <FormItem>
-                          <FormLabel>Telefon</FormLabel>
-                          <FormControl><Input type="tel" placeholder="+420 123 456 789" {...field} /></FormControl>
-                          <FormMessage />
-                      </FormItem>
+                      <FormItem><FormLabel>Telefon</FormLabel><FormControl><Input type="tel" placeholder="+420 123 456 789" {...field} /></FormControl><FormMessage /></FormItem>
                   )} />
               </div>
               
-              {/* Důvod zájmu */}
               <FormField control={form.control} name="reason" render={({ field }) => (
-                  <FormItem>
-                      <FormLabel>Proč máte zájem o spolupráci?</FormLabel>
-                      <FormControl><Textarea placeholder="Hledám spolehlivého partnera pro vývoj webů..." className="min-h-[120px]" {...field} /></FormControl>
-                      <FormMessage />
-                  </FormItem>
+                  <FormItem><FormLabel>Proč máte zájem o spolupráci?</FormLabel><FormControl><Textarea placeholder="Hledám spolehlivého partnera pro vývoj webů..." className="min-h-[120px]" {...field} /></FormControl><FormMessage /></FormItem>
               )} />
               
-              {/* Souhlas */}
               <FormField control={form.control} name="agreement" render={({ field }) => (
                   <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow-sm">
                        <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
@@ -163,12 +147,7 @@ export default function PartnershipForm({ selectedPackage }: PartnershipFormProp
             
             <CardFooter>
               <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Odesílám...
-                  </>
-                ) : "Navázat spolupráci"}
+                {isLoading ? (<><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Odesílám...</>) : "Navázat spolupráci"}
               </Button>
             </CardFooter>
           </form>
