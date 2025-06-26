@@ -153,16 +153,15 @@ export default function ServicePackagesSection() {
                 </CardContent>
 
                 <div className="mt-auto pt-6">
-                  {/* Zde je oprava: Obalení Button komponentou Link s asChild */}
                   <Button
                     className={`w-full inline-flex h-12 items-center justify-center rounded-md px-8 text-sm font-medium shadow transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50 ${
                       pkg.popular
                         ? "bg-blue-600 text-white hover:bg-blue-700 focus-visible:ring-blue-950 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus-visible:ring-blue-300"
                         : "bg-black text-white hover:bg-gray-800 focus-visible:ring-gray-950 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-200 dark:focus-visible:ring-gray-300"
                     }`}
-                    asChild // Důležité: předá props z Button na Link
-                  >
-                    <Link href="/kontakt?type=service">
+                    asChild                   >
+                    
+                    <Link href={`/kontakt?type=service&package=${pkg.name}`}>
                       {pkg.price === "Individuální" ? "Získat nabídku" : "Zjistit více"}
                     </Link>
                   </Button>

@@ -25,7 +25,6 @@ import FaqSection from "@/components/faq-section";
 
 import ContactInfoSection from "@/components/contact-info-section";
 import PartnersSection from "@/components/partners-section";
-import ContactForm from "@/components/ContactForm";
 import { Suspense } from "react";
 import PartnersPackagesSection from "@/components/partners-packages-section";
 import CaseStudiesSection from "@/components/case-studies-section";
@@ -85,11 +84,7 @@ export default function Page() {
               obchodní růst.
             </SheetDescription>
           </SheetHeader>
-          <div className="py-4">
-            <Suspense fallback={<div>Načítám kontaktní formulář...</div>}>
-              <ContactForm />
-            </Suspense>
-          </div>
+          
           <SheetFooter>
             {/* You can add additional actions or information here if needed */}
           </SheetFooter>

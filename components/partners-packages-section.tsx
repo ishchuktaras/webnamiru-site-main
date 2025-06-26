@@ -168,7 +168,8 @@ export default function PartnersPackagesSection() {
                       }`}
                       asChild
                     >
-                      <Link href="/kontakt?type=partnership">
+                      
+                      <Link href={`/kontakt?type=partnership&package=${pkg.name}`}>
                         {pkg.commission === "Individuální" ? "Domluvit spolupráci" : "Začít spolupráci"}
                       </Link>
                     </Button>

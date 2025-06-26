@@ -1,19 +1,37 @@
-import FaqSection from "@/components/faq-section"
-import ContactForm from "@/components/ContactForm"
-import type { Metadata } from "next"
+// /app/kontakt/page.tsx
+"use client"
 
-export const metadata: Metadata = {
-  title: "Kontakt - Web na míru",
-  description: "Máte dotaz nebo chcete nezávaznou konzultaci? Vyplňte kontaktní formulář a ozveme se vám.",
+import React, { Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
+import ServiceForm from '@/components/ServiceForm'; 
+import PartnershipForm from '@/components/PartnershipForm';
+
+// Komponenta, která se stará o logiku zobrazení správného formuláře
+function ContactForm() {
+  const searchParams = useSearchParams();
+  const formType = searchParams.get('type'); // Získáme 'type' (service nebo partnership)
+  const selectedPackage = searchParams.get('package'); // Získáme název balíčku, např. 'RŮST'
+
+  return (
+    <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-50 dark:bg-gray-900">
+      <div className="container px-4 md:px-6">
+        {/* Podmíněně zobrazíme jeden z formulářů */}
+        {formType === 'partnership' ? (
+          <PartnershipForm selectedPackage={selectedPackage} />
+        ) : (
+          <ServiceForm selectedPackage={selectedPackage} />
+        )}
+      </div>
+    </section>
+  );
 }
 
+// Hlavní exportovaná stránka
 export default function KontaktPage() {
   return (
-    <main className="flex min-h-[calc(100vh-64px)] flex-col items-center justify-center py-12 md:py-24 lg:py-32">
-      
+    // Suspense je zde pro správné fungování useSearchParams
+    <Suspense fallback={<div className="flex justify-center items-center h-screen">Načítání formuláře...</div>}>
       <ContactForm />
-      {/* Přidání sekce FAQ pod kontaktní formulář */}
-      <FaqSection />
-    </main>
-  )
+    </Suspense>
+  );
 }
