@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Facebook, Instagram, ArrowLeft } from "lucide-react"
+import { ArrowLeft } from "lucide-react" // Odstraněn Facebook, Instagram
 
 export default function ComingSoonPage() {
   return (
@@ -10,36 +10,9 @@ export default function ComingSoonPage() {
         <p className="text-lg text-gray-700 dark:text-gray-300">
           Tento projekt je ve stavu dokončování a brzy bude k dispozici s plnými detaily. Děkujeme za vaši trpělivost!
         </p>
-        <p className="text-md text-gray-600 dark:text-gray-400">
-          Mezitím nás sledujte na sociálních sítích, abyste nezmeškali novinky a další zajímavé projekty:
-        </p>
-        <div className="flex justify-center gap-4">
-          <Link
-            href="https://www.facebook.com/profile.php?id=61577408540223"
-            target="_blank"
-            rel="noopener noreferrer"
-            passHref
-          >
-            <Button
-              variant="outline"
-              size="lg"
-              className="flex items-center gap-2 text-blue-600 border-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:border-blue-400 dark:hover:bg-blue-900/20"
-            >
-              <Facebook className="h-5 w-5" />
-              Facebook
-            </Button>
-          </Link>
-          <Link href="https://www.instagram.com/webnamiru/" target="_blank" rel="noopener noreferrer" passHref>
-            <Button
-              variant="outline"
-              size="lg"
-              className="flex items-center gap-2 text-purple-600 border-purple-600 hover:bg-purple-50 dark:text-purple-400 dark:border-purple-400 dark:hover:bg-purple-900/20"
-            >
-              <Instagram className="h-5 w-5" />
-              Instagram
-            </Button>
-          </Link>
-        </div>
+        
+        {/* Odstraněna sekce s výzvou a tlačítky pro sociální sítě */}
+
         <Link href="/pripadove-studie" passHref>
           <Button
             variant="ghost"

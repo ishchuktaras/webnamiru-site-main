@@ -1,14 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import {
-  Facebook,
-  Instagram,
-  Linkedin,
-  Mail,
-  Phone,
-  MapPin,
-  ArrowRight,
-} from "lucide-react";
+import { Mail, Phone, MapPin, ArrowRight } from "lucide-react"; // Odstraněn Facebook, Instagram
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 
@@ -49,24 +41,7 @@ export default function Footer() {
             <MapPin className="h-4 w-4" />
             <span>🎯 Specializace na Kraj Vysočina</span>
           </div>
-          <div className="flex space-x-4 mt-auto pt-4">
-            <a
-              aria-label="Facebook"
-              className="text-gray-400 hover:text-white transition-colors"
-              href="https://www.facebook.com/profile.php?id=61577297867091"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Facebook className="h-5 w-5" />
-            </a>
-            {/* <a
-              aria-label="Instagram"
-              className="text-gray-400 hover:text-white transition-colors"
-              href="#"
-            >
-              <Instagram className="h-5 w-5" />
-            </a> */}
-          </div>
+          {/* Odstraněná sekce se sociálními sítěmi */}
         </div>
 
         {/* Sekce Rychlé odkazy */}
