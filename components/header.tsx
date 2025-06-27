@@ -17,8 +17,8 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion"
-import { MenuIcon, Phone, Mail, ArrowRight, Handshake, Package, Zap } from "lucide-react"
+} from "@/components/ui/accordion" // <-- PŘIDANÝ IMPORT
+import { MenuIcon, Phone, Mail, ArrowRight, Users, Handshake, Package, Zap } from "lucide-react" // Přidal jsem ikony
 import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { useState, useEffect, useRef } from "react"
@@ -49,20 +49,36 @@ export default function Header({}: HeaderProps): React.JSX.Element {
     return false
   }
 
-  // === ZMĚNA ZDE: Rozdělení navigačních položek pro snazší vložení dropdownů ===
-  const navItemsPart1 = [
+  const scrollToSection = (sectionId: string) => {
+    if (pathname === "/") {
+      const element = document.querySelector(`[data-section="${sectionId}"]`)
+      if (element) {
+        const headerHeight = headerRef.current?.offsetHeight || 0
+        const topBarHeight = 40
+        const totalHeaderHeight = headerHeight + (window.innerWidth >= 1024 ? topBarHeight : 0)
+        const extraPadding = 20
+        const totalOffset = totalHeaderHeight + extraPadding
+        const elementPosition = element.getBoundingClientRect().top
+        const offsetPosition = elementPosition + window.pageYOffset - totalOffset
+        window.scrollTo({
+          top: Math.max(0, offsetPosition),
+          behavior: "smooth",
+        })
+      }
+    } else {
+      window.location.href = `/#${sectionId}`
+    }
+  }
+
+  const navigationItems = [
     { href: "/", label: "Domů" },
     { href: "/o-mne", label: "O mně" },
     { href: "/pripadove-studie", label: "Případové studie" },
-  ];
-  
-  const navItemsPart2 = [
     { href: "/blog", label: "Blog" },
     { href: "/kontakt", label: "Kontakt" },
-  ];
-  // === KONEC ZMĚNY ===
+  ]
 
-
+  // === Struktura pro mobilní menu - pro přehlednost ===
   const mobileLinkClasses = "text-lg font-medium transition-all duration-200 hover:text-blue-600 dark:hover:text-blue-400 py-3 px-4 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 flex items-center justify-between group";
   const mobileActiveLinkClasses = "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 font-semibold";
 
@@ -104,7 +120,7 @@ export default function Header({}: HeaderProps): React.JSX.Element {
             href="/"
             aria-label="webnamíru.site - Domovská stránka"
           >
-             <div className="relative w-[50px] h-[50px]">
+            <div className="relative w-[50px] h-[50px]">
               <Image
                 src="/images/logo/logo.svg"
                 alt="webnamíru.site - Logo"
@@ -122,12 +138,10 @@ export default function Header({}: HeaderProps): React.JSX.Element {
               </span>
             </div>
           </Link>
-          
-          {/* === ZMĚNA ZDE: Úprava vykreslování DESKTOPOVÉ navigace === */}
+
           <NavigationMenu className="hidden lg:flex">
             <NavigationMenuList>
-              {/* Vykreslení první části odkazů */}
-              {navItemsPart1.map((item) => (
+              {navigationItems.map((item) => (
                 <NavigationMenuItem key={item.href}>
                   <Link href={item.href} legacyBehavior passHref>
                     <NavigationMenuLink
@@ -144,7 +158,6 @@ export default function Header({}: HeaderProps): React.JSX.Element {
                 </NavigationMenuItem>
               ))}
 
-              {/* Vložení dropdownu "Služby" */}
               <NavigationMenuItem>
                 <NavigationMenuTrigger className="transition-all duration-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-700 dark:hover:text-blue-300">
                   Služby
@@ -194,7 +207,6 @@ export default function Header({}: HeaderProps): React.JSX.Element {
                 </NavigationMenuContent>
               </NavigationMenuItem>
 
-              {/* Vložení dropdownu "Partnerství" */}
               <NavigationMenuItem>
                 <NavigationMenuTrigger className="transition-all duration-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-700 dark:hover:text-blue-300">
                   Partnerství
@@ -215,28 +227,9 @@ export default function Header({}: HeaderProps): React.JSX.Element {
                   </div>
                 </NavigationMenuContent>
               </NavigationMenuItem>
-
-              {/* Vykreslení druhé části odkazů */}
-              {navItemsPart2.map((item) => (
-                <NavigationMenuItem key={item.href}>
-                  <Link href={item.href} legacyBehavior passHref>
-                    <NavigationMenuLink
-                      className={cn(
-                        navigationMenuTriggerStyle(),
-                        "transition-all duration-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-700 dark:hover:text-blue-300 relative",
-                        isActivePath(item.href) &&
-                          "bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 font-semibold after:absolute after:bottom-0 after:left-1/2 after:transform after:-translate-x-1/2 after:w-1/2 after:h-0.5 after:bg-blue-600 after:rounded-full",
-                      )}
-                    >
-                      {item.label}
-                    </NavigationMenuLink>
-                  </Link>
-                </NavigationMenuItem>
-              ))}
+              
             </NavigationMenuList>
           </NavigationMenu>
-          {/* === KONEC ZMĚNY DESKTOPOVÉ NAVIGACE === */}
-
 
           <div className="hidden lg:flex items-center gap-4">
             <ThemeToggle />
@@ -281,11 +274,8 @@ export default function Header({}: HeaderProps): React.JSX.Element {
                       <div className="text-sm text-gray-600 dark:text-gray-400">Strategické weby</div>
                     </div>
                   </div>
-                  
-                  {/* === ZMĚNA ZDE: Úprava vykreslování MOBILNÍ navigace === */}
-                  <nav className="flex flex-col gap-1 px-2"> {/* Přidán padding pro zarovnání s Accordion */}
-                    {/* Vykreslení první části odkazů */}
-                    {navItemsPart1.map((item) => (
+                  <nav className="flex flex-col gap-1">
+                    {navigationItems.map((item) => (
                       <Link
                         key={item.href}
                         className={cn(mobileLinkClasses, isActivePath(item.href) && mobileActiveLinkClasses)}
@@ -298,7 +288,7 @@ export default function Header({}: HeaderProps): React.JSX.Element {
                     ))}
                   </nav>
 
-                  {/* Vložení Accordion s dropdowny */}
+                 
                   <div className="px-2">
                     <Accordion type="single" collapsible className="w-full">
                       <AccordionItem value="sluzby">
@@ -334,22 +324,7 @@ export default function Header({}: HeaderProps): React.JSX.Element {
                       </AccordionItem>
                     </Accordion>
                   </div>
-
-                  <nav className="flex flex-col gap-1 px-2"> {/* Přidán padding pro zarovnání s Accordion */}
-                    {/* Vykreslení druhé části odkazů */}
-                    {navItemsPart2.map((item) => (
-                      <Link
-                        key={item.href}
-                        className={cn(mobileLinkClasses, isActivePath(item.href) && mobileActiveLinkClasses)}
-                        href={item.href}
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        {item.label}
-                        <ArrowRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-all duration-200 group-hover:translate-x-1" />
-                      </Link>
-                    ))}
-                  </nav>
-                  {/* === KONEC ZMĚNY MOBILNÍ NAVIGACE === */}
+                  
 
                   <div className="pt-4 border-t border-gray-200 dark:border-gray-700 space-y-4 px-4">
                     <Button
