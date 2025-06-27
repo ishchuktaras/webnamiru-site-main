@@ -17,8 +17,8 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion" // <-- PŘIDANÝ IMPORT
-import { MenuIcon, Phone, Mail, ArrowRight, Users, Handshake, Package, Zap } from "lucide-react" // Přidal jsem ikony
+} from "@/components/ui/accordion" 
+import { MenuIcon, Phone, Mail, ArrowRight, Users, Handshake, Package, Zap } from "lucide-react" 
 import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { useState, useEffect, useRef } from "react"
@@ -71,9 +71,9 @@ export default function Header({}: HeaderProps): React.JSX.Element {
   }
 
   const navigationItems = [
-    { href: "/", label: "Domů" },
-    { href: "/o-mne", label: "O mně" },
+    { href: "/", label: "Domů" },    
     { href: "/pripadove-studie", label: "Případové studie" },
+    { href: "/o-mne", label: "O mně" },
     { href: "/blog", label: "Blog" },
     { href: "/kontakt", label: "Kontakt" },
   ]
