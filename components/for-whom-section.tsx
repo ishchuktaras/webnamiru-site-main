@@ -16,7 +16,7 @@ export default function ForWhomSection() {
     {
       icon: Factory,
       title: "Výrobní SME a Řemeslníci",
-      problem: "78,2% stavebních firem nemá web",
+      problem: "13% stavebních firem nemá web",
       solution:
         "Získejte B2B poptávky a exportní příležitosti prostřednictvím profesionální online prezentace vaší technické expertízy.",
       features: ["B2B katalogy", "Exportní prezentace", "Technické specifikace"],
