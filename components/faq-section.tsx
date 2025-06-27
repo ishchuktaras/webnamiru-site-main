@@ -1,3 +1,5 @@
+// FaqSection
+
 "use client"
 
 import { useState, useMemo } from "react"
@@ -5,74 +7,75 @@ import { Search, X } from "lucide-react"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import Link from "next/link"
 
 export default function FaqSection() {
   const [searchQuery, setSearchQuery] = useState("")
 
+  // === ZMĚNA ZDE: Nový, komplexní obsah FAQ sekce ===
   const faqs = [
     {
-      question: "Proč bych si měl vybrat Web na míru?",
+      question: "Proč bych si měl vybrat právě vás a ne zavedenou agenturu?",
       answer:
-        "Web na míru nabízí unikátní kombinaci hlubokých ekonomických znalostí a precizních vývojářských dovedností. Nejenže vám vytvořím vizuálně atraktivní web, ale především strategický nástroj, který bude generovat měřitelný obchodní růst a návratnost investice.",
-      category: "obecne",
+        "Získáte unikátní kombinaci experta, který je zároveň ekonom i developer. Komunikujete přímo se mnou, což zaručuje osobní přístup, hluboké pochopení vašich obchodních cílů a maximální flexibilitu. Navíc, jako začínající podnikatel nabízím špičkové technologie za férovější ceny.",
+      category: "Obecné",
     },
     {
-      question: "Jak dlouho trvá vytvoření webu?",
+      question: "Co přesně znamená 'strategický web' a jak mi pomůže?",
       answer:
-        "Délka projektu závisí na složitosti a rozsahu webu. Základní jednostránkový web může být hotov do 7-10 pracovních dnů. Rozsáhlejší projekty s e-shopem nebo komplexními funkcemi trvají 3-6 týdnů. Přesný časový harmonogram vždy stanovíme na úvodní konzultaci.",
-      category: "proces",
+        "Strategický web není jen hezká online vizitka. Je to nástroj postavený na základě analýzy vašeho byznysu a trhu. Cílem není jen design, ale měřitelný výsledek – ať už je to více poptávek, online prodejů, nebo efektivnější prezentace. Každý prvek webu má svůj účel a směřuje k návratnosti vaší investice (ROI).",
+      category: "Obecné",
     },
     {
-      question: "Jaké technologie používáte?",
+      question: "Co znamená cena 'od X Kč' u vašich balíčků?",
       answer:
-        "Pro frontend využívám moderní framework Next.js 14 a React 18, styling zajišťuje Tailwind CSS a komponenty shadcn/ui. Pro backend používám Node.js s Next.js App Routerem, Prisma ORM a PostgreSQL databázi. To zajišťuje vysoký výkon, bezpečnost a škálovatelnost.",
-      category: "technicke",
+        "Cena 'od' představuje základní sazbu za funkce a rozsah uvedený v daném balíčku. Finální cena se může lišit na základě vašich specifických požadavků, například potřeby tvorby obsahu, složitějších grafických prvků nebo napojení na externí systémy. Po naší úvodní konzultaci vždy obdržíte pevnou a finální cenovou nabídku.",
+      category: "Služby a Cenotvorba",
     },
     {
-      question: "Poskytujete i správu a údržbu webu?",
+      question: "Co když mé požadavky nespadají do žádného z balíčků?",
       answer:
-        "Ano, nabízím dlouhodobou správu a údržbu webu, včetně pravidelných aktualizací, zálohování a bezpečnostních kontrol. Mým cílem je být vaším partnerem pro kontinuální online růst, nejen jednorázovým dodavatelem.",
-      category: "sluzby",
+        "Balíčky slouží především pro orientaci. Většina mých projektů je plně individuálních a šitých na míru. Pokud máte specifické požadavky, je to ideální situace. Kontaktujte mě, probereme vaše potřeby a já vám zdarma a nezávazně připravím individuální řešení a cenovou nabídku.",
+      category: "Služby a Cenotvorba",
+    },
+     {
+      question: "Jak probíhá celý proces od poptávky po spuštění webu?",
+      answer:
+        "Můj proces je transparentní a efektivní: 1. **Úvodní konzultace** (zdarma). 2. **Analýza a strategie**. 3. **Cenová nabídka** a odsouhlasení. 4. **Záloha** a start projektu. 5. **Design a vývoj** s pravidelnými ukázkami. 6. **Testování a schválení**. 7. **Spuštění webu** a finální platba.",
+      category: "Proces a Technologie",
     },
     {
-      question: "Je první konzultace skutečně zdarma a nezávazná?",
+      question: "Jaké technologie pro vývoj používáte?",
       answer:
-        "Ano, první konzultace a základní audit vašeho byznysu jsou zcela zdarma a nezávazné. Je to příležitost pro nás oba, abychom zjistili, zda si rozumíme a zda mohu vašemu projektu skutečně pomoci.",
-      category: "konzultace",
+        "Sázím na moderní a ověřený technologický stack, který zaručuje rychlost, bezpečnost a skvělý uživatelský prožitek. Primárně používám Next.js, React, TypeScript a pro styling Tailwind CSS. Tato kombinace mi umožňuje tvořit weby na světové úrovni.",
+      category: "Proces a Technologie",
     },
     {
-      question: "Kolik stojí vytvoření webu?",
+      question: "Co se děje po spuštění webu? Skončí tím naše spolupráce?",
       answer:
-        "Ceny se pohybují od 15 000 Kč za základní prezentační web až po 80 000 Kč za komplexní e-shop s pokročilými funkcemi. Každý projekt oceňuji individuálně na základě požadavků. Nabízím také možnost splátek bez navýšení.",
-      category: "ceny",
+        "Určitě ne. Mým cílem je dlouhodobé partnerství. Každý projekt zahrnuje 30denní technickou záruku pro doladění detailů. Po této době nabízím volitelné balíčky správy a údržby, které zajistí, že váš web bude stále aktuální, bezpečný a funkční.",
+      category: "Po Dokončení",
     },
     {
-      question: "Jak probíhá platba za služby?",
-      answer:
-        "Standardně požaduji 50% zálohu před zahájením prací a zbytek po dokončení a předání webu. U větších projektů je možné rozložit platby do více splátek. Přijímám platby bankovním převodem i kartou.",
-      category: "platby",
+        question: "Musím si zajistit vlastní texty, fotky a hosting?",
+        answer:
+            "Ideální je, pokud máte vlastní obsah, protože nejlépe znáte svůj byznys. Pokud však texty nebo fotky nemáte, nevadí – mohu vám pomoci s jejich tvorbou nebo doporučit profesionály. Hosting a doménu v ceně nemám, ale rád vám poradím s výběrem a vše zařídím.",
+        category: "Služby a Cenotvorba",
     },
     {
-      question: "Kolik revizí je v ceně zahrnuto?",
+      question: "Jak se mohu stát vaším partnerem?",
       answer:
-        "V ceně každého projektu jsou zahrnuty 3 kola revizí. Další úpravy účtuji hodinovou sazbou 800 Kč/hod. Snažím se však vždy najít kompromis a vyhovět rozumným požadavkům klientů.",
-      category: "revize",
+        "Je to jednoduché. Kontaktujte mě přes formulář nebo e-mailem s představou o partnerství. Probereme detaily, odsouhlasíme si provizní podmínky a můžete začít. Vy se postaráte o prvotní kontakt s klientem a já převezmu kompletní realizaci projektu.",
+      category: "Partnerství",
     },
     {
-      question: "Vytvářím web i pro zahraniční klienty?",
+      question: "Kdy a jak mi bude vyplacena provize za doporučení?",
       answer:
-        "Ano, specializuji se na pomoc podnikatelům z Ukrajiny a dalších zemí při vstupu na český trh. Nabízím kompletní servis v ukrajinštině, ruštině a angličtině, včetně poradenství ohledně českých obchodních praktik.",
-      category: "mezinarodni",
-    },
-    {
-      question: "Zajišťujete i SEO optimalizaci?",
-      answer:
-        "Ano, základní SEO optimalizace je součástí každého webu. Zahrnuje optimalizaci rychlosti, meta tagů, strukturovaných dat a mobilní responzivitu. Pro pokročilé SEO strategie nabízím samostatné konzultace.",
-      category: "seo",
+        "Provize je splatná ihned po tom, co doporučený klient uhradí finální fakturu za dokončený projekt. V ten moment vás požádám o vystavení vaší faktury na dohodnutou částku, kterou obratem proplatím. Vše je 100% transparentní.",
+      category: "Partnerství",
     },
   ]
-
-  // Filtrování FAQ na základě vyhledávacího dotazu
+  
   const filteredFaqs = useMemo(() => {
     if (!searchQuery.trim()) return faqs
 
@@ -85,7 +88,6 @@ export default function FaqSection() {
     )
   }, [searchQuery, faqs])
 
-  // Funkce pro zvýraznění textu
  const highlightText = (text: string, query: string) => {
     if (!query.trim()) return text;
 
@@ -119,7 +121,6 @@ export default function FaqSection() {
           </div>
         </div>
 
-        {/* Vyhledávací pole */}
         <div className="mx-auto max-w-3xl mb-8">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
@@ -143,7 +144,6 @@ export default function FaqSection() {
             )}
           </div>
 
-          {/* Indikátor počtu výsledků */}
           {searchQuery && (
             <div className="mt-2 text-sm text-gray-500 dark:text-gray-400">
               {filteredFaqs.length === 0
@@ -175,7 +175,9 @@ export default function FaqSection() {
                     {highlightText(faq.question, searchQuery)}
                   </AccordionTrigger>
                   <AccordionContent className="text-gray-700 dark:text-gray-300">
-                    {highlightText(faq.answer, searchQuery)}
+                    <p className="prose dark:prose-invert">
+                        {highlightText(faq.answer, searchQuery)}
+                    </p>
                   </AccordionContent>
                 </AccordionItem>
               ))}
@@ -183,7 +185,6 @@ export default function FaqSection() {
           )}
         </div>
 
-        {/* Kontaktní CTA pokud nejsou nalezeny výsledky */}
         {filteredFaqs.length === 0 && searchQuery && (
           <div className="mx-auto max-w-3xl mt-8 p-6 bg-gray-50 dark:bg-gray-800 rounded-lg text-center">
             <h3 className="text-lg font-semibold mb-2">Nenašli jste odpověď?</h3>
@@ -191,7 +192,7 @@ export default function FaqSection() {
               Kontaktujte mě přímo a rád odpovím na vaše specifické otázky.
             </p>
             <Button asChild>
-              <a href="/kontakt">Kontaktovat</a>
+              <Link href="/kontakt">Kontaktovat</Link>
             </Button>
           </div>
         )}
