@@ -22,74 +22,32 @@ import TestimonialsSection from "@/components/testimonials-section";
 import ProcessSection from "@/components/process-section";
 import ServicePackagesSection from "@/components/service-packages-section";
 import FaqSection from "@/components/faq-section";
-
 import ContactInfoSection from "@/components/contact-info-section";
 import PartnersSection from "@/components/partners-section";
 import { Suspense } from "react";
 import PartnersPackagesSection from "@/components/partners-packages-section";
 import CaseStudiesSection from "@/components/case-studies-section";
 import AboutMeContent from "@/components/about-me-content";
+import MaintenancePackagesSection from "@/components/MaintenancePackagesSection";
 
 export default function Page() {
   return (
     <main>
       <HeroSection />
-      <Suspense fallback={<div>Načítám sekci Problém...</div>}>
+      <Suspense fallback={<div>Načítám...</div>}>
         <ProblemSection />
-      </Suspense>
-      <Suspense fallback={<div>Načítám sekci Řešení...</div>}>
         <SolutionSection />
-      </Suspense>
-      <Suspense fallback={<div>Načítám sekci Pro koho...</div>}>
         <ForWhomSection />
-      </Suspense>
-
-      <Suspense fallback={<div>Načítám sekci Reference...</div>}>
         <TestimonialsSection />
-      </Suspense>
-      <Suspense fallback={<div>Načítám sekci Proces...</div>}>
         <ProcessSection />
-      </Suspense>
-      <Suspense fallback={<div>Načítám sekci Balíčky služeb...</div>}>
         <ServicePackagesSection />
-      </Suspense>
-      <Suspense fallback={<div>Načítám sekci Partnerské balíčky...</div>}>
-        <PartnersPackagesSection />
-      </Suspense>
-      <Suspense fallback={<div>Načítám sekci Partneři...</div>}>
-        <PartnersSection />
-      </Suspense>
-      <Suspense fallback={<div>Načítám sekci Případové studie...</div>}>
+        <MaintenancePackagesSection />
         <CaseStudiesSection />
-      </Suspense>
-      <Suspense fallback={<div>Načítám sekci FAQ...</div>}>
+        <PartnersPackagesSection />
+        <PartnersSection />        
         <FaqSection />
       </Suspense>
-      
-      <Suspense fallback={<div>Načítám sekci O mně...</div>}>
-        <AboutMeContent />
-      </Suspense>
-      <Suspense fallback={<div>Načítám kontaktní informace...</div>}>
-        <ContactInfoSection />
-      </Suspense>
-
       <Footer />
-      {/* New Sheet component for Contact Form */}
-      <Sheet>
-        <SheetContent side="right" className="w-full sm:max-w-md">
-          <SheetHeader>
-            <SheetTitle>Získejte bezplatnou konzultaci</SheetTitle>
-            <SheetDescription>
-              Vyplňte formulář a zjistěte, jak může váš web generovat skutečný
-              obchodní růst.
-            </SheetDescription>
-          </SheetHeader>
-          
-          <SheetFooter>
-            {/* You can add additional actions or information here if needed */}
-          </SheetFooter>
-        </SheetContent>
-      </Sheet>
     </main>
   );
 }

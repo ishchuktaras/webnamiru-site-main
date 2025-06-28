@@ -1,15 +1,13 @@
-"use client"
+// components/problem-section.tsx
 
-import { useEffect, useState } from "react"
-import { TrendingDown, Users, Globe, CreditCard } from "lucide-react"
+"use client";
+
+// ZMĚNA: Odstraněny importy pro useState a useEffect
+import { TrendingDown, Users, Globe, CreditCard } from "lucide-react";
+import SectionWrapper from './SectionWrapper';
 
 export default function ProblemSection() {
-  const [isMounted, setIsMounted] = useState(false)
-
-  useEffect(() => {
-    setIsMounted(true)
-  }, [])
-  
+  // Data pro sekci zůstávají
   const problems = [
     {
       icon: Globe,
@@ -43,87 +41,70 @@ export default function ProblemSection() {
       stat: "Pod průměrem",
       source: "Regionální data",
     },
-  ]
+  ];
 
   return (
-    <section 
-      className={`w-full py-16 md:py-24 lg:py-32 bg-gray-50 dark:bg-gray-900 transition-opacity duration-1000 ${isMounted ? "mounted" : "opacity-0"}`} 
-      data-section="problem-section"
+    <SectionWrapper
+      dataSection="problem-section"
+      title={<>Digitální propast českých firem: <span className="text-blue-600">Fakta z ČSÚ</span></>}
+      subtitle="Analýza oficiálních statistik odhaluje konkrétní problémy, které brzdí digitalizaci podniků v České republice. Poznejte čísla, která stojí za zaostáváním vašich konkurentů."
+      className="bg-gray-50 dark:bg-gray-900"
     >
-      <div className="container px-4 md:px-6">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl mb-4">
-            Digitální propast českých firem: <span className="text-blue-600">Fakta z ČSÚ</span>
-          </h2>
-          <p className="max-w-3xl mx-auto text-gray-600 dark:text-gray-300 text-lg">
-            Analýza oficiálních statistik odhaluje konkrétní problémy, které brzdí digitalizaci podniků v České
-            republice. Poznejte čísla, která stojí za zaostáváním vašich konkurentů.
-          </p>
-        </div>
-
-        {/* Problems Grid */}
-        <div className="grid gap-8 lg:grid-cols-2 max-w-6xl mx-auto">
-          {problems.map((problem, index) => {
-            const IconComponent = problem.icon
-            return (
-              <div
-                key={index}
-                data-animate-item
-                style={{ transitionDelay: `${index * 150}ms` }}
-                className="bg-white dark:bg-gray-800 p-8 rounded-xl border border-gray-200 dark:border-gray-700 shadow-custom-lg hover:shadow-custom-xl transition-all duration-300 hover:-translate-y-2"
-              >
-                {/* Header */}
-                <div className="flex items-start justify-between mb-6">
-                  <div className="flex items-center gap-4">
-                    <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                      <IconComponent className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-                    </div>
-                    <div>
-                      <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{problem.stat}</div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400">{problem.source}</div>
-                    </div>
+      {/* Unikátní obsah sekce */}
+      <div className="grid gap-8 lg:grid-cols-2 max-w-6xl mx-auto">
+        {problems.map((problem, index) => {
+          const IconComponent = problem.icon;
+          return (
+            // ZMĚNA: Odebrány atributy pro animaci (data-animate-item, style)
+            <div
+              key={index}
+              className="bg-white dark:bg-gray-800 p-8 rounded-xl border border-gray-200 dark:border-gray-700 shadow-custom-lg hover:shadow-custom-xl transition-all duration-300 hover:-translate-y-2"
+            >
+              <div className="flex items-start justify-between mb-6">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                    <IconComponent className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                  </div>
+                  <div>
+                    <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{problem.stat}</div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">{problem.source}</div>
                   </div>
                 </div>
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">{problem.title}</h3>
+              <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{problem.description}</p>
+            </div>
+          );
+        })}
+      </div>
 
-                {/* Content */}
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">{problem.title}</h3>
-                <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{problem.description}</p>
+      <div className="mt-16 bg-white dark:bg-gray-800 rounded-xl p-8 border border-gray-200 dark:border-gray-700 shadow-custom-lg">
+        <div className="text-center">
+          <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Ekonomický dopad</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+              <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">23,625</div>
+              <div className="text-sm text-gray-600 dark:text-gray-300">
+                aktivních programátorských firem v ČR (2023)
               </div>
-            )
-          })}
-        </div>
-
-        {/* Economic Impact */}
-        <div className="mt-16 bg-white dark:bg-gray-800 rounded-xl p-8 border border-gray-200 dark:border-gray-700 shadow-custom-lg">
-          <div className="text-center">
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Ekonomický dopad</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div>
-                <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">23,625</div>
-                <div className="text-sm text-gray-600 dark:text-gray-300">
-                  aktivních programátorských firem v ČR (2023)
-                </div>
-              </div>
-              <div>
-                <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">+187%</div>
-                <div className="text-sm text-gray-600 dark:text-gray-300">růst IT sektoru za posledních 13 let</div>
-              </div>
-              <div>
-                <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">81,145 Kč</div>
-                <div className="text-sm text-gray-600 dark:text-gray-300">průměrná mzda v programování (2023)</div>
-              </div>
+            </div>
+            <div>
+              <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">+187%</div>
+              <div className="text-sm text-gray-600 dark:text-gray-300">růst IT sektoru za posledních 13 let</div>
+            </div>
+            <div>
+              <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">81,145 Kč</div>
+              <div className="text-sm text-gray-600 dark:text-gray-300">průměrná mzda v programování (2023)</div>
             </div>
           </div>
         </div>
-
-        {/* Bottom CTA */}
-        <div className="text-center mt-12">
-          <p className="text-gray-600 dark:text-gray-300 font-medium">
-            Zdroj dat: Český statistický úřad, Veřejná databáze, 2024
-          </p>
-        </div>
       </div>
-    </section>
-  )
+      
+      <div className="text-center mt-12">
+        <p className="text-gray-600 dark:text-gray-300 font-medium">
+          Zdroj dat: Český statistický úřad, Veřejná databáze, 2024
+        </p>
+      </div>
+    </SectionWrapper>
+  );
 }
