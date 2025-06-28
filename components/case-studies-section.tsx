@@ -1,3 +1,5 @@
+// components/case-studies-section.tsx
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -10,6 +12,7 @@ import {
   MapPin,
 } from "lucide-react";
 import Link from "next/link";
+import InquirySheet from "./InquirySheet";
 
 export default function CaseStudiesSection() {
   const caseStudies = [
@@ -36,7 +39,7 @@ export default function CaseStudiesSection() {
         { label: "Doba načítání", value: "< 2s" },
         { label: "Mobile optimalizace", value: "100%" },
       ],
-      link: "/pripadove-studie/coming-soon", // Změněno
+      link: "/pripadove-studie/coming-soon",
       icon: Camera,
       color: "from-pink-500 to-purple-600",
     },
@@ -62,7 +65,7 @@ export default function CaseStudiesSection() {
         { label: "Přímé rezervace", value: "+40%" },
         { label: "SEO ranking", value: "Top 3" },
       ],
-      link: "/pripadove-studie/coming-soon", // Změněno
+      link: "/pripadove-studie/coming-soon",
       icon: TrendingUp,
       color: "from-blue-500 to-cyan-600",
     },
@@ -88,7 +91,7 @@ export default function CaseStudiesSection() {
         { label: "Konverzní poměr", value: "3.2%" },
         { label: "Zákazníci", value: "150+" },
       ],
-      link: "/pripadove-studie/coming-soon", // Změněno
+      link: "/pripadove-studie/coming-soon",
       icon: Users,
       color: "from-green-500 to-emerald-600",
     },
@@ -97,7 +100,6 @@ export default function CaseStudiesSection() {
   return (
     <section className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-br from-gray-50 via-white to-blue-50 dark:from-gray-950 dark:via-gray-900 dark:to-blue-950">
       <div className="container px-4 md:px-6">
-        {/* Hero Section */}
         <div className="flex flex-col items-center justify-center space-y-4 text-center mb-16">
           <Badge
             variant="outline"
@@ -115,7 +117,6 @@ export default function CaseStudiesSection() {
             </p>
           </div>
 
-          {/* Success Stats */}
           <div className="grid grid-cols-3 gap-8 mt-12 p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700">
             <div className="text-center">
               <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
@@ -144,7 +145,6 @@ export default function CaseStudiesSection() {
           </div>
         </div>
 
-        {/* Case Studies Grid */}
         <div className="mx-auto grid max-w-7xl items-start gap-8 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
           {caseStudies.map((study, index) => {
             const IconComponent = study.icon;
@@ -153,7 +153,6 @@ export default function CaseStudiesSection() {
                 key={index}
                 className="group relative overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 bg-white dark:bg-gray-900"
               >
-                {/* Gradient Header */}
                 <div className={`h-2 bg-gradient-to-r ${study.color}`} />
 
                 <CardHeader className="pb-4">
@@ -171,8 +170,6 @@ export default function CaseStudiesSection() {
                       <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                         {study.subtitle}
                       </p>
-
-                      {/* Location and Social */}
                       <div className="flex items-center gap-4 mt-2 text-xs text-gray-500 dark:text-gray-400">
                         {study.location && (
                           <div className="flex items-center gap-1">
@@ -192,7 +189,6 @@ export default function CaseStudiesSection() {
                 </CardHeader>
 
                 <CardContent className="space-y-6">
-                  {/* Challenge */}
                   <div>
                     <h4 className="font-semibold text-red-600 dark:text-red-400 mb-2 flex items-center gap-2">
                       🎯 Výzva
@@ -202,7 +198,6 @@ export default function CaseStudiesSection() {
                     </p>
                   </div>
 
-                  {/* Solution */}
                   <div>
                     <h4 className="font-semibold text-blue-600 dark:text-blue-400 mb-2 flex items-center gap-2">
                       💡 Řešení
@@ -212,7 +207,6 @@ export default function CaseStudiesSection() {
                     </p>
                   </div>
 
-                  {/* Technologies */}
                   <div>
                     <h4 className="font-semibold text-purple-600 dark:text-purple-400 mb-2 flex items-center gap-2">
                       🛠️ Technologie
@@ -230,7 +224,6 @@ export default function CaseStudiesSection() {
                     </div>
                   </div>
 
-                  {/* Metrics */}
                   <div>
                     <h4 className="font-semibold text-green-600 dark:text-green-400 mb-3 flex items-center gap-2">
                       📈 Výsledky
@@ -252,14 +245,12 @@ export default function CaseStudiesSection() {
                     </div>
                   </div>
 
-                  {/* Main Result */}
                   <div className="p-4 bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 rounded-xl border border-green-200 dark:border-green-800">
                     <p className="text-sm font-semibold text-green-800 dark:text-green-300">
                       🎉 {study.result}
                     </p>
                   </div>
 
-                  {/* CTA Button */}
                   <Button
                     className={`w-full bg-gradient-to-r ${study.color} hover:shadow-lg transition-all duration-300 text-white border-0 group-hover:scale-105`}
                     asChild
@@ -274,8 +265,7 @@ export default function CaseStudiesSection() {
             );
           })}
         </div>
-
-        {/* Bottom CTA */}
+        
         <div className="text-center mt-16">
           <div className="inline-flex flex-col items-center gap-4 p-8 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-2xl border border-blue-200 dark:border-blue-800">
             <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
@@ -285,16 +275,20 @@ export default function CaseStudiesSection() {
               Pojďme společně vytvořit web, který skutečně funguje pro váš
               byznys.
             </p>
-            <Button
-              size="lg"
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3"
-            >
-              <Link href="/kontakt">
-                {" "}
-                Nezávazná konzultace
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Link>
-            </Button>
+            <InquirySheet
+                title="Nezávazná konzultace"
+                description="Zanechte mi kontakt a já se vám ozvu, abychom probrali, jak mohu pomoci vašemu projektu růst."
+                serviceInfo="Obecná poptávka (z Případových studií)"
+                trigger={
+                    <Button
+                        size="lg"
+                        className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3"
+                    >
+                        Nezávazná konzultace
+                        <ArrowRight className="ml-2 h-5 w-5" />
+                    </Button>
+                }
+            />
           </div>
         </div>
       </div>
