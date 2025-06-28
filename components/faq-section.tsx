@@ -50,7 +50,7 @@ export default function FaqSection() {
 
   return (
     <SectionWrapper
-      dataSection="faq-section"
+      id="faq-section"
       title="Často kladené otázky"
       subtitle="Máte otázky? Zde najdete odpovědi na ty nejčastější."
       className="bg-white dark:bg-gray-900"

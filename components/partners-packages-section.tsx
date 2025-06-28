@@ -94,7 +94,7 @@ export default function PartnersPackagesSection() {
 
   return (
     <SectionWrapper
-      dataSection="partners-packages-section"
+      id="partners-packages-section"
       badgeText="Partnerské příležitosti"
       title="Staňte se mým obchodním partnerem"
       subtitle="Hledám kreativní profesionály, kteří chtějí rozšířit své služby o webová řešení. Nabízím výhodné podmínky spolupráce a dlouhodobé partnerství."

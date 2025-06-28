@@ -10,7 +10,7 @@ import SectionWrapper from "./SectionWrapper";
 export default function SolutionSection() {
   return (
     <SectionWrapper
-      dataSection="solution-section"
+      id="solution-section"
       badgeText="Unikátní přístup"
       title={
         <>

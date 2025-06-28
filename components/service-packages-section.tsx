@@ -5,23 +5,97 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, XCircle } from "lucide-react";
+import { CheckCircle, XCircle, Wallet, FileText, PiggyBank } from "lucide-react";
 import Link from "next/link";
 import { servicePackages } from "@/lib/data";
 import SectionWrapper from "./SectionWrapper";
 import InquirySheet from "./InquirySheet";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function ServicePackagesSection() {
   const packages = servicePackages;
 
   return (
     <SectionWrapper
-      dataSection="service-packages-section"
+      id="service-packages-section"
       title="Vyberte si balíček, který podpoří váš růst."
       subtitle="Nabízím transparentní balíčky služeb, které jsou navrženy tak, aby vyhovovaly různým potřebám a rozpočtům podnikatelů na Vysočině."
       className="bg-white dark:bg-gray-900"
     >
-      <div className="mx-auto grid max-w-6xl items-stretch gap-8 py-12 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+      {/* Sekce 'Transparentní cenotvorba' nahoře a v záložkách */}
+      <div className="mb-24 max-w-4xl mx-auto">
+        <Tabs defaultValue="included" className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="included">Co je vždy v ceně?</TabsTrigger>
+            <TabsTrigger value="extras">Na co se připravit?</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="included">
+            <Card className="border-green-200 dark:border-green-800">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-green-700 dark:text-green-400">
+                  <CheckCircle /> Vždy zahrnuto v ceně
+                </CardTitle>
+                <CardDescription>
+                  Tyto položky jsou základem každého projektu a jsou již započítány v ceně balíčků.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-3 text-sm text-gray-700 dark:text-gray-300">
+                   <li className="flex items-start gap-3"><CheckCircle className="h-4 w-4 text-green-500 mt-1 shrink-0" /><span>**Úvodní konzultace a analýza** vašich potřeb a cílů.</span></li>
+                   <li className="flex items-start gap-3"><CheckCircle className="h-4 w-4 text-green-500 mt-1 shrink-0" /><span>**Responzivní design**, který skvěle vypadá na všech zařízeních.</span></li>
+                   <li className="flex items-start gap-3"><CheckCircle className="h-4 w-4 text-green-500 mt-1 shrink-0" /><span>**Základní on-page SEO**, aby vás vyhledávače našly.</span></li>
+                   <li className="flex items-start gap-3"><CheckCircle className="h-4 w-4 text-green-500 mt-1 shrink-0" /><span>**Nasazení webu** na vaši doménu a doporučený hosting.</span></li>
+                   <li className="flex items-start gap-3"><CheckCircle className="h-4 w-4 text-green-500 mt-1 shrink-0" /><span>**Školení pro obsluhu webu**, abyste si mohli sami snadno upravovat obsah.</span></li>
+                   <li className="flex items-start gap-3"><CheckCircle className="h-4 w-4 text-green-500 mt-1 shrink-0" /><span>**Technická záruka 30 dní** po spuštění pro případné doladění.</span></li>
+                </ul>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="extras">
+             <Card className="border-red-200 dark:border-red-800">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-red-700 dark:text-red-400">
+                    <XCircle /> Na co se připravit?
+                </CardTitle>
+                <CardDescription>
+                  Položky a služby, které nejsou součástí ceny balíčků, a jak probíhá platba.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                 <div>
+                    <h4 className="font-semibold mb-2 flex items-center gap-2"><FileText className="h-4 w-4" />Služby nad rámec balíčků</h4>
+                    <ul className="space-y-3 text-sm text-gray-700 dark:text-gray-300 pl-4">
+                      <li className="flex items-start gap-3"><XCircle className="h-4 w-4 text-red-500 mt-1 shrink-0" /><span>**Hosting a doména** – roční poplatky třetím stranám (rád s výběrem a nákupem pomohu).</span></li>
+                      <li className="flex items-start gap-3"><XCircle className="h-4 w-4 text-red-500 mt-1 shrink-0" /><span>**Tvorba obsahu** – psaní textů, grafika či focení (nabízeno v rámci balíčku <a href="#maintenance-section" className="font-bold underline hover:text-purple-500">Strategické Partnerství</a>).</span></li>
+                      <li className="flex items-start gap-3"><XCircle className="h-4 w-4 text-red-500 mt-1 shrink-0" /><span>**Licence prémiových pluginů**, pokud je projekt vyžaduje pro specifické funkce.</span></li>
+                      <li className="flex items-start gap-3"><XCircle className="h-4 w-4 text-red-500 mt-1 shrink-0" /><span>**Dlouhodobá správa a údržba** (viz. <a href="#maintenance-section" className="font-bold underline hover:text-blue-500">balíčky správy</a>).</span></li>
+                    </ul>
+                 </div>
+                 <div className="border-t pt-6">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2"><PiggyBank className="h-4 w-4" />Proces platby</h4>
+                     <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Spolupráce je založena na férovém a jednoduchém platebním modelu, který zajišťuje jistotu pro obě strany.</p>
+                    <div className="flex flex-col md:flex-row justify-center items-center gap-4 md:gap-8 text-lg font-medium">
+                      <div className="flex items-center gap-2">
+                        <span className="text-3xl font-bold text-blue-600">50%</span>
+                        <span>záloha před zahájením prací</span>
+                      </div>
+                      <div className="text-2xl text-gray-300 dark:text-gray-600">→</div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-3xl font-bold text-blue-600">50%</span>
+                        <span>doplatek po schválení, před spuštěním</span>
+                      </div>
+                    </div>
+                 </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </div>
+
+      {/* ZDE JE OBNOVENÝ A KOMPLETNÍ KÓD PRO VÝPIS BALÍČKŮ */}
+      <div className="mx-auto grid max-w-6xl items-stretch gap-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
         {packages.map((pkg, index) => {
           const IconComponent = pkg.icon;
           return (
@@ -84,94 +158,6 @@ export default function ServicePackagesSection() {
             </Card>
           );
         })}
-      </div>
-
-      <div className="mt-24 max-w-5xl mx-auto">
-        <div className="text-center mb-12">
-          <h3 className="text-3xl font-bold tracking-tighter">Transparentní cenotvorba</h3>
-          <p className="text-gray-600 dark:text-gray-400 mt-2 max-w-2xl mx-auto">
-            Žádné skryté poplatky. Vždy přesně víte, co je a co není součástí ceny vašeho nového webu.
-          </p>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          
-          {/* ZDE JE OBNOVENÝ A KOMPLETNÍ OBSAH */}
-          <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-6">
-            <h4 className="text-xl font-semibold text-green-800 dark:text-green-300 mb-4">Vždy zahrnuto v ceně</h4>
-            <ul className="space-y-3 text-sm text-gray-700 dark:text-gray-300">
-              <li className="flex items-start gap-3">
-                <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 shrink-0" />
-                <span>**Úvodní konzultace a analýza** vašich potřeb a cílů.</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 shrink-0" />
-                <span>**Responzivní design**, který skvěle vypadá na mobilech, tabletech i počítačích.</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 shrink-0" />
-                <span>**Základní on-page SEO**, aby vás vyhledávače jako Google a Seznam našly.</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 shrink-0" />
-                <span>**Nasazení webu** na vaši doménu a doporučený hosting.</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 shrink-0" />
-                <span>**Školení pro obsluhu webu**, abyste si mohli sami snadno upravovat obsah.</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 shrink-0" />
-                <span>**Technická záruka 30 dní** po spuštění pro případné doladění.</span>
-              </li>
-            </ul>
-          </div>
-
-          {/* ZDE JE OBNOVENÝ A KOMPLETNÍ OBSAH */}
-          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6">
-            <h4 className="text-xl font-semibold text-red-800 dark:text-red-300 mb-4">Není zahrnuto v ceně</h4>
-            <ul className="space-y-3 text-sm text-gray-700 dark:text-gray-300">
-              <li className="flex items-start gap-3">
-                <XCircle className="h-5 w-5 text-red-500 mt-0.5 shrink-0" />
-                <span>**Hosting a doména** – roční poplatky třetím stranám (rád s výběrem a nákupem pomohu).</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <XCircle className="h-5 w-5 text-red-500 mt-0.5 shrink-0" />
-                <span>**Tvorba obsahu** – psaní textů, grafika či focení (nabízeno v rámci balíčku <a href="#maintenance-section" className="font-bold underline">Strategické Partnerství</a>).</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <XCircle className="h-5 w-5 text-red-500 mt-0.5 shrink-0" />
-                <span>**Licence prémiových pluginů**, pokud je projekt vyžaduje pro specifické funkce.</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <XCircle className="h-5 w-5 text-red-500 mt-0.5 shrink-0" />
-                <span>**Pokročilé marketingové služby** jako správa PPC kampaní nebo dlouhodobé SEO.</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <XCircle className="h-5 w-5 text-red-500 mt-0.5 shrink-0" />
-                <span>**Dlouhodobá správa a údržba** webu po uplynutí 30denní záruky (viz. <a href="#maintenance-section" className="font-bold underline">balíčky správy</a>).</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-        
-        {/* ZDE JE OBNOVENÝ A KOMPLETNÍ OBSAH */}
-        <div className="mt-12 text-center bg-gray-50 dark:bg-gray-800 rounded-lg p-8">
-            <h4 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Jak probíhá platba?</h4>
-            <p className="text-gray-600 dark:text-gray-400 max-w-xl mx-auto">
-              Spolupráce je založena na férovém a jednoduchém platebním modelu, který zajišťuje jistotu pro obě strany.
-            </p>
-            <div className="flex flex-col md:flex-row justify-center items-center gap-4 md:gap-8 mt-6 text-lg font-medium">
-              <div className="flex items-center gap-2">
-                <span className="text-3xl font-bold text-blue-600">50%</span>
-                <span>záloha před zahájením prací</span>
-              </div>
-              <div className="text-2xl text-gray-300 dark:text-gray-600">→</div>
-              <div className="flex items-center gap-2">
-                <span className="text-3xl font-bold text-blue-600">50%</span>
-                <span>doplatek po schválení, před spuštěním</span>
-              </div>
-            </div>
-          </div>
       </div>
     </SectionWrapper>
   );

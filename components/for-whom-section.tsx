@@ -2,10 +2,9 @@
 
 "use client";
 
-import { Factory, Utensils, Sprout, Globe, ArrowRight } from "lucide-react";
+// ZMĚNA: Odstraněny importy pro Button, Link a ikonu ArrowRight
+import { Factory, Utensils, Sprout, Globe } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import SectionWrapper from "./SectionWrapper";
 
 export default function ForWhomSection() {
@@ -43,7 +42,7 @@ export default function ForWhomSection() {
 
   return (
     <SectionWrapper
-      dataSection="for-whom-section"
+      id="for-whom-section"
       title={
         <>
           Řešení šité na míru <span className="text-blue-600">vašemu segmentu</span>
@@ -52,12 +51,10 @@ export default function ForWhomSection() {
       subtitle="Každý segment má specifické problémy. Můj strategický přístup kombinuje ekonomickou expertízu s technickými dovednostmi pro maximální ROI."
       className="bg-white dark:bg-gray-900" 
     >
-      {/* Unikátní obsah sekce */}
       <div className="mx-auto grid max-w-6xl items-stretch gap-8 py-12 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 lg:gap-8">
         {segments.map((segment, index) => {
           const IconComponent = segment.icon;
           return (
-            // ZMĚNA: Odebrány atributy pro animaci
             <div key={index}>
               <Card
                 className="flex flex-col h-full text-center p-6 shadow-custom-md hover:shadow-custom-lg transition-all duration-300 dark:bg-gray-950 border-l-4 border-l-blue-600 hover:-translate-y-2"
@@ -87,14 +84,7 @@ export default function ForWhomSection() {
                     </div>
                   </div>
                 </CardContent>
-                <div className="mt-6">
-                    <Button asChild variant="outline" className="w-full group">
-                        <Link href={`/kontakt?segment=${encodeURIComponent(segment.title)}`}>
-                            Řešení pro můj byznys
-                            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                        </Link>
-                    </Button>
-                </div>
+                {/* ZMĚNA: Celý tento blok s tlačítkem byl odstraněn */}
               </Card>
             </div>
           );

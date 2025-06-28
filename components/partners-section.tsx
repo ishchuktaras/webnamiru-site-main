@@ -60,7 +60,7 @@ export default function PartnersSection() {
   return (
     // ZMĚNA: Použití SectionWrapperu s novými, jasnějšími texty
     <SectionWrapper
-      dataSection="partners"
+      id="partners"
       title="Pro koho tvořím weby"
       subtitle="Zaměřuji se na klíčové segmenty podnikání na Vysočině, kterým strategický web přináší největší hodnotu a návratnost investice."
       className="bg-white dark:bg-gray-900"

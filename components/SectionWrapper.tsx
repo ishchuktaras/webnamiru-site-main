@@ -1,12 +1,14 @@
 // components/SectionWrapper.tsx
 
-import React from "react"; // Není potřeba useEffect a useState
+"use client";
+
+import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 interface SectionWrapperProps {
   children: React.ReactNode;
-  dataSection: string;
+  id: string; // ZMĚNA: Přejmenováno z dataSection na id pro srozumitelnost
   title?: React.ReactNode;
   subtitle?: React.ReactNode;
   badgeText?: string;
@@ -15,23 +17,24 @@ interface SectionWrapperProps {
 
 export default function SectionWrapper({
   children,
-  dataSection,
+  id, // ZMĚNA: Používáme id
   title,
   subtitle,
   badgeText,
   className,
 }: SectionWrapperProps) {
-  // ZMĚNA: Veškerá logika pro 'isMounted' je pryč
+
+  // ZMĚNA: Animace je odstraněna, takže useEffect a useState nejsou potřeba
   
   return (
     <section
-      // ZMĚNA: Odebrány třídy pro animaci, zůstává jen základ
+      // ZMĚNA: Přidán atribut id a data-section nyní používá hodnotu z id
+      id={id}
+      data-section={id} 
       className={cn(`w-full py-12 md:py-24 lg:py-32`, className)}
-      data-section={dataSection}
     >
       <div className="container px-4 md:px-6">
         {(title || subtitle) && (
-          // ZMĚNA: Odebrán atribut data-animate-item z hlavičky
           <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12 md:mb-16">
             <div className="space-y-4">
               {badgeText && (

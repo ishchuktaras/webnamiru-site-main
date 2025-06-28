@@ -12,7 +12,7 @@ import InquirySheet from "./InquirySheet";
 export default function MaintenancePackagesSection() {
   return (
     <SectionWrapper
-      dataSection="maintenance-section"
+      id="maintenance-section"
       badgeText="Dlouhodobé partnerství"
       title="Spuštěním webu to nekončí, ale začíná."
       subtitle="Váš web je jako auto – potřebuje pravidelnou péči, aby byl stále rychlý, bezpečný a plný nového obsahu. Nabízím vám klid a jistotu díky profesionální správě."

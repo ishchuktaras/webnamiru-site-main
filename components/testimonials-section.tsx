@@ -61,7 +61,7 @@ export default function TestimonialsSection() {
 
   return (
     <SectionWrapper
-      dataSection="testimonials-section"
+      id="testimonials-section"
       title={<>Proč si vybrat <span className="text-blue-600">Web na míru</span>?</>}
       subtitle="Jsem začínající podnikatel s jasnou vizí: pomáhat firmám na Vysočině růst prostřednictvím strategických webových řešení. Zde je to, co vám mohu nabídnout."
       className="bg-gray-50 dark:bg-gray-950"
