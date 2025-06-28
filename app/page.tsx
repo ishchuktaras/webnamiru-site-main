@@ -44,8 +44,10 @@ export default function Page() {
         <MaintenancePackagesSection />
         <CaseStudiesSection />
         <PartnersPackagesSection />
-        <PartnersSection />        
+        <PartnersSection />
+        <AboutMeContent />
         <FaqSection />
+        <ContactInfoSection />
       </Suspense>
       <Footer />
     </main>

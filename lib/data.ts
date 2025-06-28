@@ -1,6 +1,6 @@
 // lib/data.ts
 
-import { Star, Zap, Crown, Camera, TrendingUp, Users } from "lucide-react";
+import { Star, Zap, Crown, Camera, TrendingUp, Users, Code, MapPin } from "lucide-react";
 
 export const servicePackages = [
     {
@@ -215,3 +215,46 @@ export const servicePackages = [
       color: "from-green-500 to-emerald-600",
     },
   ];
+
+  export const certificates = [
+  {
+    id: 1,
+    title: "Diplom - Státní správa",
+    type: "Vysokoškolský diplom",
+    image: "/images/certificates/statni-sluzba-diploma.png",
+    description: "Státní správa a regionální rozvoj",
+  },
+  {
+    id: 2,
+    title: "Příloha k diplomu",
+    type: "Vysokoškolský diplom",
+    image: "/images/certificates/statni-sluzba-priloha.png",
+    description: "Detaily studia a specializace",
+  },
+  {
+    id: 3,
+    title: "IT Step Academy",
+    type: "Technická certifikace",
+    image: "/images/certificates/it-step-academy-certificate.jpg",
+    description: "Programování a webdevelopment",
+  },
+  {
+    id: 4,
+    title: "Jazykový certifikát",
+    type: "Jazyková certifikace",
+    image: "/images/certificates/language-certificate.jpg",
+    description: "Pokročilá znalost cizího jazyka",
+  },
+];
+
+export const skills = [
+    "Next.js", "React", "TypeScript", "Tailwind CSS", "Shadcn/ui",
+    "Node.js", "PostgreSQL", "Prisma", "Vercel", "Git",
+];
+
+export const achievements = [
+    { icon: Users, title: "24 regionů", description: "Řízení implementace prodejních systémů" },
+    { icon: TrendingUp, title: "Ekonomické vzdělání", description: "Magisterský titul v ekonomii a státní správa" },
+    { icon: Code, title: "Modern Stack", description: "Certifikace v moderních web technologiích" },
+    { icon: MapPin, title: "Kraj Vysočina", description: "Specializace na regionální rozvoj" },
+];
