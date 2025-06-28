@@ -46,6 +46,7 @@ export default function ProblemSection() {
   return (
     <SectionWrapper
       id="problem-section"
+      badgeText="Problémy a příležitosti"
       title={<>Digitální propast českých firem: <span className="text-blue-600">Fakta z ČSÚ</span></>}
       subtitle="Analýza oficiálních statistik odhaluje konkrétní problémy, které brzdí digitalizaci podniků v České republice. Poznejte čísla, která stojí za zaostáváním vašich konkurentů."
       className="bg-gray-50 dark:bg-gray-900"

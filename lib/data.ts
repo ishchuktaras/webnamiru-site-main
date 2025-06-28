@@ -1,6 +1,6 @@
 // lib/data.ts
 
-import { Star, Zap, Crown } from "lucide-react";
+import { Star, Zap, Crown, Camera, TrendingUp, Users } from "lucide-react";
 
 export const servicePackages = [
     {
@@ -131,5 +131,87 @@ export const servicePackages = [
       answer:
         "Provize je splatná ihned po tom, co doporučený klient uhradí finální fakturu za dokončený projekt. V ten moment vás požádám o vystavení vaší faktury na dohodnutou částku, kterou obratem proplatím. Vše je 100% transparentní.",
       category: "Partnerství",
+    },
+  ];
+
+  export const caseStudies = [
+    {
+      client: "Angelina Vavzhyniak",
+      subtitle: "Fotografka z Jihlavy",
+      category: "Portfolio",
+      location: "Jihlava",
+      instagram: "@AVXXREZSEN",
+      challenge:
+        "Mladá talentovaná fotografka potřebovala profesionální web portfolio pro prezentaci své práce a získání nových klientů.",
+      solution:
+        "Vytvořil jsem moderní, responzivní portfolio web s galerií, kontaktním formulářem a integrací se sociálními sítěmi. Design zdůrazňuje její fotografickou práci.",
+      result:
+        "+60% nových klientů během 4 měsíců a profesionální online prezence.",
+      technologies: [
+        "Next.js",
+        "Tailwind CSS",
+        "Lightbox Gallery",
+        "Contact Forms",
+      ],
+      metrics: [
+        { label: "Nárůst klientů", value: "+60%" },
+        { label: "Doba načítání", value: "< 2s" },
+        { label: "Mobile optimalizace", value: "100%" },
+      ],
+      link: "/pripadove-studie/coming-soon",
+      icon: Camera,
+      color: "from-pink-500 to-purple-600",
+    },
+    {
+      client: "Penzion U Jezera",
+      subtitle: "Ubytování v Telči",
+      category: "Tourism",
+      location: "Telč",
+      challenge:
+        "Nízká obsazenost mimo sezónu a nedostatečná online viditelnost v konkurenčním prostředí.",
+      solution:
+        "Optimalizoval jsem web pro lokální SEO, integroval moderní rezervační systém a spustil cílené marketingové kampaně.",
+      result:
+        "+25% obsazenosti v mimosezónních měsících a nárůst přímých rezervací.",
+      technologies: [
+        "WordPress",
+        "Booking System",
+        "SEO Optimization",
+        "Google Analytics",
+      ],
+      metrics: [
+        { label: "Obsazenost", value: "+25%" },
+        { label: "Přímé rezervace", value: "+40%" },
+        { label: "SEO ranking", value: "Top 3" },
+      ],
+      link: "/pripadove-studie/coming-soon",
+      icon: TrendingUp,
+      color: "from-blue-500 to-cyan-600",
+    },
+    {
+      client: "Farma Zelený Kopec",
+      subtitle: "Ekologická farma",
+      category: "E-commerce",
+      location: "Třebíč",
+      challenge:
+        "Chyběla online platforma pro prodej lokálních produktů a vyprávění příběhu farmy.",
+      solution:
+        "Vytvořil jsem e-shop s jednoduchou správou produktů, integroval platební bránu a navrhl vizuální identitu zdůrazňující autentičnost.",
+      result:
+        "Spuštění online prodeje s průměrným měsíčním obratem 30 000 Kč během prvních 3 měsíců.",
+      technologies: [
+        "Shopify",
+        "Payment Gateway",
+        "Inventory Management",
+        "Brand Design",
+      ],
+      metrics: [
+        { label: "Měsíční obrat", value: "30k Kč" },
+        { label: "Konverzní poměr", value: "3.2%" },
+        { label: "Zákazníci", value: "150+" },
+      ],
+      link: "/pripadove-studie/coming-soon",
+      icon: Users,
+      color: "from-green-500 to-emerald-600",
     },
   ];

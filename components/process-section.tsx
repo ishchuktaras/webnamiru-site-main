@@ -34,6 +34,7 @@ export default function ProcessSection() {
   return (
     <SectionWrapper
       id="process-section"
+      badgeText="Proces"
       title="Váš úspěch ve 3 krocích."
       subtitle="Můj transparentní a osvědčený proces zajišťuje, že váš web bude nejen krásný, ale především efektivní obchodní nástroj."
       className="bg-white dark:bg-gray-900"

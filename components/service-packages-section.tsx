@@ -18,6 +18,7 @@ export default function ServicePackagesSection() {
   return (
     <SectionWrapper
       id="service-packages-section"
+      badgeText="Balíčky na míru"
       title="Vyberte si balíček, který podpoří váš růst."
       subtitle="Nabízím transparentní balíčky služeb, které jsou navrženy tak, aby vyhovovaly různým potřebám a rozpočtům podnikatelů na Vysočině."
       className="bg-white dark:bg-gray-900"

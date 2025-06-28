@@ -51,6 +51,7 @@ export default function FaqSection() {
   return (
     <SectionWrapper
       id="faq-section"
+      badgeText="Vše, co potřebujete vědět"
       title="Často kladené otázky"
       subtitle="Máte otázky? Zde najdete odpovědi na ty nejčastější."
       className="bg-white dark:bg-gray-900"

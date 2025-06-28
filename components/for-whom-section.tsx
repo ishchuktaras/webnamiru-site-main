@@ -43,6 +43,7 @@ export default function ForWhomSection() {
   return (
     <SectionWrapper
       id="for-whom-section"
+      badgeText="Cílové skupiny"
       title={
         <>
           Řešení šité na míru <span className="text-blue-600">vašemu segmentu</span>

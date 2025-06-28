@@ -1,7 +1,9 @@
-"use client"
+// components/header.tsx
 
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
+"use client";
+
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -9,340 +11,224 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion" 
-import { MenuIcon, Phone, Mail, ArrowRight, Users, Handshake, Package, Zap } from "lucide-react" 
-import Image from "next/image"
-import { usePathname } from "next/navigation"
-import { useState, useEffect, useRef } from "react"
-import { cn } from "@/lib/utils"
-import { ThemeToggle } from "./theme-toggle"
+} from "@/components/ui/navigation-menu";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { MenuIcon, Phone, Mail, ArrowRight, Home, Settings, Briefcase, Star, Users, MessageSquare, Workflow } from "lucide-react"; 
+import Image from "next/image";
+import { usePathname } from "next/navigation";
+import { useState, useEffect, useRef } from "react";
+import { cn } from "@/lib/utils";
+import { ThemeToggle } from "./theme-toggle";
+import InquirySheet from "@/components/InquirySheet"; 
+import React from "react";
 
-type HeaderProps = {}
-
-import React from "react"
-
-export default function Header({}: HeaderProps): React.JSX.Element {
-  const pathname = usePathname()
-  const [isScrolled, setIsScrolled] = useState(false)
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const headerRef = useRef<HTMLElement>(null)
+export default function Header(): React.JSX.Element {
+  const pathname = usePathname();
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<string | null>(null);
+  const headerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10)
-    }
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
-
-  const isActivePath = (path: string) => {
-    if (path === "/" && pathname === "/") return true
-    if (path !== "/" && pathname.startsWith(path)) return true
-    return false
-  }
+      setIsScrolled(window.scrollY > 10);
+      if (pathname === "/") {
+        const sections = document.querySelectorAll<HTMLElement>("[data-section]");
+        let currentSection: string | null = null;
+        const offset = (headerRef.current?.offsetHeight || 80) + 100;
+        sections.forEach((section) => {
+          if (window.scrollY >= section.offsetTop - offset) {
+            currentSection = section.getAttribute("data-section");
+          }
+        });
+        setActiveSection(currentSection);
+      } else {
+        setActiveSection(null);
+      }
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [pathname]);
 
   const scrollToSection = (sectionId: string) => {
-    if (pathname === "/") {
-      const element = document.querySelector(`[data-section="${sectionId}"]`)
-      if (element) {
-        const headerHeight = headerRef.current?.offsetHeight || 0
-        const topBarHeight = 40
-        const totalHeaderHeight = headerHeight + (window.innerWidth >= 1024 ? topBarHeight : 0)
-        const extraPadding = 20
-        const totalOffset = totalHeaderHeight + extraPadding
-        const elementPosition = element.getBoundingClientRect().top
-        const offsetPosition = elementPosition + window.pageYOffset - totalOffset
-        window.scrollTo({
-          top: Math.max(0, offsetPosition),
-          behavior: "smooth",
-        })
-      }
-    } else {
-      window.location.href = `/#${sectionId}`
+    setIsMobileMenuOpen(false);
+    if (pathname !== "/") {
+      window.location.href = `/#${sectionId}`;
+      return;
     }
-  }
+    const element = document.querySelector(`[data-section="${sectionId}"]`);
+    if (element) {
+      const headerHeight = headerRef.current?.offsetHeight || 0;
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - headerHeight - 20;
+      window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+    }
+  };
 
   const navigationItems = [
-    { href: "/", label: "Domů" },    
-    { href: "/pripadove-studie", label: "Případové studie" },
-    { href: "/o-mne", label: "O mně" },
-    { href: "/blog", label: "Blog" },
-    { href: "/kontakt", label: "Kontakt" },
-  ]
-
-  // === Struktura pro mobilní menu - pro přehlednost ===
-  const mobileLinkClasses = "text-lg font-medium transition-all duration-200 hover:text-blue-600 dark:hover:text-blue-400 py-3 px-4 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 flex items-center justify-between group";
-  const mobileActiveLinkClasses = "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 font-semibold";
-
+    { label: "Domů", type: 'scroll', target: 'hero-section' },
+    {
+      label: 'Služby',
+      type: 'dropdown',
+      items: [
+        { label: 'Tvorba webu', target: 'service-packages-section', description: 'Balíčky na míru pro váš byznys.' },
+        { label: 'Správa a údržba', target: 'maintenance-section', description: 'Dlouhodobá péče a bezpečnost.' },
+        { label: 'Můj proces', target: 'process-section', description: 'Transparentní postup od A do Z.' },
+      ]
+    },
+    {
+      label: 'Reference',
+      type: 'dropdown',
+      items: [
+        { label: 'Případové studie', target: 'case-studies-section', description: 'Konkrétní výsledky mých projektů.' },
+        { label: 'Pro koho tvořím', target: 'for-whom-section', description: 'Řešení pro různé segmenty.' },
+        { label: 'Co o mně říkají', target: 'testimonials-section', description: 'Hodnocení a zpětná vazba.' },
+      ]
+    },
+    { label: "Partnerství", type: 'scroll', target: 'partners-packages-section' },
+    { label: "Blog", type: 'page', href: '/blog' },
+    { label: "Kontakt", type: 'page', href: '/kontakt' },
+  ];
 
   return (
     <>
       <div className="hidden lg:block bg-gradient-to-r from-blue-900 to-blue-800 text-white py-2">
         <div className="container mx-auto px-4 flex justify-between items-center text-sm">
-          <div className="flex items-center gap-6">
+           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2 hover:text-blue-200 transition-colors">
               <Phone className="h-4 w-4" />
-              <a href="tel:+420777596216" className="hover:underline">
-                +420 777 596 216
-              </a>
+              <a href="tel:+420777596216" className="hover:underline">+420 777 596 216</a>
             </div>
             <div className="flex items-center gap-2 hover:text-blue-200 transition-colors">
               <Mail className="h-4 w-4" />
-              <a href="mailto:poptavka@webnamiru.site" className="hover:text-blue-200 transition-colors">
-                poptavka@webnamiru.site
-              </a>
+              <a href="mailto:poptavka@webnamiru.site" className="hover:text-blue-200 transition-colors">poptavka@webnamiru.site</a>
             </div>
           </div>
           <div className="text-blue-200 font-medium">🎯 Specializujeme se na Kraj Vysočina</div>
         </div>
       </div>
 
-      <header
-        ref={headerRef}
-        className={cn(
-          "sticky top-0 z-50 w-full transition-all duration-300 ease-in-out",
-          isScrolled
-            ? "bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-xl border-b"
-            : "bg-white dark:bg-gray-900 shadow-sm",
-        )}
-      >
+      <header ref={headerRef} className={cn("sticky top-0 z-50 w-full transition-all duration-300 ease-in-out", isScrolled ? "bg-background/95 backdrop-blur-md shadow-lg border-b" : "bg-background shadow-sm")}>
         <div className="container mx-auto px-4 lg:px-6 h-16 flex items-center justify-between">
-          <Link
-            className="flex items-center gap-3 group transition-all duration-200 hover:scale-105"
-            href="/"
-            aria-label="webnamíru.site - Domovská stránka"
-          >
+          <Link href="/" className="flex items-center gap-3 group" aria-label="webnamíru.site - Domovská stránka">
             <div className="relative w-[50px] h-[50px]">
-              <Image
-                src="/images/logo/logo.svg"
-                alt="webnamíru.site - Logo"
-                fill
-                className="rounded-full object-contain transition-all duration-200 group-hover:shadow-lg group-hover:ring-2 group-hover:ring-blue-500/20"
-                priority
-              />
+              <Image src="/images/logo/logo.svg" alt="webnamíru.site - Logo" fill className="rounded-full object-contain" priority/>
             </div>
             <div className="flex flex-col">
-              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-                webnamíru.site
-              </span>
-              <span className="text-xs text-gray-600 dark:text-gray-400 hidden sm:block">
-                Strategické weby pro Vysočinu
-              </span>
+              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">webnamíru.site</span>
+              <span className="text-xs text-gray-600 dark:text-gray-400 hidden sm:block">Strategické weby pro Vysočinu</span>
             </div>
           </Link>
 
           <NavigationMenu className="hidden lg:flex">
             <NavigationMenuList>
               {navigationItems.map((item) => (
-                <NavigationMenuItem key={item.href}>
-                  <Link href={item.href} legacyBehavior passHref>
-                    <NavigationMenuLink
-                      className={cn(
-                        navigationMenuTriggerStyle(),
-                        "transition-all duration-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-700 dark:hover:text-blue-300 relative",
-                        isActivePath(item.href) &&
-                          "bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 font-semibold after:absolute after:bottom-0 after:left-1/2 after:transform after:-translate-x-1/2 after:w-1/2 after:h-0.5 after:bg-blue-600 after:rounded-full",
-                      )}
-                    >
+                <NavigationMenuItem key={item.label}>
+                  {item.type === 'dropdown' ? (
+                    <>
+                      <NavigationMenuTrigger>{item.label}</NavigationMenuTrigger>
+                      <NavigationMenuContent>
+                        <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+                          {item.items?.map((subItem) => (
+                            <ListItem key={subItem.label} title={subItem.label} onClick={() => scrollToSection(subItem.target!)} href={`/#${subItem.target}`}>
+                              {subItem.description}
+                            </ListItem>
+                          ))}
+                        </ul>
+                      </NavigationMenuContent>
+                    </>
+                  ) : item.type === 'scroll' ? (
+                    // ZMĚNA: Odebrána podmínka '&& pathname === "/"'
+                    <button onClick={() => scrollToSection(item.target!)} className={cn("group inline-flex h-10 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-accent focus:outline-none", activeSection === item.target && pathname === '/' && "bg-accent")}>
                       {item.label}
-                    </NavigationMenuLink>
-                  </Link>
+                    </button>
+                  ) : ( // item.type === 'page'
+                     <Link href={item.href!} legacyBehavior passHref>
+                        <NavigationMenuLink className={cn("group inline-flex h-10 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-accent", pathname.startsWith(item.href!) && "bg-accent")}>
+                          {item.label}
+                        </NavigationMenuLink>
+                      </Link>
+                  )}
                 </NavigationMenuItem>
               ))}
-
-              <NavigationMenuItem>
-                <NavigationMenuTrigger className="transition-all duration-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-700 dark:hover:text-blue-300">
-                  Služby
-                </NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <div className="grid gap-3 p-6 md:w-[500px] lg:w-[600px] lg:grid-cols-[.75fr_1fr]">
-                    <div className="row-span-4">
-                      <NavigationMenuLink asChild>
-                        <Link
-                          className="flex h-full w-full select-none flex-col justify-end rounded-lg bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 p-6 no-underline outline-none focus:shadow-md transition-all duration-200 hover:shadow-lg hover:scale-[1.02] border border-blue-200/50"
-                          href="/sluzby/balicky"
-                        >
-                          <div className="mb-2 mt-4 text-lg font-semibold text-blue-900 dark:text-blue-100">
-                            Web na míru
-                          </div>
-                          <p className="text-sm leading-tight text-blue-700 dark:text-blue-300">
-                            Strategické weby, které skutečně vydělávají pro firmy na Vysočině.
-                          </p>
-                          <ArrowRight className="h-4 w-4 mt-2 text-blue-600" />
-                        </Link>
-                      </NavigationMenuLink>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Link href="/sluzby/balicky" legacyBehavior passHref>
-                        <NavigationMenuLink className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-all duration-200 hover:bg-blue-50 hover:text-blue-700 focus:bg-blue-50 focus:text-blue-700 border border-transparent hover:border-blue-200">
-                          <div className="text-sm font-medium leading-none flex items-center gap-2">
-                            <Package className="h-4 w-4" /> Balíčky služeb
-                          </div>
-                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                            START, RŮST, EXPANZE - vyberte si podle potřeb.
-                          </p>
-                        </NavigationMenuLink>
-                      </Link>
-                      <Link href="/kontakt" legacyBehavior passHref>
-                        <NavigationMenuLink className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-all duration-200 hover:bg-blue-50 hover:text-blue-700 focus:bg-blue-50 focus:text-blue-700 border border-transparent hover:border-blue-200">
-                          <div className="text-sm font-medium leading-none flex items-center gap-2">
-                            <Zap className="h-4 w-4" /> Individuální řešení
-                          </div>
-                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                            Řešení na míru pro specifické projekty.
-                          </p>
-                        </NavigationMenuLink>
-                      </Link>
-                    </div>
-                  </div>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
-
-              <NavigationMenuItem>
-                <NavigationMenuTrigger className="transition-all duration-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-700 dark:hover:text-blue-300">
-                  Partnerství
-                </NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <div className="grid gap-3 p-6 w-[400px]">
-                      <Link href="/sluzby/partnerstvi" legacyBehavior passHref>
-                        <NavigationMenuLink className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-all duration-200 hover:bg-blue-50 hover:text-blue-700 focus:bg-blue-50 focus:text-blue-700 border border-transparent hover:border-blue-200">
-                          <div className="text-sm font-medium leading-none flex items-center gap-2">
-                            <Handshake className="h-4 w-4" />
-                            Partnerské balíčky
-                          </div>
-                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                            Výhodné podmínky spolupráce pro kreativce.
-                          </p>
-                        </NavigationMenuLink>
-                      </Link>
-                  </div>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
-              
             </NavigationMenuList>
           </NavigationMenu>
 
           <div className="hidden lg:flex items-center gap-4">
             <ThemeToggle />
-            <Button
-              className="h-10 items-center justify-center rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-2 text-sm font-medium text-white shadow-lg transition-all duration-200 hover:from-blue-700 hover:to-blue-800 hover:shadow-xl hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 group"
-              asChild
-            >
-              <Link href="/kontakt">
-                Nezávazná konzultace
-                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </Link>
-            </Button>
+            <InquirySheet
+              title="Nezávazná konzultace"
+              description="Zanechte mi kontakt a probereme, jak mohu pomoci vašemu projektu."
+              serviceInfo="Obecná poptávka z hlavičky"
+              trigger={ <Button className="h-10 px-6 group">Nezávazná konzultace<ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" /></Button> }
+            />
           </div>
 
-          <div className="flex items-center gap-4 lg:hidden">
+          <div className="flex items-center gap-2 lg:hidden">
             <ThemeToggle />
             <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
               <SheetTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="transition-all duration-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-300"
-                  aria-label="Otevřít navigační menu"
-                >
-                  <MenuIcon className="h-6 w-6" />
-                </Button>
+                <Button variant="outline" size="icon" aria-label="Otevřít menu"><MenuIcon className="h-6 w-6" /></Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[320px] sm:w-[400px] overflow-y-auto">
-                <div className="flex flex-col gap-4 py-6">
-                  <div className="flex items-center gap-3 pb-4 border-b border-gray-200 dark:border-gray-700 px-4">
-                    <Image
-                      src="/images/logo/logo.svg"
-                      width={60}
-                      height={36}
-                      alt="webnamíru.site Logo"
-                      className="rounded-lg"
-                    />
-                    <div>
-                      <div className="font-bold text-lg bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-                        webnamíru.site
-                      </div>
-                      <div className="text-sm text-gray-600 dark:text-gray-400">Strategické weby</div>
-                    </div>
-                  </div>
-                  <nav className="flex flex-col gap-1">
-                    {navigationItems.map((item) => (
-                      <Link
-                        key={item.href}
-                        className={cn(mobileLinkClasses, isActivePath(item.href) && mobileActiveLinkClasses)}
-                        href={item.href}
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
+              <SheetContent side="right" className="w-full max-w-xs sm:max-w-sm">
+                <nav className="flex flex-col gap-1 text-lg font-medium mt-10 p-2">
+                  {navigationItems.map((item) =>
+                    item.type === 'dropdown' ? (
+                      <Accordion type="single" collapsible key={item.label}>
+                        <AccordionItem value={item.label} className="border-b-0">
+                          <AccordionTrigger className="p-2 font-medium text-lg hover:no-underline">{item.label}</AccordionTrigger>
+                          <AccordionContent className="pl-4">
+                            {item.items?.map((subItem) => (
+                              <button key={subItem.label} onClick={() => scrollToSection(subItem.target!)} className={cn("w-full text-left p-2 rounded-md text-base", activeSection === subItem.target && pathname === '/' ? "bg-accent" : "hover:bg-accent/50")}>
+                                {subItem.label}
+                              </button>
+                            ))}
+                          </AccordionContent>
+                        </AccordionItem>
+                      </Accordion>
+                    ) : item.type === 'scroll' ? (
+                      // ZMĚNA: Odebrána podmínka '&& pathname === "/"'
+                      <button key={item.label} onClick={() => scrollToSection(item.target!)} className={cn("text-left p-2 rounded-md", activeSection === item.target && pathname === '/' ? "bg-accent" : "hover:bg-accent/50")}>
                         {item.label}
-                        <ArrowRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-all duration-200 group-hover:translate-x-1" />
+                      </button>
+                    ) : ( // item.type === 'page'
+                      <Link key={item.label} href={item.href!} onClick={() => setIsMobileMenuOpen(false)} className={cn("block p-2 rounded-md", pathname.startsWith(item.href!) ? "bg-accent" : "hover:bg-accent/50")}>
+                        {item.label}
                       </Link>
-                    ))}
-                  </nav>
-
-                 
-                  <div className="px-2">
-                    <Accordion type="single" collapsible className="w-full">
-                      <AccordionItem value="sluzby">
-                        <AccordionTrigger className={cn(mobileLinkClasses, "py-3")}>Služby</AccordionTrigger>
-                        <AccordionContent className="pb-1">
-                            <Link href="/sluzby/balicky" className="flex items-center gap-3 p-3 rounded-md hover:bg-blue-50 dark:hover:bg-blue-900/20" onClick={() => setIsMobileMenuOpen(false)}>
-                                <Package className="h-5 w-5 text-blue-600" />
-                                <div className="flex flex-col">
-                                    <span className="font-medium">Balíčky služeb</span>
-                                    <span className="text-sm text-muted-foreground">START, RŮST, EXPANZE</span>
-                                </div>
-                            </Link>
-                            <Link href="/kontakt" className="flex items-center gap-3 p-3 rounded-md hover:bg-blue-50 dark:hover:bg-blue-900/20" onClick={() => setIsMobileMenuOpen(false)}>
-                                <Zap className="h-5 w-5 text-blue-600" />
-                                <div className="flex flex-col">
-                                    <span className="font-medium">Individuální řešení</span>
-                                    <span className="text-sm text-muted-foreground">Pro specifické projekty</span>
-                                </div>
-                            </Link>
-                        </AccordionContent>
-                      </AccordionItem>
-                      <AccordionItem value="partnerstvi">
-                        <AccordionTrigger className={cn(mobileLinkClasses, "py-3")}>Partnerství</AccordionTrigger>
-                        <AccordionContent className="pb-1">
-                           <Link href="/sluzby/partnerstvi" className="flex items-center gap-3 p-3 rounded-md hover:bg-blue-50 dark:hover:bg-blue-900/20" onClick={() => setIsMobileMenuOpen(false)}>
-                                <Handshake className="h-5 w-5 text-blue-600" />
-                                <div className="flex flex-col">
-                                    <span className="font-medium">Partnerské balíčky</span>
-                                    <span className="text-sm text-muted-foreground">Pro kreativce</span>
-                                </div>
-                            </Link>
-                        </AccordionContent>
-                      </AccordionItem>
-                    </Accordion>
-                  </div>
-                  
-
-                  <div className="pt-4 border-t border-gray-200 dark:border-gray-700 space-y-4 px-4">
-                    <Button
-                      className="w-full inline-flex h-12 items-center justify-center rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-2 text-sm font-medium text-white shadow-lg transition-all duration-200 hover:from-blue-700 hover:to-blue-800 hover:shadow-xl group"
-                      asChild
-                    >
-                      <Link href="/kontakt" onClick={() => setIsMobileMenuOpen(false)}>
-                        Nezávazná konzultace
-                        <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                      </Link>
-                    </Button>
-                  </div>
-                </div>
+                    )
+                  )}
+                </nav>
               </SheetContent>
             </Sheet>
           </div>
         </div>
       </header>
     </>
-  )
+  );
 }
+
+const ListItem = React.forwardRef<React.ElementRef<"a">, React.ComponentPropsWithoutRef<"a">>(
+  ({ className, title, children, ...props }, ref) => {
+    return (
+      <li>
+        <NavigationMenuLink asChild>
+          <a ref={ref} className={cn("block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground cursor-pointer", className)}
+            onClick={(e) => {
+              e.preventDefault();
+              if (props.onClick) {
+                props.onClick(e);
+              }
+            }}
+            {...props}
+          >
+            <div className="text-sm font-medium leading-none">{title}</div>
+            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">{children}</p>
+          </a>
+        </NavigationMenuLink>
+      </li>
+    );
+  }
+);
+ListItem.displayName = "ListItem";
