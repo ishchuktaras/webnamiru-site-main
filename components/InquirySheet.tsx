@@ -2,15 +2,17 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter, SheetClose } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"; // Přidán import pro Select
+import { Checkbox } from "@/components/ui/checkbox"; // ZMĚNA: Přidán import pro Checkbox
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3"; // ZMĚNA: Přidán import pro reCAPTCHA
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import Link from "next/link"; // ZMĚNA: Přidán import pro Link
 
 interface InquirySheetProps {
   trigger: React.ReactNode;
@@ -22,17 +24,26 @@ interface InquirySheetProps {
 export default function InquirySheet({ trigger, title, description, serviceInfo }: InquirySheetProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  
+  // ZMĚNA: Integrace reCAPTCHA hooku
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
-  // ZMĚNA: Rozpoznání typu služby pro zobrazení správných polí
-  const isInquiryForNewWebsite = serviceInfo.toLowerCase().includes('tvorba webu');
-  const isInquiryForMaintenance = serviceInfo.toLowerCase().includes('správa');
-  const isInquiryForPartnership = serviceInfo.toLowerCase().includes('partner');
-
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  const handleSubmit = useCallback(async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
 
+    if (!executeRecaptcha) {
+      toast.error("Chyba reCAPTCHA", { description: "Nepodařilo se načíst ochranu proti spamu. Zkuste to prosím znovu." });
+      setIsLoading(false);
+      return;
+    }
+
     const formData = new FormData(event.currentTarget);
+    
+    // ZMĚNA: Získáme reCAPTCHA token a přidáme ho do formuláře
+    const token = await executeRecaptcha('inquiryForm');
+    formData.append("recaptchaToken", token);
+    
     const data = Object.fromEntries(formData.entries());
 
     try {
@@ -42,8 +53,10 @@ export default function InquirySheet({ trigger, title, description, serviceInfo 
         body: JSON.stringify(data),
       });
 
+      const result = await response.json();
+
       if (!response.ok) {
-        throw new Error('Něco se pokazilo. Zkuste to prosím znovu.');
+        throw new Error(result.error || 'Něco se pokazilo. Zkuste to prosím znovu.');
       }
 
       toast.success("Poptávka byla úspěšně odeslána!", {
@@ -57,7 +70,7 @@ export default function InquirySheet({ trigger, title, description, serviceInfo 
     } finally {
       setIsLoading(false);
     }
-  }
+  }, [executeRecaptcha, serviceInfo]);
 
   return (
     <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
@@ -68,7 +81,7 @@ export default function InquirySheet({ trigger, title, description, serviceInfo 
           <SheetDescription>{description}</SheetDescription>
         </SheetHeader>
         <div className="py-6">
-          <form id={`form-${serviceInfo.replace(/\s+/g, '-')}`} className="space-y-4" onSubmit={handleSubmit}>
+          <form id={`form-${serviceInfo.replace(/\s+/g, '-')}`} className="space-y-6" onSubmit={handleSubmit}>
             <input type="hidden" name="service" value={serviceInfo} />
             <div className="space-y-2">
               <Label htmlFor="name">Celé jméno*</Label>
@@ -78,41 +91,27 @@ export default function InquirySheet({ trigger, title, description, serviceInfo 
               <Label htmlFor="email">Kontaktní e-mail*</Label>
               <Input id="email" name="email" type="email" placeholder="vas@email.cz" required disabled={isLoading} />
             </div>
-
-            {/* ZMĚNA: Dynamické zobrazení polí podle typu poptávky */}
-            {isInquiryForNewWebsite && (
-              <div className="space-y-2">
-                <Label htmlFor="budget">Odhadovaný rozpočet</Label>
-                <Select name="budget" disabled={isLoading}>
-                  <SelectTrigger><SelectValue placeholder="Vyberte rozpočet..." /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="do 15 000 Kč">do 15 000 Kč</SelectItem>
-                    <SelectItem value="15 000 - 30 000 Kč">15 000 - 30 000 Kč</SelectItem>
-                    <SelectItem value="30 000 - 60 000 Kč">30 000 - 60 000 Kč</SelectItem>
-                    <SelectItem value="60 000 Kč a více">60 000 Kč a více</SelectItem>
-                    <SelectItem value="nerozhoduje">Nerozhoduje / Potřebuji poradit</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-
-            {isInquiryForMaintenance && (
-                <div className="space-y-2">
-                    <Label htmlFor="websiteUrl">Adresa vašeho webu*</Label>
-                    <Input id="websiteUrl" name="websiteUrl" placeholder="https://www.mujweb.cz" required disabled={isLoading} />
-                </div>
-            )}
-            
-            {isInquiryForPartnership && (
-                 <div className="space-y-2">
-                    <Label htmlFor="portfolioUrl">Váš web nebo portfolio*</Label>
-                    <Input id="portfolioUrl" name="portfolioUrl" placeholder="https://www.mojeportfolio.cz" required disabled={isLoading} />
-                </div>
-            )}
-
             <div className="space-y-2">
               <Label htmlFor="message">Vaše zpráva (nepovinné)</Label>
               <Textarea id="message" name="message" placeholder="Můžete doplnit specifické požadavky..." disabled={isLoading} />
+            </div>
+
+            {/* ZMĚNA: Přidáno zaškrtávací políčko pro GDPR a obchodní podmínky */}
+            <div className="flex items-start space-x-3 pt-2">
+              <Checkbox id="consent" name="consent" required disabled={isLoading} />
+              <div className="grid gap-1.5 leading-none">
+                <label
+                  htmlFor="consent"
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  Souhlasím se zpracováním osobních údajů*
+                </label>
+                <p className="text-sm text-muted-foreground">
+                  Odesláním formuláře souhlasíte s našimi{" "}
+                  <Link href="/obchodni-podminky" className="underline hover:text-primary">obchodními podmínkami</Link> a{" "}
+                  <Link href="/ochrana-osobnich-udaju" className="underline hover:text-primary">zásadami ochrany osobních údajů</Link>.
+                </p>
+              </div>
             </div>
           </form>
         </div>

@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { z } from 'zod';
 
-// ZMĚNA: Rozšíření schématu o nová, nepovinná pole
+// ZMĚNA: Rozšíření schématu o reCAPTCHA a souhlas
 const inquirySchema = z.object({
   name: z.string().min(2, { message: "Jméno musí mít alespoň 2 znaky." }),
   email: z.string().email({ message: "Neplatná e-mailová adresa." }),
@@ -13,25 +13,41 @@ const inquirySchema = z.object({
   budget: z.string().optional(),
   websiteUrl: z.string().optional(),
   portfolioUrl: z.string().optional(),
+  recaptchaToken: z.string().min(1, { message: "Chybí reCAPTCHA token." }),
+  consent: z.string().refine(val => val === 'on', { message: "Musíte souhlasit s podmínkami." }),
 });
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const TO_EMAIL = 'poptavka@webnamiru.site';
-const FROM_EMAIL = 'Poptávka z webu <poptavka@webnamiru.site>';
+const FROM_EMAIL = 'Poptávka z webu <poptavka@webnamiru.site>'; // Ujisti se, že máš ověřenou doménu
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const parsedData = inquirySchema.safeParse(body);
 
+    // 1. Validace dat ze formuláře
+    const parsedData = inquirySchema.safeParse(body);
     if (!parsedData.success) {
-      return NextResponse.json({ error: parsedData.error.flatten().fieldErrors }, { status: 400 });
+      console.error("Validation errors:", parsedData.error.flatten().fieldErrors);
+      return NextResponse.json({ error: "Neplatná data ve formuláři." }, { status: 400 });
     }
     
-    // ZMĚNA: Získání nových dat z formuláře
-    const { name, email, message, service, budget, websiteUrl, portfolioUrl } = parsedData.data;
+    const { name, email, message, service, budget, websiteUrl, portfolioUrl, recaptchaToken } = parsedData.data;
 
-    // ZMĚNA: Sestavení textu e-mailu s novými daty
+    // 2. Ověření reCAPTCHA tokenu u Googlu
+    const recaptchaResponse = await fetch("https://www.google.com/recaptcha/api/siteverify", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: `secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${recaptchaToken}`,
+    });
+
+    const recaptchaData = await recaptchaResponse.json();
+    if (!recaptchaData.success || recaptchaData.score < 0.5) {
+        console.error("reCAPTCHA verification failed:", recaptchaData['error-codes']);
+        return NextResponse.json({ error: "Ověření proti robotům selhalo." }, { status: 400 });
+    }
+
+    // 3. Pokud je vše v pořádku, sestavení a odeslání e-mailu
     const emailText = `
 Nová poptávka ze stránek webnamiru.site!
 -----------------------------------------
@@ -40,10 +56,9 @@ Jméno: ${name}
 Email: ${email}
 Poptávaná služba: ${service}
 
-${budget ? `Odhadovaný rozpočet: ${budget}` : ''}
-${websiteUrl ? `Adresa webu ke správě: ${websiteUrl}` : ''}
-${portfolioUrl ? `Portfolio partnera: ${portfolioUrl}` : ''}
-
+${budget ? `Odhadovaný rozpočet: ${budget}\n` : ''}
+${websiteUrl ? `Adresa webu ke správě: ${websiteUrl}\n` : ''}
+${portfolioUrl ? `Portfolio partnera: ${portfolioUrl}\n` : ''}
 Zpráva:
 ${message || 'Klient nezanechal žádnou zprávu.'}
     `.trim();
@@ -61,7 +76,7 @@ ${message || 'Klient nezanechal žádnou zprávu.'}
       return NextResponse.json({ error: 'Chyba při odesílání e-mailu.' }, { status: 500 });
     }
 
-    return NextResponse.json({ message: 'E-mail byl úspěšně odeslán!', data });
+    return NextResponse.json({ message: 'E-mail byl úspěšně odeslán!' });
 
   } catch (error) {
     console.error("API error:", error);
