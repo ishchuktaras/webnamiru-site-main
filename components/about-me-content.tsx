@@ -25,8 +25,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { ChevronLeft, ChevronRight, X, ZoomIn } from "lucide-react";
-import SectionWrapper from "./SectionWrapper"; // Import wrapperu
-import InquirySheet from "./InquirySheet"; // Import pro formulář
+import SectionWrapper from "@/components/SectionWrapper"; // Import wrapperu
+import InquirySheet from "@/components/InquirySheet"; // Import pro formulář
 import { certificates, skills, achievements } from "@/lib/data"; // Import dat
 
 export default function AboutMeContent() {
