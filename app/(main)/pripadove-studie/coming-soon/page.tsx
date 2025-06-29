@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft } from "lucide-react" // Odstraněn Facebook, Instagram
+import { ArrowLeft } from "lucide-react" 
 
 export default function ComingSoonPage() {
   return (

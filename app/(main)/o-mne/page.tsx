@@ -1,5 +1,5 @@
-import AboutMeContent from "../../components/about-me-content"
-import Footer from "../../components/Footer" // Import patičky
+import AboutMeContent from "@/components/about-me-content"
+import Footer from "@/components/Footer" // Import patičky
 
 export default function AboutMePage() {
   return (
