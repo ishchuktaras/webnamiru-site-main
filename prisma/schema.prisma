@@ -1,3 +1,5 @@
+// prisma/schema.prisma
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -7,38 +9,82 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Comment {
-  id        String   @id @default(uuid())
-  postId    String   // Odkazuje na slug blogového příspěvku
-  author    String
-  email     String
-  content   String
-  approved  Boolean  @default(false) // Moderace komentářů
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model User {
+  id        String    @id @default(cuid())
+  name      String?
+  email     String    @unique
+  image     String?
+  createdAt DateTime  @default(now())
+  posts     Post[]
+  comments  Comment[]
+}
 
+model Category {
+  id    String @id @default(cuid())
+  slug  String @unique
+  name  String
+  color String @default("gray")
+  posts Post[]
+}
+
+model Post {
+  id              String    @id @default(cuid())
+  slug            String    @unique
+  title           String
+  excerpt         String
+  content         String    @db.Text
+  imageUrl        String?
+  published       Boolean   @default(false)
+  featured        Boolean   @default(false)
+  readingTime     Int       @default(5)
+  seoTitle        String?
+  seoDescription  String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  tags            String[]
+  author          User      @relation(fields: [authorId], references: [id])
+  authorId        String
+  category        Category? @relation(fields: [categoryId], references: [id])
+  categoryId      String?
+  comments        Comment[]
+  ratings         Rating[]
+  views           BlogView[]
+}
+
+model Comment {
+  id           String   @id @default(uuid())
+  originalAuthor    String
+  originalEmail     String
+  content      String
+  approved     Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  post         Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId       String
+  authorUser   User?    @relation(fields: [authorUserId], references: [id])
+  authorUserId String?
   @@index([postId])
   @@index([approved])
 }
 
 model Rating {
   id        String   @id @default(uuid())
-  postId    String   // Odkazuje na slug blogového příspěvku
-  value     Int      // Hodnota hodnocení (1-5 hvězdiček)
-  ipAddress String?  // Pro prevenci duplicitních hodnocení
+  value     Int
+  ipAddress String?
   createdAt DateTime @default(now())
-
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    String
   @@index([postId])
-  @@unique([postId, ipAddress]) // Jedno hodnocení na IP adresu
+  @@unique([postId, ipAddress])
 }
 
 model BlogView {
   id        String   @id @default(uuid())
-  postId    String   // Odkazuje na slug blogového příspěvku
   ipAddress String?
   userAgent String?
   createdAt DateTime @default(now())
-
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    String
   @@index([postId])
   @@index([createdAt])
 }
@@ -48,11 +94,10 @@ model Newsletter {
   email       String   @unique
   name        String?
   active      Boolean  @default(true)
-  source      String?  // Odkud se přihlásil (blog, homepage, etc.)
-  preferences Json?    // Preference kategorií
+  source      String?
+  preferences Json?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-
   @@index([active])
   @@index([createdAt])
 }
@@ -63,20 +108,25 @@ model ContactSubmission {
   email           String
   phone           String?
   message         String
-  inquiryType     String?  // "service" nebo "partnership"
-  servicePackage  String?  // START, RŮST, EXPANZE, INDIVIDUÁLNÍ
-  partnerType     String?  // KREATIVNÍ, MARKETING, PROJEKTOVÝ
+  inquiryType     String?
+  servicePackage  String?
+  partnerType     String?
   budget          String?
   timeline        String?
   businessType    String?
   location        String?
-  source          String?  // Odkud přišel (blog, homepage, etc.)
-  status          String   @default("new") // new, contacted, closed
+  source          String?
+  status          String   @default("new")
   notes           String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-
   @@index([status])
   @@index([inquiryType])
   @@index([createdAt])
+}
+
+model Setting {
+  id    String @id @default(cuid())
+  key   String @unique // Unikátní klíč, např. "metaTitle"
+  value String @db.Text // Hodnota nastavení
 }

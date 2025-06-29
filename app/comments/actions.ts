@@ -1,17 +1,18 @@
-"use server"
+// app/comments/actions.ts
 
-import { z } from "zod"
-import prisma from "@/lib/prisma"
+"use server";
 
-// Schéma pro validaci komentáře
+import { z } from "zod";
+import prisma from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
+
 const commentSchema = z.object({
   postId: z.string().min(1, { message: "ID příspěvku je povinné." }),
-  author: z.string().min(1, { message: "Jméno je povinné." }),
-  email: z.string().email({ message: "Neplatný e-mail." }),
+  originalAuthor: z.string().min(1, { message: "Jméno je povinné." }),
+  originalEmail: z.string().email({ message: "Neplatný e-mail." }),
   content: z.string().min(1, { message: "Obsah komentáře je povinný." }),
-})
+});
 
-// Server Action pro přidání komentáře
 export async function addComment(
   prevState: { message: string; errors?: Record<string, string[]> },
   formData: FormData,
@@ -19,68 +20,66 @@ export async function addComment(
   try {
     const validatedFields = commentSchema.safeParse({
       postId: formData.get("postId"),
-      author: formData.get("author"),
-      email: formData.get("email"),
+      originalAuthor: formData.get("author"),
+      originalEmail: formData.get("email"),
       content: formData.get("content"),
-    })
+    });
 
     if (!validatedFields.success) {
       return {
         message: "Chyba validace komentáře.",
         errors: validatedFields.error.flatten().fieldErrors,
-      }
+      };
     }
 
-    const { postId, author, email, content } = validatedFields.data
+    const { postId, originalAuthor, originalEmail, content } = validatedFields.data;
 
-    // Zkontrolujeme, jestli Prisma klient existuje
-    if (!prisma) {
-      console.error("Prisma client is not available")
-      return { message: "Databáze není dostupná. Zkuste to prosím později." }
+    // Najdeme článek v databázi, abychom měli jeho data k dispozici
+    const post = await prisma.post.findUnique({ where: { id: postId } });
+    if (!post) {
+      return { message: "Článek nenalezen." };
     }
 
     await prisma.comment.create({
       data: {
-        postId,
-        author,
-        email,
         content,
-        approved: false, // Nové komentáře jsou defaultně neschválené
+        approved: false,
+        originalAuthor: originalAuthor,
+        originalEmail: originalEmail,
+        postId: post.id,
       },
-    })
+    });
+    
+    // ZMĚNA ZDE: Použijeme slug z článku, který jsme si načetli z databáze
+    revalidatePath(`/blog/${post.slug}`);
 
-    console.log(`Komentář přidán pro příspěvek ${postId} od ${author}`)
-    return { message: "Váš komentář byl úspěšně přidán! Bude zobrazen po schválení administrátorem." }
+    return { message: "Váš komentář byl úspěšně přidán a čeká na schválení." };
   } catch (error) {
-    console.error("Chyba při přidávání komentáře:", error)
-    return { message: "Nastala chyba při přidávání komentáře. Zkuste to prosím znovu." }
+    console.error("Chyba při přidávání komentáře:", error);
+    return { message: "Nastala chyba při přidávání komentáře. Zkuste to prosím znovu." };
   }
 }
 
-// Server Action pro načtení komentářů s filtrováním a limitováním
 export async function getComments(postId: string, limit: number, offset = 0) {
   try {
-    if (!prisma) {
-      console.error("Prisma client is not available")
-      return { success: false, error: "Databáze není dostupná.", data: [], hasMore: false }
-    }
-
     const comments = await prisma.comment.findMany({
       where: {
         postId: postId,
-        approved: true, // Zobrazujeme pouze schválené komentáře
+        approved: true,
       },
-      orderBy: { createdAt: "desc" },
-      take: limit + 1, // Načteme o jeden více, abychom zjistili, zda existují další
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: limit + 1,
       skip: offset,
-    })
+    });
 
-    const hasMore = comments.length > limit
-    const data = hasMore ? comments.slice(0, limit) : comments
+    const hasMore = comments.length > limit;
+    const data = hasMore ? comments.slice(0, limit) : comments;
 
-    return { success: true, data: data, hasMore: hasMore }
+    return { success: true, data: JSON.parse(JSON.stringify(data)), hasMore: hasMore };
   } catch (error) {
-    console.error("Chyba při načítání komentářů:", error)
-    return { success: false, error: "Chyba při načítání komentářů.", data: [], hasMore: false }
+    console.error("Chyba při načítání komentářů:", error);
+    return { success: false, error: "Chyba při načítání komentářů.", data: [], hasMore: false };
   }
 }

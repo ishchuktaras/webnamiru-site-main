@@ -1,18 +1,17 @@
+// app/layout.tsx
+
 import type React from "react"
 import type { Metadata } from "next"
 import "./globals.css"
 import Header from "../components/header"
-import { ThemeProvider } from "@/components/theme-provider" // <-- Importuj ThemeProvider
+import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/sonner"
 import GdprConsent from "@/components/gdpr-consent";
-
-// 1. Importujte font Inter z Google Fonts.
+import Script from "next/script"; // ZMĚNA: Přidán import pro Script
 import { Inter } from "next/font/google"
 
-// 2. Inicializujte font.
 const inter = Inter({ subsets: ["latin"] })
 
-// Nahraďte celý objekt metadata tímto:
 export const metadata: Metadata = {
   title: "webnamiru.site - Strategické weby, které vydělávají | Vysočina",
   description:
@@ -35,6 +34,27 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="cs" suppressHydrationWarning={true}>
+      <head>
+        {/* ZMĚNA: Přidán Google Tag Manager a konfigurační skript */}
+        <Script
+          strategy="afterInteractive"
+          src={`https://www.googletagmanager.com/gtag/js?id=G-NZYNFSN0J0`}
+        />
+        <Script
+          id="gtag-init"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-NZYNFSN0J0', {
+                page_path: window.location.pathname,
+              });
+            `,
+          }}
+        />
+      </head>
       <body className={inter.className}>
         <ThemeProvider
           attribute="class"

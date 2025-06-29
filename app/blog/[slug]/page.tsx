@@ -12,6 +12,8 @@ import { blogCategories } from "@/lib/blog-data"
 import CommentForm from "@/components/CommentForm"
 import CommentsTable from "@/components/CommentsTable"
 
+export const revalidate = 0; // Tímto zakážeme cachování pro tuto stránku
+
 // Generování statických cest pro blogové příspěvky
 export async function generateStaticParams() {
   try {
