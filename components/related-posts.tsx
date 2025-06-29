@@ -1,59 +1,74 @@
-import Link from "next/link"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { blogPosts } from "@/lib/blog-data"
+// components/related-posts.tsx
 
+import Link from "next/link";
+import prisma from "@/lib/prisma";
+import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+
+// ZMĚNA: Definujeme, jaké props komponenta přijímá
 interface RelatedPostsProps {
-  currentPostSlug: string
-  limit?: number
+  currentPostSlug: string;
+  currentPostCategory?: string | null; // Kategorie může být nepovinná
 }
 
-export default function RelatedPosts({ currentPostSlug, limit = 3 }: RelatedPostsProps) {
-  // Filter out current post and get random related posts
-  const relatedPosts = blogPosts
-    .filter((post) => post.slug !== currentPostSlug)
-    .sort(() => Math.random() - 0.5)
-    .slice(0, limit)
+// ZMĚNA: Nová funkce pro načtení souvisejících článků
+async function getRelatedPosts({ currentPostSlug, currentPostCategory }: RelatedPostsProps) {
+  if (!currentPostCategory) {
+    // Pokud článek nemá kategorii, vrátíme nejnovější články
+    return prisma.post.findMany({
+      where: {
+        published: true,
+        slug: { not: currentPostSlug }, // Vyloučíme aktuální článek
+      },
+      orderBy: { createdAt: 'desc' },
+      take: 3,
+      include: { category: true },
+    });
+  }
+
+  // Najdeme další články ve stejné kategorii
+  return prisma.post.findMany({
+    where: {
+      published: true,
+      category: { slug: currentPostCategory },
+      slug: { not: currentPostSlug },
+    },
+    orderBy: { createdAt: 'desc' },
+    take: 3,
+    include: { category: true },
+  });
+}
+
+
+export default async function RelatedPosts(props: RelatedPostsProps) {
+  const relatedPosts = await getRelatedPosts(props);
 
   if (relatedPosts.length === 0) {
-    return null
+    return null; // Pokud nenajdeme žádné související články, nic nezobrazíme
   }
 
   return (
-    <section className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
+    <div className="mt-16 pt-8 border-t">
       <h2 className="text-2xl font-bold mb-6">Související články</h2>
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-6 md:grid-cols-3">
         {relatedPosts.map((post) => (
-          <Card key={post.slug} className="group hover:shadow-lg transition-shadow">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-lg leading-tight">
-                <Link
-                  href={`/blog/${post.slug}`}
-                  className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-                >
+          <Link key={post.id} href={`/blog/${post.slug}`} className="block group">
+            <Card className="h-full hover:shadow-lg transition-shadow">
+              <CardHeader>
+                {post.category && (
+                    <Badge variant="secondary" className="mb-2">{post.category.name}</Badge>
+                )}
+                <CardTitle className="text-lg leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                   {post.title}
-                </Link>
-              </CardTitle>
-              <CardDescription className="text-sm">
-                {post.author} •{" "}
-                {new Date(post.date).toLocaleDateString("cs-CZ", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3">{post.excerpt}</p>
-              <Link
-                href={`/blog/${post.slug}`}
-                className="inline-flex items-center text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline mt-3"
-              >
-                Číst více →
-              </Link>
-            </CardContent>
-          </Card>
+                </CardTitle>
+                <CardDescription className="text-sm mt-2">
+                    {new Date(post.createdAt).toLocaleDateString("cs-CZ", { month: 'long', year: 'numeric' })}
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          </Link>
         ))}
       </div>
-    </section>
-  )
+    </div>
+  );
 }

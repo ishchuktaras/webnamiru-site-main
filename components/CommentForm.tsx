@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
-import { addComment } from "@/app/comments/actions"
+import { addComment } from "@/app/(main)/comments/actions"
 import { useRouter } from "next/navigation"
 
 interface CommentFormProps {

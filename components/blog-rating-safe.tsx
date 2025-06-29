@@ -1,119 +1,88 @@
-"use client"
+// components/blog-rating-safe.tsx
 
-import { useState } from "react"
-import { Star } from "lucide-react"
+"use client";
 
+import { useState, useEffect } from "react";
+import { useActionState } from "react";
+import { Star } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { addRating } from "@/app/(main)/ratings/actions"; // Používáme naši funkční Server Action
+
+// Změna názvu props pro lepší srozumitelnost
 interface BlogRatingSafeProps {
-  postId: string
+  postId: string;
+  initialAverage: number;
+  initialCount: number;
 }
 
-export default function BlogRatingSafe({ postId }: BlogRatingSafeProps) {
-  const [averageRating, setAverageRating] = useState(0)
-  const [ratingCount, setRatingCount] = useState(0)
-  const [userRating, setUserRating] = useState(0)
-  const [hoveredRating, setHoveredRating] = useState(0)
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+export default function BlogRatingSafe({ postId, initialAverage, initialCount }: BlogRatingSafeProps) {
+  const [hoverRating, setHoverRating] = useState(0);
+  
+  // ZMĚNA: Stavy se nyní inicializují z props načtených na serveru
+  const [averageRating, setAverageRating] = useState(initialAverage);
+  const [ratingCount, setRatingCount] = useState(initialCount);
 
-  // Simplified rating submission without Server Actions
-  const handleRatingSubmit = async (rating: number) => {
-    setIsLoading(true)
-    setError(null)
+  const initialState = { message: "" };
+  const [state, formAction, isPending] = useActionState(addRating, initialState);
 
-    try {
-      const response = await fetch("/api/ratings", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          postId,
-          value: rating,
-        }),
-      })
+  const handleRatingSubmit = (rating: number) => {
+    const formData = new FormData();
+    formData.append("postId", postId);
+    formData.append("value", rating.toString());
+    formAction(formData);
 
-      if (response.ok) {
-        setUserRating(rating)
-        setAverageRating(rating) // Simplified - just show user's rating
-        setRatingCount(1)
-      } else {
-        throw new Error("Failed to submit rating")
-      }
-    } catch (error) {
-      console.error("Rating error:", error)
-      setError("Hodnocení se nepodařilo odeslat. Zkuste to prosím později.")
-    } finally {
-      setIsLoading(false)
+    // Optimistická aktualizace UI pro okamžitou zpětnou vazbu
+    setAverageRating((averageRating * ratingCount + rating) / (ratingCount + 1));
+    setRatingCount(ratingCount + 1);
+  };
+  
+  // Efekt pro zobrazení zprávy o úspěchu/chybě
+  useEffect(() => {
+    if (state?.message) {
+      // Zde můžeš v budoucnu použít toast notifikaci, pokud budeš chtít
+      console.log("Výsledek akce:", state.message);
     }
-  }
-
-  if (error) {
-    return (
-      <div className="bg-white dark:bg-gray-900 rounded-lg border p-6 space-y-4">
-        <h3 className="text-lg font-semibold">Ohodnoťte tento článek</h3>
-        <p className="text-sm text-red-500">{error}</p>
-      </div>
-    )
-  }
+  }, [state]);
 
   return (
-    <div className="bg-white dark:bg-gray-900 rounded-lg border p-6 space-y-4">
-      <h3 className="text-lg font-semibold">Ohodnoťte tento článek</h3>
-
-      {/* Current Rating Display */}
-      <div className="flex items-center gap-4">
-        <div className="flex items-center gap-1">
-          {[1, 2, 3, 4, 5].map((star) => (
+    <div className="flex flex-col items-center gap-4 p-6 border rounded-lg bg-gray-50 dark:bg-gray-800">
+      <h3 className="font-semibold text-lg">Ohodnoťte tento článek</h3>
+      <div className="flex items-center gap-1">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <button
+            key={star}
+            onClick={() => handleRatingSubmit(star)}
+            onMouseEnter={() => setHoverRating(star)}
+            onMouseLeave={() => setHoverRating(0)}
+            disabled={isPending || state?.message?.includes("již hodnotili")}
+            className="p-1 hover:scale-110 transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
+          >
             <Star
-              key={star}
-              className={`h-5 w-5 ${
-                star <= averageRating ? "fill-yellow-400 text-yellow-400" : "text-gray-300 dark:text-gray-600"
-              }`}
+              className={cn(
+                "h-8 w-8 transition-colors",
+                (hoverRating || averageRating) >= star
+                  ? "text-yellow-400 fill-yellow-400"
+                  : "text-gray-300 dark:text-gray-600"
+              )}
             />
-          ))}
-        </div>
-        <span className="text-sm text-gray-600 dark:text-gray-400">
-          {averageRating > 0 ? `${averageRating.toFixed(1)}/5` : "Bez hodnocení"}
-          {ratingCount > 0 && ` (${ratingCount} hodnocení)`}
-        </span>
+          </button>
+        ))}
       </div>
-
-      {/* User Rating Input */}
-      {!userRating && (
-        <div className="space-y-3">
-          <p className="text-sm text-gray-600 dark:text-gray-400">Vaše hodnocení:</p>
-          <div className="flex items-center gap-1">
-            {[1, 2, 3, 4, 5].map((star) => (
-              <button
-                key={star}
-                type="button"
-                onClick={() => handleRatingSubmit(star)}
-                onMouseEnter={() => setHoveredRating(star)}
-                onMouseLeave={() => setHoveredRating(0)}
-                disabled={isLoading}
-                className="p-1 hover:scale-110 transition-transform disabled:opacity-50"
-              >
-                <Star
-                  className={`h-6 w-6 ${
-                    star <= (hoveredRating || 0)
-                      ? "fill-yellow-400 text-yellow-400"
-                      : "text-gray-300 dark:text-gray-600 hover:text-yellow-400"
-                  }`}
-                />
-              </button>
-            ))}
-          </div>
-          {isLoading && <p className="text-sm text-gray-500">Odesílám hodnocení...</p>}
-        </div>
-      )}
-
-      {/* Success Message */}
-      {userRating > 0 && (
-        <div className="flex items-center gap-2 text-green-600 dark:text-green-400">
-          <Star className="h-4 w-4 fill-current" />
-          <span className="text-sm">Děkujeme za vaše hodnocení!</span>
-        </div>
+      <div className="text-sm text-gray-600 dark:text-gray-400">
+        {averageRating > 0 ? (
+          <span>
+            {averageRating.toFixed(1)}/5 ({ratingCount}{" "}
+            {ratingCount === 1 ? "hodnocení" : "hodnocení"})
+          </span>
+        ) : (
+          <span>Zatím bez hodnocení</span>
+        )}
+      </div>
+       {state?.message && (
+        <p className="text-sm font-medium text-green-600 dark:text-green-400">
+          {state.message}
+        </p>
       )}
     </div>
-  )
+  );
 }

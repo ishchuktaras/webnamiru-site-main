@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
-import { deletePost } from "@/app/admin/posts/actions";
+import { deletePost } from "@/app/(admin)/admin/posts/actions";
 import { useTransition } from "react";
 
 interface DeletePostButtonProps {

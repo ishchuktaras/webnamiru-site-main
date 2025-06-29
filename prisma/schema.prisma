@@ -2,6 +2,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
@@ -27,6 +28,14 @@ model Category {
   posts Post[]
 }
 
+// ZMĚNA: Přidán nový model pro Tagy
+model Tag {
+  id    String @id @default(cuid())
+  slug  String @unique
+  name  String
+  posts Post[] @relation("PostToTag") // Vazba na články
+}
+
 model Post {
   id              String    @id @default(cuid())
   slug            String    @unique
@@ -39,16 +48,22 @@ model Post {
   readingTime     Int       @default(5)
   seoTitle        String?
   seoDescription  String?
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  tags            String[]
-  author          User      @relation(fields: [authorId], references: [id])
-  authorId        String
-  category        Category? @relation(fields: [categoryId], references: [id])
-  categoryId      String?
-  comments        Comment[]
-  ratings         Rating[]
-  views           BlogView[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  String
+
+  category   Category? @relation(fields: [categoryId], references: [id])
+  categoryId String?
+
+  // ZMĚNA: Pole 'tags' je nyní propojeno s modelem Tag (many-to-many)
+  tags     Tag[]  @relation("PostToTag")
+  
+  comments Comment[]
+  ratings  Rating[]
+  views    BlogView[]
 }
 
 model Comment {
@@ -59,10 +74,13 @@ model Comment {
   approved     Boolean  @default(false)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  
   post         Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
   postId       String
+  
   authorUser   User?    @relation(fields: [authorUserId], references: [id])
   authorUserId String?
+
   @@index([postId])
   @@index([approved])
 }
@@ -127,6 +145,18 @@ model ContactSubmission {
 
 model Setting {
   id    String @id @default(cuid())
-  key   String @unique // Unikátní klíč, např. "metaTitle"
-  value String @db.Text // Hodnota nastavení
+  key   String @unique
+  value String @db.Text
+}
+
+model Campaign {
+  id           String    @id @default(cuid())
+  subject      String
+  content      String    @db.Text
+  previewText  String?
+  status       String    @default("draft") // "draft", "sent"
+  sentAt       DateTime?
+  
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 }

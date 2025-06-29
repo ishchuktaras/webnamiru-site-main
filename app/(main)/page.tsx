@@ -1,18 +1,5 @@
 "use client";
 
-// Toto je malá změna pro vynucení nového commitu a nasazení na Vercel.
-import {
-  Sheet,
-  SheetTrigger,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetDescription,
-  SheetFooter,
-} from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
-
-// Corrected import paths for custom components (assuming PascalCase filenames)
 import Footer from "@/components/Footer";
 import HeroSection from "@/components/hero-section";
 import ProblemSection from "@/components/problem-section";
