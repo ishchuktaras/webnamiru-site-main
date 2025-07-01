@@ -1,9 +1,13 @@
-// app/admin/actions.ts
+// app/(admin)/admin/actions.ts
 
 "use server";
 
 import prisma from "@/lib/prisma";
+import { signOut } from '@/auth';
 
+/**
+ * Načte souhrnné statistiky pro hlavní stránku admin dashboardu.
+ */
 export async function getDashboardStats() {
   try {
     // Spustíme všechny dotazy do databáze paralelně pro maximální rychlost
@@ -42,4 +46,11 @@ export async function getDashboardStats() {
     console.error("Chyba při načítání statistik pro dashboard:", error);
     return { success: false, error: "Nepodařilo se načíst statistiky." };
   }
+}
+
+/**
+ * Server Action pro odhlášení uživatele.
+ */
+export async function handleSignOut() {
+  await signOut({ redirectTo: '/login' });
 }

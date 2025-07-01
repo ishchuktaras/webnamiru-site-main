@@ -14,6 +14,7 @@
     "db:seed": "prisma db seed"
   },
   "dependencies": {
+    "@auth/prisma-adapter": "^2.10.0",
     "@hookform/resolvers": "^3.10.0",
     "@neondatabase/serverless": "^1.0.1",
     "@prisma/adapter-neon": "^6.10.1",
@@ -46,6 +47,7 @@
     "@radix-ui/react-toggle-group": "latest",
     "@radix-ui/react-tooltip": "latest",
     "autoprefixer": "^10.4.20",
+    "bcrypt": "^6.0.0",
     "child_process": "latest",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -56,6 +58,7 @@
     "input-otp": "latest",
     "lucide-react": "^0.454.0",
     "next": "15.2.4",
+    "next-auth": "5.0.0-beta.29",
     "next-themes": "latest",
     "react": "^19",
     "react-day-picker": "latest",
@@ -73,6 +76,7 @@
     "zod": "^3.25.67"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
