@@ -1,44 +1,20 @@
 // app/(admin)/layout.tsx
 
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "@/app/globals.css"; // Důležitý import pro načtení stylů
-import { ThemeProvider } from "@/components/theme-provider";
-import { Toaster } from "@/components/ui/sonner";
-import AdminLayout from "@/components/admin/AdminLayout"; // Importujeme náš vizuální layout
+import AdminLayoutComponent from "@/components/admin/AdminLayout"; // Přejmenováno pro srozumitelnost
 import { auth } from "@/auth";
-import { SessionProvider } from "next-auth/react";
+import { redirect } from "next/navigation";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
-
-export const metadata: Metadata = {
-  title: 'Admin Dashboard | webnamiru.site',
-  description: 'Správa obsahu a nastavení webu.',
-};
-
-export default async function AdminRootLayout({
+export default async function AdminProtectedLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const session = await auth();
+  // Tato pojistka tu zůstává pro případ, že by selhal middleware
+  if (!session?.user) {
+    redirect('/login');
+  }
 
-  return (
-    <html lang="cs" suppressHydrationWarning>
-      <body className={inter.className}>
-        <SessionProvider session={session}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-            enableSystem
-            disableTransitionOnChange
-          >
-            {/* Zde nepoužíváme AdminTheme, protože dark mode je vynucen v ThemeProvideru */}
-            <AdminLayout>{children}</AdminLayout>
-            <Toaster />
-          </ThemeProvider>
-        </SessionProvider>
-      </body>
-    </html>
-  );
+  // Komponenta AdminLayoutComponent nyní obsahuje sidebar, header atd.
+  return <AdminLayoutComponent>{children}</AdminLayoutComponent>;
 }

@@ -1,11 +1,12 @@
 // components/admin/AdminLayout.tsx
-"use client"
+
+"use client";
 
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Globe, LogOut } from "lucide-react";
-import { handleSignOut } from "@/app/(admin)/admin/actions"; // Předpokládáme, že tato akce existuje
+import { signOut } from "next-auth/react"; // ZMĚNA: Importujeme signOut z 'next-auth/react'
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
     return (
@@ -24,12 +25,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                          Zobrazit web
                       </Link>
                    </Button>
-                   <form action={handleSignOut}>
-                     <Button variant="destructive" type="submit">
-                        <LogOut className="mr-2 h-4 w-4" />
-                        Odhlásit se
-                     </Button>
-                   </form>
+                   
+                   {/* ZMĚNA: Místo formuláře používáme jednoduché tlačítko s onClick */}
+                   <Button 
+                     variant="destructive" 
+                     onClick={() => signOut({ callbackUrl: '/login' })}
+                   >
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Odhlásit se
+                   </Button>
                 </div>
               </header>
               <main className="flex-1 p-6 md:p-8 overflow-y-auto">
