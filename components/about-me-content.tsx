@@ -25,9 +25,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { ChevronLeft, ChevronRight, X, ZoomIn } from "lucide-react";
-import SectionWrapper from "@/components/SectionWrapper"; // Import wrapperu
-import InquirySheet from "@/components/InquirySheet"; // Import pro formulář
-import { certificates, skills, achievements } from "@/lib/data"; // Import dat
+import SectionWrapper from "@/components/SectionWrapper";
+import InquirySheet from "@/components/InquirySheet"; 
+import { certificates, skills, achievements } from "@/lib/data"; 
 
 export default function AboutMeContent() {
   const [imageErrors, setImageErrors] = useState<Set<number>>(new Set());
@@ -62,9 +62,9 @@ export default function AboutMeContent() {
   const selectedCert = certificates.find((cert) => cert.id === selectedImage);
 
   return (
-    // ZMĚNA: Celý obsah je obalen v SectionWrapperu
+   
     <SectionWrapper
-      id="about-me-section" // Používáme id místo dataSection pro konzistenci
+      id="about-me-section" 
       badgeText="Můj příběh"
       title={
         <span className="bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
@@ -288,7 +288,7 @@ export default function AboutMeContent() {
           byznys. Začněme nezávaznou konzultací o vašich cílech.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          {/* ZMĚNA: Tlačítko "Nezávazná konzultace" nyní používá InquirySheet */}
+          {/* Tlačítko "Nezávazná konzultace" nyní používá InquirySheet */}
           <InquirySheet
             title="Nezávazná konzultace k vašemu projektu"
             description="Rád si poslechnu o vašich cílech. Zanechte mi kontakt a já se vám ozvu."
@@ -313,7 +313,7 @@ export default function AboutMeContent() {
         <DialogContent className="max-w-4xl w-full p-0 bg-black/95 border-none">
           <DialogHeader className="absolute top-4 left-4 z-10">
             <DialogTitle className="text-white text-lg">{selectedCert?.title}</DialogTitle>
-            {/* ZMĚNA: Přidán DialogDescription pro lepší přístupnost */}
+            {/* Přidán DialogDescription pro lepší přístupnost */}
             {selectedCert?.description && (
                 <DialogDescription className="sr-only">{selectedCert.description}</DialogDescription>
             )}

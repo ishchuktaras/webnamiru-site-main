@@ -5,13 +5,24 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-// Ujistíme se, že importujeme všechny potřebné ikony
-import { Home, Newspaper, MessageSquare, BarChart2, Settings } from "lucide-react";
+
+import {
+  Home,
+  Newspaper,
+  MessageSquare,
+  BarChart2,
+  Settings,
+  Mail,
+  Tags,
+} from "lucide-react";
 
 const adminNavItems = [
   { href: "/admin", label: "Přehled", icon: Home },
   { href: "/admin/posts", label: "Články", icon: Newspaper },
   { href: "/admin/comments", label: "Komentáře", icon: MessageSquare },
+  { href: "/admin/newsletter", label: "Newsletter", icon: Mail },
+
+  { href: "/admin/taxonomy", label: "Kategorie & Tagy", icon: Tags },
   { href: "/admin/analytics", label: "Analytika", icon: BarChart2 },
   { href: "/admin/settings", label: "Nastavení", icon: Settings },
 ];
@@ -28,8 +39,9 @@ export default function AdminSidebar() {
             href={item.href}
             className={cn(
               "flex items-center gap-3 rounded-lg px-3 py-2 text-gray-700 dark:text-gray-300 transition-all hover:bg-gray-200 dark:hover:bg-gray-800",
-              // Zvýrazníme odkaz, pokud se URL shoduje, nebo pokud jsme v podstránce (např. /admin/posts/new)
-              (pathname === item.href || (item.href !== "/admin" && pathname.startsWith(item.href))) && "bg-gray-200 dark:bg-gray-800 font-semibold"
+              (pathname === item.href ||
+                (item.href !== "/admin" && pathname.startsWith(item.href))) &&
+                "bg-gray-200 dark:bg-gray-800 font-semibold"
             )}
           >
             <item.icon className="h-4 w-4" />

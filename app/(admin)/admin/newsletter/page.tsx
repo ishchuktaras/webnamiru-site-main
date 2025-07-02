@@ -1,4 +1,4 @@
-// app/admin/newsletter/page.tsx
+// app/(admin)/admin/newsletter/page.tsx
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, Mail, Eye, TrendingUp } from "lucide-react";

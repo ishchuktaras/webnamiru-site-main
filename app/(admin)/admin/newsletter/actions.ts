@@ -1,4 +1,4 @@
-// app/admin/newsletter/actions.ts
+// app/(admin)/admin/newsletter/actions.ts
 
 "use server";
 
