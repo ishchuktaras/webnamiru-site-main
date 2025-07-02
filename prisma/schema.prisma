@@ -74,7 +74,7 @@ model Category {
   posts Post[]
 }
 
-// ZMĚNA: Přidán nový model pro Tagy
+
 model Tag {
   id    String @id @default(cuid())
   slug  String @unique
@@ -150,19 +150,6 @@ model BlogView {
   post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
   postId    String
   @@index([postId])
-  @@index([createdAt])
-}
-
-model Newsletter {
-  id          String   @id @default(uuid())
-  email       String   @unique
-  name        String?
-  active      Boolean  @default(true)
-  source      String?
-  preferences Json?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  @@index([active])
   @@index([createdAt])
 }
 
