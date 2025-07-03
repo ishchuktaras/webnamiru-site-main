@@ -198,20 +198,20 @@ model Campaign {
 
 // Hlavní záznam o vyplněném dotazníku
 model ProjectInquiry {
-  id        String   @id @default(cuid())
+  id          String   @id @default(cuid())
   clientName  String
   clientEmail String
   projectName String
-  status      String   @default("new") // např. new, in_progress, done
+  projectType String?  // "business" nebo "nonprofit"
+  status      String   @default("new")
   createdAt   DateTime @default(now())
   answers     InquiryAnswer[]
 }
 
-// Odpověď na konkrétní otázku
 model InquiryAnswer {
-  id         String   @id @default(cuid())
-  question   String   // Znění otázky pro historii
-  answer     String   @db.Text
-  inquiry      ProjectInquiry @relation(fields: [inquiryId], references: [id], onDelete: Cascade)
-  inquiryId  String
+  id        String   @id @default(cuid())
+  question  String
+  answer    String   @db.Text
+  inquiry   ProjectInquiry @relation(fields: [inquiryId], references: [id], onDelete: Cascade)
+  inquiryId String
 }

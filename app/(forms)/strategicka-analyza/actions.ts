@@ -11,22 +11,24 @@ export type AnalysisFormState = {
   success: boolean;
 };
 
-// ZMĚNA: Rozšířené Zod schéma pro validaci všech nových polí
+// Zod schéma pro validaci všech polí z nového kvízu
 const analysisSchema = z.object({
   clientName: z.string().min(1, "Jméno je povinné."),
   clientEmail: z.string().email("Neplatný formát e-mailu."),
   projectName: z.string().min(1, "Název projektu je povinný."),
+  projectType: z.string().min(1, "Prosím, vyberte typ projektu."),
   
-  // Nová pole
-  businessGoals: z.string().min(1, "Prosím, popište hlavní cíle."),
-  targetAudience: z.string().min(1, "Prosím, popište cílovou skupinu."),
+  // Krok 2
+  mainGoal: z.string().optional(),
   kpis: z.string().optional(),
+  
+  // Krok 3
+  targetAudience: z.string().min(1, "Prosím, popište cílovou skupinu."),
   competitors: z.string().optional(),
+  
+  // Krok 4
   uniqueValue: z.string().min(1, "Prosím, popište vaši unikátní hodnotu."),
-  marketingChannels: z.string().optional(),
-  contentSources: z.string().optional(),
   budget: z.string().optional(),
-  techRequirements: z.string().optional(),
 });
 
 export async function submitAnalysisForm(
@@ -37,7 +39,6 @@ export async function submitAnalysisForm(
   const validatedFields = analysisSchema.safeParse(Object.fromEntries(formData.entries()));
 
   if (!validatedFields.success) {
-    // Vrátíme první nalezenou chybu
     const firstError = Object.values(validatedFields.error.flatten().fieldErrors)[0]?.[0];
     return { success: false, message: firstError || "Prosím, vyplňte všechna povinná pole." };
   }
@@ -50,6 +51,7 @@ export async function submitAnalysisForm(
         clientName,
         clientEmail,
         projectName,
+        projectType: answers.projectType,
         answers: {
           create: Object.entries(answers).map(([question, answer]) => ({
             question,
