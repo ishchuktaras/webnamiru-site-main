@@ -11,17 +11,22 @@ export type AnalysisFormState = {
   success: boolean;
 };
 
-// Zde definujeme všechny otázky, které očekáváme z formuláře
+// ZMĚNA: Rozšířené Zod schéma pro validaci všech nových polí
 const analysisSchema = z.object({
   clientName: z.string().min(1, "Jméno je povinné."),
   clientEmail: z.string().email("Neplatný formát e-mailu."),
   projectName: z.string().min(1, "Název projektu je povinný."),
-  // A všechny další otázky jako stringy
-  businessGoals: z.string(),
-  targetAudience: z.string(),
+  
+  // Nová pole
+  businessGoals: z.string().min(1, "Prosím, popište hlavní cíle."),
+  targetAudience: z.string().min(1, "Prosím, popište cílovou skupinu."),
+  kpis: z.string().optional(),
   competitors: z.string().optional(),
-  uniqueValue: z.string(),
-  // ... a tak dále pro všechny otázky
+  uniqueValue: z.string().min(1, "Prosím, popište vaši unikátní hodnotu."),
+  marketingChannels: z.string().optional(),
+  contentSources: z.string().optional(),
+  budget: z.string().optional(),
+  techRequirements: z.string().optional(),
 });
 
 export async function submitAnalysisForm(
@@ -32,13 +37,14 @@ export async function submitAnalysisForm(
   const validatedFields = analysisSchema.safeParse(Object.fromEntries(formData.entries()));
 
   if (!validatedFields.success) {
-    return { success: false, message: "Prosím, vyplňte všechna povinná pole." };
+    // Vrátíme první nalezenou chybu
+    const firstError = Object.values(validatedFields.error.flatten().fieldErrors)[0]?.[0];
+    return { success: false, message: firstError || "Prosím, vyplňte všechna povinná pole." };
   }
 
   const { clientName, clientEmail, projectName, ...answers } = validatedFields.data;
 
   try {
-    // Vytvoříme hlavní záznam o poptávce a k němu připojené odpovědi
     await prisma.projectInquiry.create({
       data: {
         clientName,
@@ -53,8 +59,8 @@ export async function submitAnalysisForm(
       },
     });
 
-    revalidatePath("/admin"); // Aby se případně v adminu objevil nový záznam
-    return { success: true, message: "Děkujeme! Váš dotazník byl úspěšně odeslán. Brzy se vám ozvu." };
+    revalidatePath("/admin");
+    return { success: true, message: "Děkujeme! Váš dotazník byl úspěšně odeslán. Brzy se vám ozvu s dalšími kroky." };
   } catch (error) {
     console.error("Chyba při ukládání analýzy:", error);
     return { success: false, message: "Při odesílání došlo k chybě. Zkuste to prosím znovu." };
