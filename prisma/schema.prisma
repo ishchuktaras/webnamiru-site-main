@@ -193,3 +193,25 @@ model Campaign {
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 }
+
+// === NOVÉ MODELY PRO STRATEGICKÝ DOTAZNÍK ===
+
+// Hlavní záznam o vyplněném dotazníku
+model ProjectInquiry {
+  id        String   @id @default(cuid())
+  clientName  String
+  clientEmail String
+  projectName String
+  status      String   @default("new") // např. new, in_progress, done
+  createdAt   DateTime @default(now())
+  answers     InquiryAnswer[]
+}
+
+// Odpověď na konkrétní otázku
+model InquiryAnswer {
+  id         String   @id @default(cuid())
+  question   String   // Znění otázky pro historii
+  answer     String   @db.Text
+  inquiry      ProjectInquiry @relation(fields: [inquiryId], references: [id], onDelete: Cascade)
+  inquiryId  String
+}
