@@ -1,7 +1,8 @@
 // components/StrategicQuestionnaire.tsx
 "use client";
 
-import { useActionState, useFormStatus } from "react-dom";
+import { useActionState, useEffect } from "react";
+import { useFormStatus } from "react-dom";
 import { submitAnalysisForm, type AnalysisFormState } from "@/app/(main)/strategicka-analyza/actions";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -9,7 +10,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { useEffect } from "react";
 import { Loader2, Send } from "lucide-react";
 import React from 'react';
 
@@ -71,7 +71,6 @@ export default function StrategicQuestionnaire() {
                 <Input id="projectName" name="projectName" required />
             </div>
         </CardContent>
-
         <CardHeader>
             <CardTitle>Cíle a strategie</CardTitle>
             <CardDescription>Proč tento web potřebujete a čeho má dosáhnout?</CardDescription>
@@ -86,22 +85,6 @@ export default function StrategicQuestionnaire() {
                 <Textarea id="targetAudience" name="targetAudience" required />
             </div>
         </CardContent>
-
-        <CardHeader>
-            <CardTitle>Trh a konkurence</CardTitle>
-            <CardDescription>Kdo jsou vaši konkurenti a v čem jste lepší?</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-            <div className="space-y-2">
-                <Label htmlFor="competitors">Znáte své hlavní online konkurenty? (Uveďte 2-3 odkazy na jejich weby)</Label>
-                <Textarea id="competitors" name="competitors" />
-            </div>
-            <div className="space-y-2">
-                <Label htmlFor="uniqueValue">V čem je váš produkt nebo služba unikátní oproti konkurenci?* (Vaše unikátní prodejní propozice - USP)</Label>
-                <Textarea id="uniqueValue" name="uniqueValue" required />
-            </div>
-        </CardContent>
-
         <div className="p-6">
           <SubmitButton />
         </div>
