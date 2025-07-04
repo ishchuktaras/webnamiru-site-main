@@ -63,7 +63,7 @@ export default function TestimonialsSection() {
     <SectionWrapper
       id="testimonials-section"
       badgeText="Proč spolupracovat se mnou"
-      title={<>Proč si vybrat <span className="text-blue-600">Web na míru</span>?</>}
+      title={<>Proč si vybrat <span className="text-blue-600">webnamíru.site</span>?</>}
       subtitle="Jsem začínající podnikatel s jasnou vizí: pomáhat firmám na Vysočině růst prostřednictvím strategických webových řešení. Zde je to, co vám mohu nabídnout."
       className="bg-gray-50 dark:bg-gray-950"
     >

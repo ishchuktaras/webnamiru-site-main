@@ -9,17 +9,16 @@ import {
   MessageSquare,
   CalendarCheck2,
   Eye,
-  Mail,
   Star,
   ArrowRight,
-  PlusCircle,
-  FileText,
   BarChart,
   Settings,
   Tags,
+  Inbox, // PŘIDÁNO: Ikona pro poptávky
 } from "lucide-react";
 
-// Pomocná komponenta pro statistickou kartu
+// Pomocné komponenty (StatCard, ActionCard) zůstávají stejné
+
 function StatCard({ title, value, icon: Icon, color }: { title: string, value: string | number, icon: React.ElementType, color?: string }) {
   return (
     <Card className={`text-white ${color || 'bg-gray-700'}`}>
@@ -34,7 +33,6 @@ function StatCard({ title, value, icon: Icon, color }: { title: string, value: s
   );
 }
 
-// Pomocná komponenta pro akční kartu
 function ActionCard({ title, description, href, buttonText, icon: Icon }: { title: string, description: string, href: string, buttonText: string, icon: React.ElementType }) {
     return (
         <Card className="flex flex-col">
@@ -75,7 +73,8 @@ export default async function AdminDashboardPage() {
         <StatCard title="Komentáře" value={stats.totalComments} icon={MessageSquare} color="bg-green-600" />
         <StatCard title="Čeká na schválení" value={stats.pendingComments} icon={CalendarCheck2} color="bg-orange-500" />
         <StatCard title="Zobrazení" value={stats.totalViews.toLocaleString('cs-CZ')} icon={Eye} color="bg-purple-600" />
-        <StatCard title="Odběratelé" value={stats.subscriberCount} icon={Mail} color="bg-pink-600" />
+        {/* ZMĚNA: Karta pro odběratele nahrazena kartou pro poptávky */}
+        <StatCard title="Nové poptávky" value={stats.inquiryCount} icon={Inbox} color="bg-teal-600" />
         <StatCard title="Prům. hodnocení" value={stats.averageRating} icon={Star} color="bg-yellow-500" />
       </div>
 
@@ -83,42 +82,42 @@ export default async function AdminDashboardPage() {
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <ActionCard 
             title="Správa článků"
-            description="Vytvářejte a spravujte blogové příspěvky včetně vytváření, editace a publikování článků."
+            description="Vytvářejte a spravujte blogové příspěvky, kategorie a tagy pro lepší organizaci obsahu."
             href="/admin/posts"
             buttonText="Spravovat články"
-            icon={FileText}
+            icon={Newspaper}
         />
         <ActionCard 
             title="Správa komentářů"
-            description="Moderujte a spravujte diskuze. Schvalujte, editujte a udržujte kvalitní komunikaci s návštěvníky."
+            description="Moderujte a spravujte diskuze. Schvalujte, editujte a udržujte kvalitní komunikaci."
             href="/admin/comments"
             buttonText="Spravovat komentáře"
             icon={MessageSquare}
         />
         <ActionCard 
+            title="Poptávky"
+            description="Prohlížejte a spravujte poptávky a strategické dotazníky od potenciálních klientů."
+            href="/admin/inquiries"
+            buttonText="Zobrazit poptávky"
+            icon={Inbox}
+        />
+        <ActionCard 
             title="Analytika"
-            description="Sledujte výkon vašeho webu, hodnocení článků a engagement uživatelů."
+            description="Sledujte výkon vašeho webu, hodnocení článků a chování uživatelů."
             href="/admin/analytics"
             buttonText="Zobrazit analytiku"
             icon={BarChart}
         />
         <ActionCard 
             title="Kategorie & Tagy"
-            description="Organizujte obsah webu pro lepší orientaci a vyhledávání."
+            description="Organizujte obsah webu pro lepší orientaci a SEO."
             href="/admin/taxonomy"
             buttonText="Spravovat taxonomie"
             icon={Tags}
         />
         <ActionCard 
-            title="Newsletter"
-            description="Spravujte seznam odběratelů a odesílejte newslettery s nejnovějším obsahem."
-            href="/admin/newsletter"
-            buttonText="Spravovat newsletter"
-            icon={Mail}
-        />
-        <ActionCard 
             title="Nastavení"
-            description="Konfigurace webu a bezpečnosti. Obecné nastavení, SEO konfigurace a bezpečnostní opatření."
+            description="Konfigurace webu, SEO, bezpečnosti a dalších klíčových aspektů."
             href="/admin/settings"
             buttonText="Otevřít nastavení"
             icon={Settings}

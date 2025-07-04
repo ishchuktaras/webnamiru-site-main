@@ -1,4 +1,4 @@
-// app/(main)/strategicka-analyza/actions.ts
+// app/(forms)/strategicka-analyza/actions.ts
 
 "use server";
 
@@ -9,38 +9,55 @@ import { revalidatePath } from "next/cache";
 export type AnalysisFormState = {
   message: string;
   success: boolean;
+  errors?: z.ZodIssue[];
 };
 
-// Zod schéma pro validaci všech polí z nového kvízu
+// Aktualizované Zod schéma pro validaci
 const analysisSchema = z.object({
+  // Povinná pole
   clientName: z.string().min(1, "Jméno je povinné."),
   clientEmail: z.string().email("Neplatný formát e-mailu."),
   projectName: z.string().min(1, "Název projektu je povinný."),
-  projectType: z.string().min(1, "Prosím, vyberte typ projektu."),
+  projectType: z.string().min(1, "Typ projektu je povinný."),
+  mainGoal: z.string().min(1, "Hlavní cíl je povinný."),
+  targetAudience: z.string().min(1, "Popis cílové skupiny je povinný."),
+  usp: z.string().min(1, "Unikátní prodejní nabídka je povinná."),
+  contentProvider: z.string().min(1, "Je třeba určit, kdo dodá obsah."),
+  mustHaveFeatures: z.array(z.string()).min(1, "Vyberte alespoň jednu funkci."),
   
-  // Krok 2
-  mainGoal: z.string().optional(),
-  kpis: z.string().optional(),
-  
-  // Krok 3
-  targetAudience: z.string().min(1, "Prosím, popište cílovou skupinu."),
+  // Nepovinná pole
+  projectReason: z.string().optional(),
+  projectTimeline: z.string().optional(),
+  budgetRange: z.string().optional(),
+  brandStory: z.string().optional(),
+  brandValues: z.string().optional(),
+  brandVoice: z.array(z.string()).optional(),
+  mainGoalOther: z.string().optional(),
+  successMetrics: z.string().optional(),
+  userPainPoints: z.string().optional(),
   competitors: z.string().optional(),
-  
-  // Krok 4
-  uniqueValue: z.string().min(1, "Prosím, popište vaši unikátní hodnotu."),
-  budget: z.string().optional(),
+  inspirations: z.string().optional(),
+  mustHaveFeaturesOther: z.string().optional(),
 });
 
 export async function submitAnalysisForm(
-  prevState: AnalysisFormState,
   formData: FormData
 ): Promise<AnalysisFormState> {
   
-  const validatedFields = analysisSchema.safeParse(Object.fromEntries(formData.entries()));
+  const rawData = Object.fromEntries(formData.entries());
+  const mustHaveFeatures = formData.getAll("mustHaveFeatures");
+  const brandVoice = formData.getAll("brandVoice");
+  const dataToValidate = { ...rawData, mustHaveFeatures, brandVoice };
+
+  const validatedFields = analysisSchema.safeParse(dataToValidate);
 
   if (!validatedFields.success) {
-    const firstError = Object.values(validatedFields.error.flatten().fieldErrors)[0]?.[0];
-    return { success: false, message: firstError || "Prosím, vyplňte všechna povinná pole." };
+    console.error("Validation Errors:", validatedFields.error.flatten());
+    return { 
+      success: false, 
+      message: "Formulář obsahuje chyby. Zkontrolujte prosím zadané údaje.",
+      errors: validatedFields.error.errors,
+    };
   }
 
   const { clientName, clientEmail, projectName, ...answers } = validatedFields.data;
@@ -55,16 +72,16 @@ export async function submitAnalysisForm(
         answers: {
           create: Object.entries(answers).map(([question, answer]) => ({
             question,
-            answer: answer as string,
+            answer: Array.isArray(answer) ? answer.join(', ') : answer as string,
           })),
         },
       },
     });
 
     revalidatePath("/admin");
-    return { success: true, message: "Děkujeme! Váš dotazník byl úspěšně odeslán. Brzy se vám ozvu s dalšími kroky." };
+    return { success: true, message: "Děkujeme! Váš dotazník byl úspěšně odeslán. Brzy se vám ozvu s dalšími kroky.", errors: [] };
   } catch (error) {
     console.error("Chyba při ukládání analýzy:", error);
-    return { success: false, message: "Při odesílání došlo k chybě. Zkuste to prosím znovu." };
+    return { success: false, message: "Při odesílání došlo k chybě. Zkuste to prosím znovu.", errors: [] };
   }
 }

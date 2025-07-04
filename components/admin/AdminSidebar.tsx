@@ -5,14 +5,15 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-// ZMĚNA: Odebrána ikona Mail, přidána Tags
-import { Home, Newspaper, MessageSquare, BarChart2, Settings, Tags } from "lucide-react";
+// ZMĚNA: Přidána ikona Inbox pro poptávky
+import { Home, Newspaper, MessageSquare, BarChart2, Settings, Tags, Inbox } from "lucide-react";
 
 const adminNavItems = [
   { href: "/admin", label: "Přehled", icon: Home },
   { href: "/admin/posts", label: "Články", icon: Newspaper },
   { href: "/admin/comments", label: "Komentáře", icon: MessageSquare },
-  // ZMĚNA: Odstraněna položka pro Newsletter
+  // PŘIDÁNO: Nová položka pro Poptávky
+  { href: "/admin/inquiries", label: "Poptávky", icon: Inbox },
   { href: "/admin/taxonomy", label: "Kategorie & Tagy", icon: Tags },
   { href: "/admin/analytics", label: "Analytika", icon: BarChart2 },
   { href: "/admin/settings", label: "Nastavení", icon: Settings },
