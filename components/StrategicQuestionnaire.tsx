@@ -141,9 +141,7 @@ export default function StrategicQuestionnaire() {
   };
 
   const handleNext = () => {
-    if (validateStep(step)) {
-      setStep((s) => s + 1);
-    }
+    if (validateStep(step)) setStep((s) => s + 1);
   };
 
   const handleFormSubmit = () => {

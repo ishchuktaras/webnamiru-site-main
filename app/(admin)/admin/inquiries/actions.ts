@@ -6,9 +6,8 @@ import { Resend } from 'resend';
 import prisma from '@/lib/prisma';
 import { InquiryEmail } from '@/components/emails/InquiryEmail';
 import { revalidatePath } from 'next/cache';
-import React from 'react'; // Přidán import Reactu
+import React from 'react';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
 const FROM_EMAIL = 'webnamíru.site <poptavka@webnamiru.site>';
 
 type SendEmailState = {
@@ -17,6 +16,16 @@ type SendEmailState = {
 }
 
 export async function sendInquiryToClient(inquiryId: string): Promise<SendEmailState> {
+    
+    // DEBUG: Zkontrolujeme, jestli se klíč načítá
+    console.log("Attempting to send email. RESEND_API_KEY status:", process.env.RESEND_API_KEY ? "Found" : "NOT FOUND");
+
+    if (!process.env.RESEND_API_KEY) {
+        return { success: false, message: "Chyba serveru: Chybí RESEND_API_KEY." };
+    }
+    
+    const resend = new Resend(process.env.RESEND_API_KEY);
+
     if (!inquiryId) {
         return { success: false, message: "Chybí ID poptávky." };
     }
@@ -36,7 +45,6 @@ export async function sendInquiryToClient(inquiryId: string): Promise<SendEmailS
             return acc;
         }, {} as Record<string, string>);
 
-        // ZMĚNA ZDE: Používáme React.createElement pro vytvoření elementu
         const emailComponent = React.createElement(InquiryEmail, {
             projectName: inquiry.projectName,
             clientName: inquiry.clientName,
@@ -47,7 +55,7 @@ export async function sendInquiryToClient(inquiryId: string): Promise<SendEmailS
             from: FROM_EMAIL,
             to: [inquiry.clientEmail],
             subject: `Souhrn strategické analýzy pro projekt: ${inquiry.projectName}`,
-            react: emailComponent, // Předáváme vytvořený element
+            react: emailComponent,
         });
 
         if (error) {
@@ -61,7 +69,6 @@ export async function sendInquiryToClient(inquiryId: string): Promise<SendEmailS
         });
 
         revalidatePath(`/admin/inquiries/${inquiryId}`);
-
         return { success: true, message: "E-mail byl úspěšně odeslán klientovi." };
 
     } catch (error) {
