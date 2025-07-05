@@ -4,36 +4,7 @@ import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { sendInquiryToClient } from "@/app/(admin)/admin/inquiries/actions"; 
-
-// Pomocná komponenta pro tlačítko, která řeší odesílání
-"use client";
-import { useTransition } from "react";
-import { toast } from "sonner";
-import { Mail, Loader2 } from "lucide-react";
-
-function SendEmailButton({ inquiryId }: { inquiryId: string }) {
-    const [isPending, startTransition] = useTransition();
-
-    const handleClick = () => {
-        startTransition(async () => {
-            const result = await sendInquiryToClient(inquiryId);
-            if (result.success) {
-                toast.success("Odesláno!", { description: result.message });
-            } else {
-                toast.error("Chyba!", { description: result.message });
-            }
-        });
-    };
-
-    return (
-        <Button onClick={handleClick} disabled={isPending}>
-            {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Mail className="mr-2 h-4 w-4" />}
-            {isPending ? 'Odesílám...' : 'Poslat souhrn klientovi'}
-        </Button>
-    );
-}
+import { SendEmailButton } from "@/components/admin/SendEmailButton"; // Importujeme naši novou komponentu
 
 async function getInquiryDetails(id: string) {
   const inquiry = await prisma.projectInquiry.findUnique({
@@ -45,9 +16,8 @@ async function getInquiryDetails(id: string) {
   return inquiry;
 }
 
-// Pomocná komponenta pro zobrazení odpovědi
 const AnswerDisplay = ({ label, value }: { label: string, value?: string }) => {
-    if (!value) return null; // Pokud odpověď neexistuje, nic nezobrazíme
+    if (!value) return null;
     return (
         <div className="space-y-1">
             <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{label}</p>
@@ -63,7 +33,6 @@ export default async function InquiryDetailPage({ params }: { params: { id: stri
     notFound();
   }
   
-  // Převedeme pole odpovědí na objekt pro snadnější přístup
   const answers = inquiry.answers.reduce((acc, ans) => {
     acc[ans.question] = ans.answer;
     return acc;
@@ -84,6 +53,7 @@ export default async function InquiryDetailPage({ params }: { params: { id: stri
                  <Badge variant={inquiry.status === 'contacted' ? 'default' : 'secondary'}>
                     {inquiry.status === 'contacted' ? 'Kontaktováno' : 'Nová poptávka'}
                  </Badge>
+                 {/* Používáme novou komponentu */}
                  <SendEmailButton inquiryId={inquiry.id} />
             </div>
           </div>
@@ -103,7 +73,8 @@ export default async function InquiryDetailPage({ params }: { params: { id: stri
              <CardHeader><CardTitle>Cíle a úspěch</CardTitle></CardHeader>
              <CardContent className="space-y-4">
                 <AnswerDisplay label="Hlavní cíl webu" value={answers.mainGoal} />
-                <AnswerDisplay label="Metriky úspěchu (KPIs)" value={answers.successMetrics} />
+                <AnswerDisplay label="Vybrané KPIs" value={answers.kpis} />
+                <AnswerDisplay label="Metriky úspěchu (další)" value={answers.successMetrics} />
              </CardContent>
           </Card>
           <Card>
@@ -124,7 +95,8 @@ export default async function InquiryDetailPage({ params }: { params: { id: stri
           <Card>
              <CardHeader><CardTitle>Funkce a obsah</CardTitle></CardHeader>
              <CardContent className="space-y-4">
-                <AnswerDisplay label="Nezbytné funkce (Must-have)" value={answers.mustHaveFeatures} />
+                <AnswerDisplay label="Nezbytné funkce" value={answers.mustHaveFeatures} />
+                <AnswerDisplay label="Další funkce" value={answers.mustHaveFeaturesOther} />
                 <AnswerDisplay label="Dodavatel obsahu" value={answers.contentProvider === 'agency' ? 'Potřebuje pomoci' : 'Dodá si sám'} />
                 <AnswerDisplay label="Odhadovaný rozpočet" value={answers.budgetRange} />
              </CardContent>
