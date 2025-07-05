@@ -17,9 +17,9 @@ const analysisSchema = z.object({
   clientEmail: z.string().email("Neplatný formát e-mailu."),
   projectName: z.string().min(1, "Název projektu je povinný."),
   projectType: z.string().min(1, "Typ projektu je povinný."),
-  mainGoal: z.string().min(1, "Hlavní cíl je povinný."),
+  mainGoal: z.string().optional(), // Změna: Cíl je nyní volitelný, vybírá se z KPIs
   mainGoalOther: z.string().optional(),
-  kpis: z.array(z.string()).optional(),
+  kpis: z.array(z.string()).min(1, "Vyberte alespoň jeden cíl/KPI."),
   targetAudience: z.string().min(1, "Popis cílové skupiny je povinný."),
   userPainPoints: z.string().optional(),
   usp: z.string().min(1, "Unikátní prodejní nabídka je povinná."),
@@ -37,9 +37,8 @@ const analysisSchema = z.object({
 export async function submitAnalysisForm(
   formData: FormData
 ): Promise<AnalysisFormState> {
-  
   const rawData = Object.fromEntries(formData.entries());
-  
+
   const mustHaveFeatures = formData.getAll("mustHaveFeatures");
   const kpis = formData.getAll("kpis");
   const brandVoice = formData.getAll("brandVoice");
@@ -49,14 +48,15 @@ export async function submitAnalysisForm(
 
   if (!validatedFields.success) {
     console.error("Validation Errors:", validatedFields.error.flatten());
-    return { 
-      success: false, 
+    return {
+      success: false,
       message: "Formulář obsahuje chyby. Zkontrolujte prosím zadané údaje.",
       errors: validatedFields.error.errors,
     };
   }
 
-  const { clientName, clientEmail, projectName, ...answers } = validatedFields.data;
+  const { clientName, clientEmail, projectName, ...answers } =
+    validatedFields.data;
 
   try {
     await prisma.projectInquiry.create({
@@ -68,16 +68,27 @@ export async function submitAnalysisForm(
         answers: {
           create: Object.entries(answers).map(([question, answer]) => ({
             question,
-            answer: Array.isArray(answer) ? answer.join(', ') : answer as string,
+            answer: Array.isArray(answer)
+              ? answer.join(", ")
+              : (answer as string),
           })),
         },
       },
     });
 
     revalidatePath("/admin");
-    return { success: true, message: "Děkujeme! Váš dotazník byl úspěšně odeslán. Brzy se vám ozvu s dalšími kroky.", errors: [] };
+    return {
+      success: true,
+      message:
+        "Děkujeme! Váš dotazník byl úspěšně odeslán. Brzy se vám ozvu s dalšími kroky.",
+      errors: [],
+    };
   } catch (error) {
     console.error("Chyba při ukládání analýzy:", error);
-    return { success: false, message: "Při odesílání došlo k chybě. Zkuste to prosím znovu.", errors: [] };
+    return {
+      success: false,
+      message: "Při odesílání došlo k chybě. Zkuste to prosím znovu.",
+      errors: [],
+    };
   }
 }

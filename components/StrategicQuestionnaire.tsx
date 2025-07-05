@@ -47,6 +47,7 @@ const FormContext = createContext<{
   formData: Record<string, any>;
   updateFormData: (newData: Partial<Record<string, any>>) => void;
   state: AnalysisFormState;
+  validateStep: (step: number) => boolean;
 } | null>(null);
 
 function useFormContext() {
@@ -115,7 +116,39 @@ export default function StrategicQuestionnaire() {
     setFormData((prev) => ({ ...prev, ...newData }));
   };
 
+  const validateStep = (currentStep: number): boolean => {
+    const requiredFields: Record<number, string[]> = {
+      2: ["clientName", "clientEmail", "projectName"],
+      3: ["kpis"],
+      4: ["targetAudience"],
+      5: ["usp"],
+      6: ["mustHaveFeatures", "contentProvider"],
+    };
+
+    const fieldsToValidate = requiredFields[currentStep];
+    if (!fieldsToValidate) return true;
+
+    for (const field of fieldsToValidate) {
+      const value = formData[field];
+      if (!value || (Array.isArray(value) && value.length === 0)) {
+        toast.error("Nevyplněná pole", {
+          description: `Prosím, vyplňte všechna povinná pole, než budete pokračovat.`,
+        });
+        return false;
+      }
+    }
+    return true;
+  };
+
+  const handleNext = () => {
+    if (validateStep(step)) {
+      setStep((s) => s + 1);
+    }
+  };
+
   const handleFormSubmit = () => {
+    if (!validateStep(6)) return;
+
     startTransition(async () => {
       const form = new FormData();
       for (const key in formData) {
@@ -158,7 +191,12 @@ export default function StrategicQuestionnaire() {
 
   return (
     <FormContext.Provider
-      value={{ formData, updateFormData: updateFormDataInState, state }}
+      value={{
+        formData,
+        updateFormData: updateFormDataInState,
+        state,
+        validateStep,
+      }}
     >
       <Card className="max-w-3xl mx-auto animate-in fade-in-50">
         <div>
@@ -199,7 +237,7 @@ export default function StrategicQuestionnaire() {
                 <ArrowLeft className="mr-2 h-4 w-4" /> Zpět
               </Button>
               {step < totalSteps ? (
-                <Button type="button" onClick={() => setStep((s) => s + 1)}>
+                <Button type="button" onClick={handleNext}>
                   Další krok <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               ) : (
@@ -216,6 +254,7 @@ export default function StrategicQuestionnaire() {
   );
 }
 
+// Data pro kroky
 const businessKpis = {
   "Generování poptávek": {
     icon: Zap,
@@ -333,7 +372,9 @@ const Step2 = () => {
         </CardDescription>
       </CardHeader>
       <div className="space-y-2">
-        <Label htmlFor="clientName">Vaše celé jméno*</Label>
+        <Label htmlFor="clientName">
+          Vaše celé jméno <span className="text-red-500">(povinné)</span>
+        </Label>
         <Input
           id="clientName"
           name="clientName"
@@ -344,7 +385,9 @@ const Step2 = () => {
         <FieldError fieldName="clientName" errors={state.errors} />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="clientEmail">Kontaktní e-mail*</Label>
+        <Label htmlFor="clientEmail">
+          Kontaktní e-mail <span className="text-red-500">(povinné)</span>
+        </Label>
         <Input
           id="clientEmail"
           name="clientEmail"
@@ -356,7 +399,9 @@ const Step2 = () => {
         <FieldError fieldName="clientEmail" errors={state.errors} />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="projectName">Název projektu/firmy*</Label>
+        <Label htmlFor="projectName">
+          Název projektu/firmy <span className="text-red-500">(povinné)</span>
+        </Label>
         <Input
           id="projectName"
           name="projectName"
@@ -378,8 +423,8 @@ const Step3 = () => {
       <CardHeader className="p-0 mb-2">
         <CardTitle>Krok 2: Cíle a měření úspěchu</CardTitle>
         <CardDescription>
-          Zaškrtněte klíčové ukazatele (KPIs), které jsou pro vás
-          nejdůležitější.
+          Zaškrtněte 3-5 klíčových ukazatelů (KPIs), které jsou pro vás
+          nejdůležitější. <span className="text-red-500">(povinné)</span>
         </CardDescription>
       </CardHeader>
       {Object.entries(kpiData).map(([category, { icon: Icon, kpis }]) => (
@@ -423,8 +468,9 @@ const Step4 = () => {
       <div className="space-y-2">
         <Label htmlFor="targetAudience">
           {formData.projectType === "business"
-            ? "Detailně popište ideálního zákazníka*"
-            : "Detailně popište ideálního dárce/podporovatele*"}
+            ? "Detailně popište ideálního zákazníka "
+            : "Detailně popište ideálního dárce/podporovatele "}
+          <span className="text-red-500">(povinné)</span>
         </Label>
         <Textarea
           id="targetAudience"
@@ -474,7 +520,10 @@ const Step5 = () => {
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="usp">V čem jste unikátní oproti ostatním?*</Label>
+        <Label htmlFor="usp">
+          V čem jste unikátní oproti ostatním?{" "}
+          <span className="text-red-500">(povinné)</span>
+        </Label>
         <Textarea
           id="usp"
           name="usp"
@@ -517,14 +566,14 @@ const Step6 = () => {
       </CardHeader>
       <div className="space-y-2">
         <Label>
-          Jaké funkce jsou pro spuštění webu absolutně nezbytné (Must-have)?*
+          Jaké funkce jsou pro spuštění webu absolutně nezbytné (Must-have)?{" "}
+          <span className="text-red-500">(povinné)</span>
         </Label>
         <div className="grid grid-cols-2 gap-2">
           {commonFeatures.map((f) => (
             <div key={f} className="flex items-center space-x-2">
               <Checkbox
                 id={f}
-                value={f}
                 onCheckedChange={(checked) => {
                   const newFeatures = checked
                     ? [...(formData.mustHaveFeatures || []), f]
@@ -541,7 +590,6 @@ const Step6 = () => {
           <div className="flex items-center space-x-2">
             <Checkbox
               id="other"
-              value="other"
               onCheckedChange={(checked) => {
                 const newFeatures = checked
                   ? [...(formData.mustHaveFeatures || []), "other"]
@@ -569,7 +617,10 @@ const Step6 = () => {
         <FieldError fieldName="mustHaveFeatures" errors={state.errors} />
       </div>
       <div className="space-y-2">
-        <Label>Kdo bude zodpovědný za dodání obsahu (texty, fotky)?*</Label>
+        <Label>
+          Kdo bude zodpovědný za dodání obsahu (texty, fotky)?{" "}
+          <span className="text-red-500">(povinné)</span>
+        </Label>
         <RadioGroup
           name="contentProvider"
           required
