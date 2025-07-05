@@ -150,7 +150,7 @@ export default function StrategicQuestionnaire() {
     if (!validateStep(6)) return;
 
     startTransition(async () => {
-      const result = await submitAnalysisForm(formData); // Odesíláme přímo objekt
+      const result = await submitAnalysisForm(formData);
       setState(result);
       if (result.success) {
         toast.success("Odesláno!", { description: result.message });
@@ -397,6 +397,24 @@ const Step2 = () => {
           defaultValue={formData.projectName || ""}
         />
         <FieldError fieldName="projectName" errors={state.errors} />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="brandStory">Jaký je příběh vaší firmy/značky?</Label>
+        <Textarea
+          id="brandStory"
+          name="brandStory"
+          onChange={(e) => updateFormData({ brandStory: e.target.value })}
+          defaultValue={formData.brandStory || ""}
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="brandValues">Jaké jsou vaše klíčové hodnoty?</Label>
+        <Textarea
+          id="brandValues"
+          name="brandValues"
+          onChange={(e) => updateFormData({ brandValues: e.target.value })}
+          defaultValue={formData.brandValues || ""}
+        />
       </div>
     </div>
   );
