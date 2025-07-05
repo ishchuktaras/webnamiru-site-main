@@ -123,7 +123,6 @@ export default function StrategicQuestionnaire() {
       5: ["usp"],
       6: ["mustHaveFeatures", "contentProvider"],
     };
-
     const fieldsToValidate = requiredFields[currentStep];
     if (!fieldsToValidate) return true;
 
@@ -142,16 +141,14 @@ export default function StrategicQuestionnaire() {
   };
 
   const handleNext = () => {
-    if (validateStep(step)) {
-      setStep((s) => s + 1);
-    }
+    if (validateStep(step)) setStep((s) => s + 1);
   };
 
   const handleFormSubmit = () => {
     if (!validateStep(6)) return;
 
     startTransition(async () => {
-      const result = await submitAnalysisForm(formData); // Odesíláme přímo objekt
+      const result = await submitAnalysisForm(formData);
       setState(result);
       if (result.success) {
         toast.success("Odesláno!", { description: result.message });
@@ -240,7 +237,6 @@ export default function StrategicQuestionnaire() {
   );
 }
 
-// Data pro kroky
 const businessKpis = {
   "Generování poptávek": {
     icon: Zap,
@@ -294,7 +290,6 @@ const nonprofitKpis = {
   },
 };
 
-// Komponenty pro jednotlivé kroky
 const Step0 = ({ onNext }: { onNext: () => void }) => (
   <div className="text-center">
     <CardHeader>
