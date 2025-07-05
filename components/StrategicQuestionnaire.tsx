@@ -43,7 +43,6 @@ import {
 
 const totalSteps = 6;
 
-// Kontext pro sdílení stavu a funkcí napříč komponentou
 const FormContext = createContext<{
   formData: Record<string, any>;
   updateFormData: (newData: Partial<Record<string, any>>) => void;
@@ -162,7 +161,6 @@ export default function StrategicQuestionnaire() {
       value={{ formData, updateFormData: updateFormDataInState, state }}
     >
       <Card className="max-w-3xl mx-auto animate-in fade-in-50">
-        {/* ZMĚNA: Toto už není <form> */}
         <div>
           {step >= 2 && (
             <div className="p-6 border-b">
@@ -218,7 +216,6 @@ export default function StrategicQuestionnaire() {
   );
 }
 
-// Data pro kroky
 const businessKpis = {
   "Generování poptávek": {
     icon: Zap,
@@ -272,7 +269,6 @@ const nonprofitKpis = {
   },
 };
 
-// Komponenty pro jednotlivé kroky
 const Step0 = ({ onNext }: { onNext: () => void }) => (
   <div className="text-center">
     <CardHeader>

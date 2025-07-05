@@ -18,39 +18,45 @@ const analysisSchema = z.object({
   projectName: z.string().min(1, "Název projektu je povinný."),
   projectType: z.string().min(1, "Typ projektu je povinný."),
   mainGoal: z.string().min(1, "Hlavní cíl je povinný."),
-  targetAudience: z.string().min(1, "Popis cílové skupiny je povinný."),
-  usp: z.string().min(1, "Unikátní prodejní nabídka je povinná."),
-  contentProvider: z.string().min(1, "Je třeba určit, kdo dodá obsah."),
-  mustHaveFeatures: z.array(z.string()).min(1, "Vyberte alespoň jednu funkci."),
-
   mainGoalOther: z.string().optional(),
   kpis: z.array(z.string()).optional(),
+  targetAudience: z.string().min(1, "Popis cílové skupiny je povinný."),
   userPainPoints: z.string().optional(),
+  usp: z.string().min(1, "Unikátní prodejní nabídka je povinná."),
+  mustHaveFeatures: z.array(z.string()).min(1, "Vyberte alespoň jednu funkci."),
+  mustHaveFeaturesOther: z.string().optional(),
+  contentProvider: z.string().min(1, "Je třeba určit, kdo dodá obsah."),
+  budgetRange: z.string().optional(),
   competitors: z.string().optional(),
   inspirations: z.string().optional(),
-  mustHaveFeaturesOther: z.string().optional(),
-  budgetRange: z.string().optional(),
   brandStory: z.string().optional(),
   brandValues: z.string().optional(),
   brandVoice: z.array(z.string()).optional(),
 });
 
-// ZMĚNA: Akce nyní přijímá přímo objekt, ne FormData
 export async function submitAnalysisForm(
-  data: Record<string, any>
+  formData: FormData
 ): Promise<AnalysisFormState> {
-  const validatedFields = analysisSchema.safeParse(data);
+  
+  const rawData = Object.fromEntries(formData.entries());
+  
+  const mustHaveFeatures = formData.getAll("mustHaveFeatures");
+  const kpis = formData.getAll("kpis");
+  const brandVoice = formData.getAll("brandVoice");
+  const dataToValidate = { ...rawData, mustHaveFeatures, kpis, brandVoice };
+
+  const validatedFields = analysisSchema.safeParse(dataToValidate);
 
   if (!validatedFields.success) {
-    return {
-      success: false,
-      message: "Formulář obsahuje chyby. Zkontrolujte zadané údaje.",
+    console.error("Validation Errors:", validatedFields.error.flatten());
+    return { 
+      success: false, 
+      message: "Formulář obsahuje chyby. Zkontrolujte prosím zadané údaje.",
       errors: validatedFields.error.errors,
     };
   }
 
-  const { clientName, clientEmail, projectName, ...answers } =
-    validatedFields.data;
+  const { clientName, clientEmail, projectName, ...answers } = validatedFields.data;
 
   try {
     await prisma.projectInquiry.create({
@@ -62,25 +68,16 @@ export async function submitAnalysisForm(
         answers: {
           create: Object.entries(answers).map(([question, answer]) => ({
             question,
-            answer: Array.isArray(answer) ? answer.join(", ") : String(answer),
+            answer: Array.isArray(answer) ? answer.join(', ') : answer as string,
           })),
         },
       },
     });
 
     revalidatePath("/admin");
-    return {
-      success: true,
-      message:
-        "Děkujeme! Váš dotazník byl úspěšně odeslán. Brzy se vám ozvu s dalšími kroky.",
-      errors: [],
-    };
+    return { success: true, message: "Děkujeme! Váš dotazník byl úspěšně odeslán. Brzy se vám ozvu s dalšími kroky.", errors: [] };
   } catch (error) {
     console.error("Chyba při ukládání analýzy:", error);
-    return {
-      success: false,
-      message: "Při odesílání došlo k chybě. Zkuste to prosím znovu.",
-      errors: [],
-    };
+    return { success: false, message: "Při odesílání došlo k chybě. Zkuste to prosím znovu.", errors: [] };
   }
 }
