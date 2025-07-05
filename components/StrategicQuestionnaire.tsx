@@ -123,6 +123,7 @@ export default function StrategicQuestionnaire() {
       5: ["usp"],
       6: ["mustHaveFeatures", "contentProvider"],
     };
+
     const fieldsToValidate = requiredFields[currentStep];
     if (!fieldsToValidate) return true;
 
@@ -141,23 +142,16 @@ export default function StrategicQuestionnaire() {
   };
 
   const handleNext = () => {
-    if (validateStep(step)) setStep((s) => s + 1);
+    if (validateStep(step)) {
+      setStep((s) => s + 1);
+    }
   };
 
   const handleFormSubmit = () => {
     if (!validateStep(6)) return;
-    startTransition(async () => {
-      const form = new FormData();
-      for (const key in formData) {
-        const value = formData[key];
-        if (Array.isArray(value)) {
-          value.forEach((v) => form.append(key, v));
-        } else if (value != null) {
-          form.append(key, String(value));
-        }
-      }
 
-      const result = await submitAnalysisForm(form);
+    startTransition(async () => {
+      const result = await submitAnalysisForm(formData); // Odesíláme přímo objekt
       setState(result);
       if (result.success) {
         toast.success("Odesláno!", { description: result.message });
@@ -207,6 +201,7 @@ export default function StrategicQuestionnaire() {
               </div>
             </div>
           )}
+
           <div className="p-6 min-h-[450px] flex items-center justify-center">
             {step === 0 && <Step0 onNext={() => setStep(1)} />}
             {step === 1 && <Step1 onNext={() => setStep(2)} />}
@@ -216,6 +211,7 @@ export default function StrategicQuestionnaire() {
             {step === 5 && <Step5 />}
             {step === 6 && <Step6 />}
           </div>
+
           {step > 0 && (
             <div className="p-6 flex justify-between items-center border-t">
               <Button
@@ -244,6 +240,7 @@ export default function StrategicQuestionnaire() {
   );
 }
 
+// Data pro kroky
 const businessKpis = {
   "Generování poptávek": {
     icon: Zap,
@@ -297,6 +294,7 @@ const nonprofitKpis = {
   },
 };
 
+// Komponenty pro jednotlivé kroky
 const Step0 = ({ onNext }: { onNext: () => void }) => (
   <div className="text-center">
     <CardHeader>
@@ -415,7 +413,7 @@ const Step3 = () => {
       <CardHeader className="p-0 mb-2">
         <CardTitle>Krok 2: Cíle a měření úspěchu</CardTitle>
         <CardDescription>
-          Zaškrtněte 3-5 klíčových ukazatelů (KPIs), které jsou pro vás
+          Zaškrtněte klíčové ukazatele (KPIs), které jsou pro vás
           nejdůležitější.{" "}
           <span className="text-red-500 font-normal">(povinné)</span>
         </CardDescription>

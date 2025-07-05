@@ -5,10 +5,10 @@
 import prisma from "@/lib/prisma";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
-import { Resend } from 'resend';
-import { NewInquiryNotificationEmail } from '@/components/emails/NewInquiryNotificationEmail';
-import { InquiryConfirmationEmail } from '@/components/emails/InquiryConfirmationEmail';
-import React from 'react';
+import { Resend } from "resend";
+import { NewInquiryNotificationEmail } from "@/components/emails/NewInquiryNotificationEmail";
+import { InquiryConfirmationEmail } from "@/components/emails/InquiryConfirmationEmail";
+import React from "react";
 
 export type AnalysisFormState = {
   message: string;
@@ -16,7 +16,6 @@ export type AnalysisFormState = {
   errors?: z.ZodIssue[];
 };
 
-// Schéma pro validaci dat z formuláře
 const analysisSchema = z.object({
   clientName: z.string().min(1, "Jméno je povinné."),
   clientEmail: z.string().email("Neplatný formát e-mailu."),
@@ -40,27 +39,21 @@ const analysisSchema = z.object({
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function submitAnalysisForm(
-  formData: FormData
+  data: Record<string, any>
 ): Promise<AnalysisFormState> {
-  
-  const rawData = Object.fromEntries(formData.entries());
-  
-  const mustHaveFeatures = formData.getAll("mustHaveFeatures");
-  const kpis = formData.getAll("kpis");
-  const brandVoice = formData.getAll("brandVoice");
-  const dataToValidate = { ...rawData, mustHaveFeatures, kpis, brandVoice };
-
-  const validatedFields = analysisSchema.safeParse(dataToValidate);
+  const validatedFields = analysisSchema.safeParse(data);
 
   if (!validatedFields.success) {
-    return { 
-      success: false, 
-      message: "Formulář obsahuje chyby. Zkontrolujte zadané údaje.",
+    console.error("Validation Errors:", validatedFields.error.flatten());
+    return {
+      success: false,
+      message: "Formulář obsahuje chyby. Zkontrolujte prosím zadané údaje.",
       errors: validatedFields.error.errors,
     };
   }
 
-  const { clientName, clientEmail, projectName, ...answers } = validatedFields.data;
+  const { clientName, clientEmail, projectName, ...answers } =
+    validatedFields.data;
 
   try {
     const inquiry = await prisma.projectInquiry.create({
@@ -72,43 +65,48 @@ export async function submitAnalysisForm(
         answers: {
           create: Object.entries(answers).map(([question, answer]) => ({
             question,
-            answer: Array.isArray(answer) ? answer.join(', ') : String(answer),
+            answer: Array.isArray(answer) ? answer.join(", ") : String(answer),
           })),
         },
       },
     });
 
-    // Odeslání e-mailů souběžně pomocí Promise.all
     await Promise.all([
-        // 1. Notifikace pro tebe
-        resend.emails.send({
-            from: 'Web na míru <poptavka@webnamiru.site>',
-            to: 'poptavka@webnamiru.site', // Tvoje adresa
-            subject: `Nová poptávka: ${inquiry.projectName}`,
-            react: React.createElement(NewInquiryNotificationEmail, {
-                inquiryId: inquiry.id,
-                projectName: inquiry.projectName,
-                clientName: inquiry.clientName,
-                clientEmail: inquiry.clientEmail,
-            }),
+      resend.emails.send({
+        from: "Web na míru <poptavka@webnamiru.site>",
+        to: "poptavka@webnamiru.site",
+        subject: `Nová poptávka: ${inquiry.projectName}`,
+        react: React.createElement(NewInquiryNotificationEmail, {
+          inquiryId: inquiry.id,
+          projectName: inquiry.projectName,
+          clientName: inquiry.clientName,
+          clientEmail: inquiry.clientEmail,
         }),
-        // 2. Potvrzení pro klienta
-        resend.emails.send({
-            from: 'Taras Ishchuk | webnamiru.site <poptavka@webnamiru.site>',
-            to: inquiry.clientEmail, // E-mail klienta
-            subject: `Potvrzení: Vaše strategická analýza pro ${inquiry.projectName}`,
-            react: React.createElement(InquiryConfirmationEmail, {
-                clientName: inquiry.clientName, // OPRAVA: Používáme jméno klienta
-                projectName: inquiry.projectName,
-            }),
-        })
+      }),
+      resend.emails.send({
+        from: "Taras Ishchuk | webnamiru.site <poptavka@webnamiru.site>",
+        to: inquiry.clientEmail,
+        subject: `Potvrzení: Vaše strategická analýza pro ${inquiry.projectName}`,
+        react: React.createElement(InquiryConfirmationEmail, {
+          clientName: inquiry.clientName,
+          projectName: inquiry.projectName,
+        }),
+      }),
     ]);
 
     revalidatePath("/admin/inquiries");
-    return { success: true, message: "Děkujeme! Váš dotazník byl úspěšně odeslán a na Váš e-mail jsme zaslali potvrzení.", errors: [] };
-  
+    return {
+      success: true,
+      message:
+        "Děkujeme! Váš dotazník byl úspěšně odeslán a na Váš e-mail jsme zaslali potvrzení.",
+      errors: [],
+    };
   } catch (error) {
     console.error("Chyba při ukládání analýzy a odesílání e-mailů:", error);
-    return { success: false, message: "Při odesílání došlo k chybě. Zkuste to prosím znovu.", errors: [] };
+    return {
+      success: false,
+      message: "Při odesílání došlo k chybě. Zkuste to prosím znovu.",
+      errors: [],
+    };
   }
 }
