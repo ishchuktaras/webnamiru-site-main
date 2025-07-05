@@ -148,7 +148,17 @@ export default function StrategicQuestionnaire() {
     if (!validateStep(6)) return;
 
     startTransition(async () => {
-      const result = await submitAnalysisForm(formData);
+      const form = new FormData();
+      for (const key in formData) {
+        const value = formData[key];
+        if (Array.isArray(value)) {
+          value.forEach((v) => form.append(key, v));
+        } else if (value != null) {
+          form.append(key, String(value));
+        }
+      }
+
+      const result = await submitAnalysisForm(form);
       setState(result);
       if (result.success) {
         toast.success("Odesláno!", { description: result.message });
@@ -343,6 +353,8 @@ const Step1 = ({ onNext }: any) => {
     </div>
   );
 };
+
+// KROK 2: OPRAVENO – VRÁCENA POLE PRO DNA ZNAČKY
 const Step2 = () => {
   const { formData, updateFormData, state } = useFormContext();
   return (
@@ -396,9 +408,29 @@ const Step2 = () => {
         />
         <FieldError fieldName="projectName" errors={state.errors} />
       </div>
+      {/* TATO POLE BYLA VRÁCENA ZPĚT */}
+      <div className="space-y-2">
+        <Label htmlFor="brandStory">Jaký je příběh vaší firmy/značky?</Label>
+        <Textarea
+          id="brandStory"
+          name="brandStory"
+          onChange={(e) => updateFormData({ brandStory: e.target.value })}
+          defaultValue={formData.brandStory || ""}
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="brandValues">Jaké jsou vaše klíčové hodnoty?</Label>
+        <Textarea
+          id="brandValues"
+          name="brandValues"
+          onChange={(e) => updateFormData({ brandValues: e.target.value })}
+          defaultValue={formData.brandValues || ""}
+        />
+      </div>
     </div>
   );
 };
+
 const Step3 = () => {
   const { formData, updateFormData, state } = useFormContext();
   const kpiData =
