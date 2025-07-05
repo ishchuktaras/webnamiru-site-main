@@ -47,7 +47,6 @@ const FormContext = createContext<{
   formData: Record<string, any>;
   updateFormData: (newData: Partial<Record<string, any>>) => void;
   state: AnalysisFormState;
-  validateStep: (step: number) => boolean;
 } | null>(null);
 
 function useFormContext() {
@@ -124,7 +123,6 @@ export default function StrategicQuestionnaire() {
       5: ["usp"],
       6: ["mustHaveFeatures", "contentProvider"],
     };
-
     const fieldsToValidate = requiredFields[currentStep];
     if (!fieldsToValidate) return true;
 
@@ -132,7 +130,9 @@ export default function StrategicQuestionnaire() {
       const value = formData[field];
       if (!value || (Array.isArray(value) && value.length === 0)) {
         toast.error("Nevyplněná pole", {
-          description: `Prosím, vyplňte všechna povinná pole, než budete pokračovat.`,
+          description: `Prosím, vyplňte všechna povinná pole v kroku ${
+            currentStep - 1
+          }, než budete pokračovat.`,
         });
         return false;
       }
@@ -191,12 +191,7 @@ export default function StrategicQuestionnaire() {
 
   return (
     <FormContext.Provider
-      value={{
-        formData,
-        updateFormData: updateFormDataInState,
-        state,
-        validateStep,
-      }}
+      value={{ formData, updateFormData: updateFormDataInState, state }}
     >
       <Card className="max-w-3xl mx-auto animate-in fade-in-50">
         <div>
@@ -215,7 +210,6 @@ export default function StrategicQuestionnaire() {
               </div>
             </div>
           )}
-
           <div className="p-6 min-h-[450px] flex items-center justify-center">
             {step === 0 && <Step0 onNext={() => setStep(1)} />}
             {step === 1 && <Step1 onNext={() => setStep(2)} />}
@@ -225,7 +219,6 @@ export default function StrategicQuestionnaire() {
             {step === 5 && <Step5 />}
             {step === 6 && <Step6 />}
           </div>
-
           {step > 0 && (
             <div className="p-6 flex justify-between items-center border-t">
               <Button
@@ -254,7 +247,6 @@ export default function StrategicQuestionnaire() {
   );
 }
 
-// Data pro kroky
 const businessKpis = {
   "Generování poptávek": {
     icon: Zap,
@@ -373,7 +365,8 @@ const Step2 = () => {
       </CardHeader>
       <div className="space-y-2">
         <Label htmlFor="clientName">
-          Vaše celé jméno <span className="text-red-500">(povinné)</span>
+          Vaše celé jméno{" "}
+          <span className="text-red-500 font-normal">(povinné)</span>
         </Label>
         <Input
           id="clientName"
@@ -386,7 +379,8 @@ const Step2 = () => {
       </div>
       <div className="space-y-2">
         <Label htmlFor="clientEmail">
-          Kontaktní e-mail <span className="text-red-500">(povinné)</span>
+          Kontaktní e-mail{" "}
+          <span className="text-red-500 font-normal">(povinné)</span>
         </Label>
         <Input
           id="clientEmail"
@@ -400,7 +394,8 @@ const Step2 = () => {
       </div>
       <div className="space-y-2">
         <Label htmlFor="projectName">
-          Název projektu/firmy <span className="text-red-500">(povinné)</span>
+          Název projektu/firmy{" "}
+          <span className="text-red-500 font-normal">(povinné)</span>
         </Label>
         <Input
           id="projectName"
@@ -424,7 +419,8 @@ const Step3 = () => {
         <CardTitle>Krok 2: Cíle a měření úspěchu</CardTitle>
         <CardDescription>
           Zaškrtněte 3-5 klíčových ukazatelů (KPIs), které jsou pro vás
-          nejdůležitější. <span className="text-red-500">(povinné)</span>
+          nejdůležitější.{" "}
+          <span className="text-red-500 font-normal">(povinné)</span>
         </CardDescription>
       </CardHeader>
       {Object.entries(kpiData).map(([category, { icon: Icon, kpis }]) => (
@@ -437,8 +433,6 @@ const Step3 = () => {
               <div key={kpi} className="flex items-center space-x-2">
                 <Checkbox
                   id={kpi}
-                  name="kpis"
-                  value={kpi}
                   onCheckedChange={(checked) => {
                     const newKpis = checked
                       ? [...(formData.kpis || []), kpi]
@@ -470,7 +464,7 @@ const Step4 = () => {
           {formData.projectType === "business"
             ? "Detailně popište ideálního zákazníka "
             : "Detailně popište ideálního dárce/podporovatele "}
-          <span className="text-red-500">(povinné)</span>
+          <span className="text-red-500 font-normal">(povinné)</span>
         </Label>
         <Textarea
           id="targetAudience"
@@ -522,7 +516,7 @@ const Step5 = () => {
       <div className="space-y-2">
         <Label htmlFor="usp">
           V čem jste unikátní oproti ostatním?{" "}
-          <span className="text-red-500">(povinné)</span>
+          <span className="text-red-500 font-normal">(povinné)</span>
         </Label>
         <Textarea
           id="usp"
@@ -567,7 +561,7 @@ const Step6 = () => {
       <div className="space-y-2">
         <Label>
           Jaké funkce jsou pro spuštění webu absolutně nezbytné (Must-have)?{" "}
-          <span className="text-red-500">(povinné)</span>
+          <span className="text-red-500 font-normal">(povinné)</span>
         </Label>
         <div className="grid grid-cols-2 gap-2">
           {commonFeatures.map((f) => (
@@ -619,7 +613,7 @@ const Step6 = () => {
       <div className="space-y-2">
         <Label>
           Kdo bude zodpovědný za dodání obsahu (texty, fotky)?{" "}
-          <span className="text-red-500">(povinné)</span>
+          <span className="text-red-500 font-normal">(povinné)</span>
         </Label>
         <RadioGroup
           name="contentProvider"
