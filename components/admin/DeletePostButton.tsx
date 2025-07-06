@@ -15,8 +15,9 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
-import { deletePost } from "@/app/(admin)/admin/posts/actions";
+import { deletePost } from "@/lib/actions/postActions"; // OPRAVA ZDE
 import { useTransition } from "react";
+import { toast } from "sonner";
 
 interface DeletePostButtonProps {
   postId: string;
@@ -28,14 +29,15 @@ export default function DeletePostButton({ postId }: DeletePostButtonProps) {
   const handleDelete = () => {
     startTransition(async () => {
       await deletePost(postId);
+      toast.success("Článek byl úspěšně smazán.");
     });
   };
 
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="ghost" size="icon" className="text-red-500 hover:text-red-600">
-          <Trash2 className="h-4 w-4" />
+        <Button variant="destructive" size="sm">
+          <Trash2 className="h-4 w-4 mr-2" /> Smazat
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>

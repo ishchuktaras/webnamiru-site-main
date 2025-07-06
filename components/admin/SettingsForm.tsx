@@ -3,9 +3,9 @@
 "use client";
 
 import { useEffect } from "react";
-import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
-import { updateSettings } from "@/app/(admin)/admin/settings/actions";
+import { useActionState } from "react";
+import { updateSettings } from "@/lib/actions/settingsActions"; // TOTO JE TA JEDINÁ OPRAVA
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -33,7 +33,13 @@ type SettingsFormProps = {
 
 export default function SettingsForm({ settings }: SettingsFormProps) {
   const initialState = { message: "", success: false };
-  const [state, formAction] = useActionState(updateSettings, initialState);
+  const settingsReducer = async (
+    state: typeof initialState,
+    formData: FormData
+  ) => {
+    return await updateSettings(formData);
+  };
+  const [state, formAction] = useActionState(settingsReducer, initialState);
 
   useEffect(() => {
     if (state.message) {
@@ -94,7 +100,6 @@ export default function SettingsForm({ settings }: SettingsFormProps) {
           </Card>
         </TabsContent>
         
-        {/* ZMĚNA: Doplněn obsah pro záložku "Bezpečnost" */}
         <TabsContent value="security">
             <Card>
                 <CardHeader>
@@ -117,7 +122,6 @@ export default function SettingsForm({ settings }: SettingsFormProps) {
             </Card>
         </TabsContent>
         
-        {/* ZMĚNA: Doplněn obsah pro záložku "E-mail" */}
         <TabsContent value="email">
             <Card>
                 <CardHeader>
