@@ -4,13 +4,16 @@ import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { SendEmailButton } from "@/components/admin/SendEmailButton"; // Importujeme naši novou komponentu
+import { SendEmailButton } from "@/components/admin/SendEmailButton";
+
+// TATO ŘÁDKA JE FINÁLNÍ OPRAVA
+export const dynamic = 'force-dynamic';
 
 async function getInquiryDetails(id: string) {
   const inquiry = await prisma.projectInquiry.findUnique({
     where: { id },
     include: {
-      answers: true, // Zahrneme všechny odpovědi
+      answers: true,
     },
   });
   return inquiry;
@@ -53,7 +56,6 @@ export default async function InquiryDetailPage({ params }: { params: { id: stri
                  <Badge variant={inquiry.status === 'contacted' ? 'default' : 'secondary'}>
                     {inquiry.status === 'contacted' ? 'Kontaktováno' : 'Nová poptávka'}
                  </Badge>
-                 {/* Používáme novou komponentu */}
                  <SendEmailButton inquiryId={inquiry.id} />
             </div>
           </div>
@@ -72,9 +74,7 @@ export default async function InquiryDetailPage({ params }: { params: { id: stri
           <Card>
              <CardHeader><CardTitle>Cíle a úspěch</CardTitle></CardHeader>
              <CardContent className="space-y-4">
-                <AnswerDisplay label="Hlavní cíl webu" value={answers.mainGoal} />
                 <AnswerDisplay label="Vybrané KPIs" value={answers.kpis} />
-                <AnswerDisplay label="Metriky úspěchu (další)" value={answers.successMetrics} />
              </CardContent>
           </Card>
           <Card>

@@ -1,8 +1,8 @@
 // components/admin/SendEmailButton.tsx
 
-"use client"; 
+"use client";
 
-import { useTransition } from "react";
+import React, { useTransition } from "react";
 import { toast } from "sonner";
 import { Mail, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";

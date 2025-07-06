@@ -2,13 +2,7 @@
 
 "use client";
 
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, ArrowRight, FileText, PiggyBank } from "lucide-react";
@@ -34,7 +28,7 @@ export default function ServicePackagesSection() {
             <TabsTrigger value="included">Co je vždy v ceně?</TabsTrigger>
             <TabsTrigger value="extras">Na co se připravit?</TabsTrigger>
           </TabsList>
-
+          
           <TabsContent value="included">
             <Card className="border-green-200 dark:border-green-800">
               <CardHeader>
@@ -42,124 +36,56 @@ export default function ServicePackagesSection() {
                   <CheckCircle /> Vždy zahrnuto v ceně
                 </CardTitle>
                 <CardDescription>
-                  Tyto položky jsou základem každého projektu a jsou již
-                  započítány v ceně balíčků.
+                  Tyto položky jsou základem každého projektu a jsou již započítány v ceně balíčků.
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <ul className="space-y-3 text-sm text-gray-700 dark:text-gray-300">
-                  <li className="flex items-start gap-3">
-                    <CheckCircle className="h-4 w-4 text-green-500 mt-1 shrink-0" />
-                    <span>
-                      **Úvodní konzultace a analýza** vašich potřeb a cílů.
-                    </span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <CheckCircle className="h-4 w-4 text-green-500 mt-1 shrink-0" />
-                    <span>
-                      **Responzivní design**, který skvěle vypadá na všech
-                      zařízeních.
-                    </span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <CheckCircle className="h-4 w-4 text-green-500 mt-1 shrink-0" />
-                    <span>
-                      **Základní on-page SEO**, aby vás vyhledávače našly.
-                    </span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <CheckCircle className="h-4 w-4 text-green-500 mt-1 shrink-0" />
-                    <span>
-                      **Nasazení webu** na vaši doménu a doporučený hosting.
-                    </span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <CheckCircle className="h-4 w-4 text-green-500 mt-1 shrink-0" />
-                    <span>
-                      **Školení pro obsluhu webu**, abyste si mohli sami snadno
-                      upravovat obsah.
-                    </span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <CheckCircle className="h-4 w-4 text-green-500 mt-1 shrink-0" />
-                    <span>
-                      **Technická záruka 30 dní** po spuštění pro případné
-                      doladění.
-                    </span>
-                  </li>
+                   <li className="flex items-start gap-3"><CheckCircle className="h-4 w-4 text-green-500 mt-1 shrink-0" /><span>**Úvodní konzultace a analýza** vašich potřeb a cílů.</span></li>
+                   <li className="flex items-start gap-3"><CheckCircle className="h-4 w-4 text-green-500 mt-1 shrink-0" /><span>**Responzivní design**, který skvěle vypadá na všech zařízeních.</span></li>
+                   <li className="flex items-start gap-3"><CheckCircle className="h-4 w-4 text-green-500 mt-1 shrink-0" /><span>**Základní on-page SEO**, aby vás vyhledávače našly.</span></li>
+                   <li className="flex items-start gap-3"><CheckCircle className="h-4 w-4 text-green-500 mt-1 shrink-0" /><span>**Nasazení webu** na vaši doménu a doporučený hosting.</span></li>
+                   <li className="flex items-start gap-3"><CheckCircle className="h-4 w-4 text-green-500 mt-1 shrink-0" /><span>**Školení pro obsluhu webu**, abyste si mohli sami snadno upravovat obsah.</span></li>
+                   <li className="flex items-start gap-3"><CheckCircle className="h-4 w-4 text-green-500 mt-1 shrink-0" /><span>**Technická záruka 30 dní** po spuštění pro případné doladění.</span></li>
                 </ul>
               </CardContent>
             </Card>
           </TabsContent>
 
           <TabsContent value="extras">
-            <Card className="border-orange-200 dark:border-orange-800">
+             <Card className="border-orange-200 dark:border-orange-800">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-orange-700 dark:text-orange-400">
-                  <PiggyBank /> Náklady navíc
+                    <PiggyBank /> Náklady navíc
                 </CardTitle>
                 <CardDescription>
-                  Položky a služby, které nejsou součástí ceny balíčků, a jak
-                  probíhá platba.
+                  Položky a služby, které nejsou součástí ceny balíčků, a jak probíhá platba.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div>
-                  <h4 className="font-semibold mb-2 flex items-center gap-2">
-                    <FileText className="h-4 w-4" />
-                    Služby nad rámec balíčků
-                  </h4>
-                  <ul className="space-y-3 text-sm text-gray-700 dark:text-gray-300 pl-4">
-                    <li className="flex items-start gap-3">
-                      <span className="text-orange-500 mt-1 shrink-0">■</span>
-                      <span>
-                        **Hosting a doména** – roční poplatky třetím stranám
-                        (rád s výběrem pomohu).
-                      </span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="text-orange-500 mt-1 shrink-0">■</span>
-                      <span>
-                        **Tvorba obsahu** – psaní textů, grafika či focení
-                        (nabízeno v rámci balíčku Strategické Partnerství).
-                      </span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="text-orange-500 mt-1 shrink-0">■</span>
-                      <span>
-                        **Licence prémiových pluginů**, pokud je projekt
-                        vyžaduje.
-                      </span>
-                    </li>
-                  </ul>
-                </div>
-                <div className="border-t pt-6">
-                  <h4 className="font-semibold mb-2 flex items-center gap-2">
-                    <PiggyBank className="h-4 w-4" />
-                    Proces platby
-                  </h4>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                    Spolupráce je založena na férovém a jednoduchém platebním
-                    modelu.
-                  </p>
-                  <div className="flex flex-col md:flex-row justify-center items-center gap-4 md:gap-8 text-lg font-medium">
-                    <div className="flex items-center gap-2">
-                      <span className="text-3xl font-bold text-blue-600">
-                        50%
-                      </span>
-                      <span>záloha před zahájením prací</span>
+                 <div>
+                    <h4 className="font-semibold mb-2 flex items-center gap-2"><FileText className="h-4 w-4" />Služby nad rámec balíčků</h4>
+                    <ul className="space-y-3 text-sm text-gray-700 dark:text-gray-300 pl-4">
+                      <li className="flex items-start gap-3"><span className="text-orange-500 mt-1 shrink-0">■</span><span>**Hosting a doména** – roční poplatky třetím stranám (rád s výběrem pomohu).</span></li>
+                      <li className="flex items-start gap-3"><span className="text-orange-500 mt-1 shrink-0">■</span><span>**Tvorba obsahu** – psaní textů, grafika či focení (nabízeno v rámci balíčku Strategické Partnerství).</span></li>
+                      <li className="flex items-start gap-3"><span className="text-orange-500 mt-1 shrink-0">■</span><span>**Licence prémiových pluginů**, pokud je projekt vyžaduje.</span></li>
+                    </ul>
+                 </div>
+                 <div className="border-t pt-6">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2"><PiggyBank className="h-4 w-4" />Proces platby</h4>
+                     <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Spolupráce je založena na férovém a jednoduchém platebním modelu.</p>
+                    <div className="flex flex-col md:flex-row justify-center items-center gap-4 md:gap-8 text-lg font-medium">
+                      <div className="flex items-center gap-2">
+                        <span className="text-3xl font-bold text-blue-600">50%</span>
+                        <span>záloha před zahájením prací</span>
+                      </div>
+                      <div className="text-2xl text-gray-300 dark:text-gray-600">→</div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-3xl font-bold text-blue-600">50%</span>
+                        <span>doplatek po schválení</span>
+                      </div>
                     </div>
-                    <div className="text-2xl text-gray-300 dark:text-gray-600">
-                      →
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-3xl font-bold text-blue-600">
-                        50%
-                      </span>
-                      <span>doplatek po schválení</span>
-                    </div>
-                  </div>
-                </div>
+                 </div>
               </CardContent>
             </Card>
           </TabsContent>
@@ -167,68 +93,36 @@ export default function ServicePackagesSection() {
       </div>
 
       <div className="mx-auto grid max-w-6xl items-stretch gap-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
-        {packages.map((pkg) => {
+        {packages.map((pkg, index) => {
           const IconComponent = pkg.icon;
           return (
             <Card
               key={pkg.name}
               className={`flex flex-col p-6 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 dark:bg-gray-950 relative ${
-                pkg.popular
-                  ? "border-2 border-blue-500 dark:border-blue-400"
-                  : "border-transparent"
+                pkg.popular ? "border-2 border-blue-500 dark:border-blue-400" : "border-transparent"
               }`}
             >
               {pkg.popular && (
-                <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white px-4 py-1">
-                  Nejpopulárnější
-                </Badge>
+                <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white px-4 py-1">Nejpopulárnější</Badge>
               )}
               <CardHeader className="pb-4">
                 <div className="flex items-center gap-3 mb-2">
-                  <div
-                    className={`p-2 rounded-lg ${
-                      pkg.popular
-                        ? "bg-blue-100 dark:bg-blue-900/20"
-                        : "bg-gray-100 dark:bg-gray-800"
-                    }`}
-                  >
-                    <IconComponent
-                      className={`h-6 w-6 ${
-                        pkg.popular
-                          ? "text-blue-600 dark:text-blue-400"
-                          : "text-gray-600 dark:text-gray-400"
-                      }`}
-                    />
+                  <div className={`p-2 rounded-lg ${pkg.popular ? "bg-blue-100 dark:bg-blue-900/20" : "bg-gray-100 dark:bg-gray-800"}`}>
+                    <IconComponent className={`h-6 w-6 ${pkg.popular ? "text-blue-600 dark:text-blue-400" : "text-gray-600 dark:text-gray-400"}`} />
                   </div>
-                  <CardTitle className="text-2xl font-bold text-black dark:text-gray-50">
-                    {pkg.name}
-                  </CardTitle>
+                  <CardTitle className="text-2xl font-bold text-black dark:text-gray-50">{pkg.name}</CardTitle>
                 </div>
-                {/* OPRAVA ZDE: Popis přesunut do CardContent pro lepší flexibilitu */}
                 <div className="flex items-baseline gap-2 mt-4">
-                  <p className="text-3xl font-extrabold text-black dark:text-gray-50">
-                    {pkg.price}
-                  </p>
-                  {pkg.originalPrice && (
-                    <p className="text-lg text-gray-500 line-through">
-                      {pkg.originalPrice}
-                    </p>
-                  )}
+                  <p className="text-3xl font-extrabold text-black dark:text-gray-50">{pkg.price}</p>
+                  {pkg.originalPrice && (<p className="text-lg text-gray-500 line-through">{pkg.originalPrice}</p>)}
                 </div>
                 <div className="flex flex-wrap gap-2 mt-3">
-                  <Badge variant="outline" className="text-xs">
-                    ⏱️ {pkg.timeline}
-                  </Badge>
-                  <Badge variant="outline" className="text-xs">
-                    🎧 {pkg.support}
-                  </Badge>
+                  <Badge variant="outline" className="text-xs">⏱️ {pkg.timeline}</Badge>
+                  <Badge variant="outline" className="text-xs">🎧 {pkg.support}</Badge>
                 </div>
               </CardHeader>
               <CardContent className="flex-grow">
-                {/* OPRAVA ZDE: Popis je nyní tady a nemá pevnou výšku */}
-                <p className="text-gray-600 dark:text-gray-400 mt-2 mb-6 min-h-[4rem]">
-                  {pkg.description}
-                </p>
+                <p className="text-gray-600 dark:text-gray-400 mt-2 mb-6 min-h-[4rem]">{pkg.description}</p>
                 <ul className="space-y-3 text-gray-700 dark:text-gray-300">
                   {pkg.features.map((feature, i) => (
                     <li key={i} className="flex items-start gap-3">
@@ -238,12 +132,8 @@ export default function ServicePackagesSection() {
                   ))}
                 </ul>
                 <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                  <p className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-1">
-                    Cílová skupina:
-                  </p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    {pkg.targetAudience}
-                  </p>
+                  <p className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-1">Cílová skupina:</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">{pkg.targetAudience}</p>
                 </div>
               </CardContent>
               <div className="mt-auto pt-6">
@@ -251,12 +141,7 @@ export default function ServicePackagesSection() {
                   title={`Poptávka balíčku: ${pkg.name}`}
                   description="Děkuji za váš zájem! Vyplňte prosím své kontaktní údaje a já se vám co nejdříve ozvu."
                   serviceInfo={`Tvorba webu - balíček ${pkg.name}`}
-                  trigger={
-                    <Button className="w-full h-12 text-base group">
-                      Získat nabídku{" "}
-                      <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                    </Button>
-                  }
+                  trigger={<Button className="w-full h-12 text-base group">Získat nabídku <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" /></Button>}
                 />
               </div>
             </Card>
