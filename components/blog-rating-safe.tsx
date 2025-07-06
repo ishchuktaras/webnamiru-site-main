@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import { useActionState } from "react";
 import { Star } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { addRating } from "@/app/(main)/ratings/actions"; // Používáme naši funkční Server Action
+import { addRating } from "@/app/[locale]/(main)/ratings/actions"; // Používáme naši funkční Server Action
 
 // Změna názvu props pro lepší srozumitelnost
 interface BlogRatingSafeProps {

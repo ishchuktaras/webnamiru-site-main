@@ -22,6 +22,7 @@ import { cn } from "@/lib/utils";
 import { ThemeToggle } from "./theme-toggle";
 import InquirySheet from "@/components/InquirySheet"; 
 import React from "react";
+import LanguageSwitcher from '@/components/LanguageSwitcher'; 
 
 export default function Header(): React.JSX.Element {
   const pathname = usePathname();
@@ -158,6 +159,7 @@ export default function Header(): React.JSX.Element {
 
           <div className="hidden lg:flex items-center gap-4">
             <ThemeToggle />
+            <LanguageSwitcher />
             <InquirySheet
               title="Nezávazná konzultace"
               description="Zanechte mi kontakt a probereme, jak mohu pomoci vašemu projektu."

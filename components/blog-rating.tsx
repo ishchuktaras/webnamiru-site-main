@@ -7,7 +7,7 @@ import { useActionState } from "react";
 import { Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { addRating } from "@/app/(main)/ratings/actions"; // Importujeme naši novou Server Action
+import { addRating } from "@/app/[locale]/(main)/ratings/actions"; // Importujeme naši novou Server Action
 
 interface BlogRatingProps {
   postId: string;

@@ -11,7 +11,7 @@ import React, {
 import {
   submitAnalysisForm,
   type AnalysisFormState,
-} from "@/app/(forms)/strategicka-analyza/actions";
+} from "@/app/[locale]/(forms)/strategicka-analyza/actions";
 import { Button } from "@/components/ui/button";
 import {
   Card,

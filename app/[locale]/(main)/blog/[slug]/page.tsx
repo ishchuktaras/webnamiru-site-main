@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import prisma from "@/lib/prisma";
 // ZMĚNA: Opravena cesta k importu
-import { getAverageRating } from "@/app/(main)/ratings/actions"; 
+import { getAverageRating } from "@/app/[locale]/(main)/ratings/actions"; 
 
 import Footer from "@/components/Footer";
 import BlogBreadcrumbs from "@/components/blog-breadcrumbs";
