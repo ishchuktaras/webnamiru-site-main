@@ -2,58 +2,146 @@
 
 "use client";
 
-// ZMĚNA 1: Změna importu z 'react-dom' na 'react' a přejmenování hooku
-import { useActionState } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
-import { type Post } from "@prisma/client";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { Post, Category, Tag } from "@prisma/client";
+import { createPost, updatePost } from "@/lib/actions/postActions"; // OPRAVA
+import { useTransition } from "react";
 
-// Univerzální akce, kterou budeme volat (createPost nebo updatePost)
-type FormAction = (prevState: any, formData: FormData) => Promise<any>;
+const postSchema = z.object({
+  title: z.string().min(1, "Nadpis je povinný."),
+  content: z.string().min(1, "Obsah je povinný."),
+  slug: z.string().min(1, "URL slug je povinný."),
+  excerpt: z.string().optional(),
+  imageUrl: z.string().url({ message: "Neplatná URL adresa." }).optional().or(z.literal('')),
+  published: z.boolean().default(false),
+  featured: z.boolean().default(false),
+  categoryIds: z.array(z.string()).optional(),
+  tagIds: z.array(z.string()).optional(),
+});
+
+type PostFormValues = z.infer<typeof postSchema>;
 
 interface PostFormProps {
-  action: FormAction;
-  post?: Post | null; // Nepovinný prop pro existující článek
+  post?: Post & { categoryIds?: string[]; tagIds?: string[] };
+  allCategories: Category[];
+  allTags: Tag[];
 }
 
-export default function PostForm({ action, post }: PostFormProps) {
-  const initialState = { message: "", errors: {} };
-  // ZMĚNA 2: Přejmenování volání hooku
-  const [state, formAction] = useActionState(action, initialState);
+export default function PostForm({ post, allCategories, allTags }: PostFormProps) {
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+
+  const form = useForm<PostFormValues>({
+    resolver: zodResolver(postSchema),
+    defaultValues: {
+      title: post?.title || "",
+      content: post?.content || "",
+      slug: post?.slug || "",
+      excerpt: post?.excerpt || "",
+      imageUrl: post?.imageUrl || "",
+      published: post?.published || false,
+      featured: post?.featured || false,
+      categoryIds: post?.categoryIds || [],
+      tagIds: post?.tagIds || [],
+    },
+  });
+
+  const onSubmit = async (data: PostFormValues) => {
+    const formData = new FormData();
+    Object.entries(data).forEach(([key, value]) => {
+      if (Array.isArray(value)) {
+          value.forEach(item => formData.append(key, item));
+      } else if (value != null) {
+          formData.append(key, String(value));
+      }
+    });
+
+    if (post) {
+      formData.append('id', post.id);
+    }
+    
+    startTransition(async () => {
+      const result = post 
+        ? await updatePost(formData) 
+        : await createPost(formData);
+
+      if (result?.success) {
+        toast.success(post ? "Článek upraven" : "Článek vytvořen");
+        router.push('/admin/posts');
+        router.refresh();
+      } else if (result?.message) {
+        toast.error("Chyba!", { description: result.message });
+      }
+    });
+  };
 
   return (
-    <form action={formAction} className="space-y-6 max-w-2xl mx-auto">
-      {/* Skryté pole pro ID článku při editaci */}
-      {post?.id && <input type="hidden" name="postId" value={post.id} />}
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <FormField control={form.control} name="title" render={({ field }) => (<FormItem><FormLabel>Nadpis</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+        <FormField control={form.control} name="slug" render={({ field }) => (<FormItem><FormLabel>URL Slug</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+        <FormField control={form.control} name="excerpt" render={({ field }) => (<FormItem><FormLabel>Perex</FormLabel><FormControl><Textarea {...field} /></FormControl><FormMessage /></FormItem>)} />
+        <FormField control={form.control} name="content" render={({ field }) => (<FormItem><FormLabel>Obsah</FormLabel><FormControl><Textarea {...field} rows={15} /></FormControl><FormMessage /></FormItem>)} />
+        <FormField control={form.control} name="imageUrl" render={({ field }) => (<FormItem><FormLabel>URL obrázku</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>)} />
+        
+        <FormItem>
+          <FormLabel>Kategorie</FormLabel>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {allCategories.map((category) => (
+              <FormField
+              key={category.id}
+              control={form.control}
+              name="categoryIds"
+              render={({ field }) => {
+                  return (
+                  <FormItem
+                      key={category.id}
+                      className="flex flex-row items-start space-x-3 space-y-0"
+                  >
+                      <FormControl>
+                      <Checkbox
+                          checked={field.value?.includes(category.id)}
+                          onCheckedChange={(checked) => {
+                          return checked
+                              ? field.onChange([...(field.value || []), category.id])
+                              : field.onChange(
+                                  field.value?.filter(
+                                  (value) => value !== category.id
+                                  )
+                              )
+                          }}
+                      />
+                      </FormControl>
+                      <FormLabel className="font-normal">
+                      {category.name}
+                      </FormLabel>
+                  </FormItem>
+                  )
+              }}
+              />
+          ))}
+          </div>
+          <FormMessage />
+        </FormItem>
 
-      <div className="space-y-2">
-        <Label htmlFor="title">Název článku</Label>
-        <Input id="title" name="title" required defaultValue={post?.title} />
-        {state.errors?.title && <p className="text-red-500 text-sm">{state.errors.title}</p>}
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="excerpt">Krátký úvod (Excerpt)</Label>
-        <Textarea id="excerpt" name="excerpt" required defaultValue={post?.excerpt} />
-        {state.errors?.excerpt && <p className="text-red-500 text-sm">{state.errors.excerpt}</p>}
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="content">Obsah článku (podporuje HTML)</Label>
-        <Textarea id="content" name="content" required rows={15} defaultValue={post?.content} />
-        {state.errors?.content && <p className="text-red-500 text-sm">{state.errors.content}</p>}
-      </div>
-
-      <div className="flex items-center space-x-2">
-        <Switch id="published" name="published" defaultChecked={post?.published ?? false} />
-        <Label htmlFor="published">Publikovat článek</Label>
-      </div>
-
-      <Button type="submit">{post ? "Uložit změny" : "Vytvořit článek"}</Button>
-      {state.message && <p className="text-green-500 mt-4">{state.message}</p>}
-    </form>
+        <div className="flex items-center space-x-2">
+            <FormField control={form.control} name="published" render={({ field }) => (<FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><div className="space-y-1 leading-none"><FormLabel>Publikovat</FormLabel></div></FormItem>)} />
+            <FormField control={form.control} name="featured" render={({ field }) => (<FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><div className="space-y-1 leading-none"><FormLabel>Doporučený</FormLabel></div></FormItem>)} />
+        </div>
+        
+        <Button type="submit" disabled={isPending}>
+          {isPending ? "Ukládám..." : (post ? "Uložit změny" : "Vytvořit článek")}
+        </Button>
+      </form>
+    </Form>
   );
 }

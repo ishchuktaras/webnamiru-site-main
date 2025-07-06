@@ -1,13 +1,24 @@
-// app/admin/posts/new/page.tsx
+// app/[locale]/(admin)/admin/posts/new/page.tsx
 
 import PostForm from "@/components/admin/PostForm";
-import { createPost } from "../actions";
+import prisma from "@/lib/prisma";
 
-export default function NewPostPage() {
+async function getCategoriesAndTags() {
+    const categories = await prisma.category.findMany();
+    const tags = await prisma.tag.findMany();
+    return { categories, tags };
+}
+
+export default async function NewPostPage() {
+  const { categories, tags } = await getCategoriesAndTags();
+
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-8">Vytvořit nový článek</h1>
-      <PostForm action={createPost} />
+      <h1 className="text-2xl font-bold mb-4">Nový článok</h1>
+      <PostForm 
+        allCategories={categories}
+        allTags={tags}
+      />
     </div>
   );
 }

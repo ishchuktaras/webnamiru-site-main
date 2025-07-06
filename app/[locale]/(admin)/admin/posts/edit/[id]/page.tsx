@@ -3,13 +3,21 @@
 import prisma from "@/lib/prisma";
 import PostForm from "@/components/admin/PostForm";
 import { notFound } from "next/navigation";
+import type { Post, Category, Tag } from "@prisma/client";
 
-async function getPost(id: string) {
+// Definuje nový typ pro příspěvek s načtenými kategoriemi a tagy
+type PostWithRelations = Post & {
+  category?: Category | null; // Kategorie může být jedna nebo žádná
+  tags: Tag[];             // Tagů může být více
+};
+
+async function getPost(id: string): Promise<PostWithRelations | null> {
   const post = await prisma.post.findUnique({
     where: { id },
+    // Používáme správné názvy vztahů podle schématu
     include: {
-      categories: { select: { id: true } },
-      tags: { select: { id: true } },
+      category: true, // jednotné číslo
+      tags: true,     // množné číslo
     },
   });
   return post;
@@ -29,16 +37,18 @@ export default async function EditPostPage({ params }: { params: { id: string } 
     return notFound();
   }
 
-  // Pripravíme dáta pre formulár
+  // Připravíme data pro formulář se správnými typy
   const postData = {
     ...post,
-    categoryIds: post.categories.map(c => c.id),
+    // Pokud kategorie existuje, vezmeme její ID, jinak je pole prázdné
+    categoryIds: post.category ? [post.category.id] : [],
+    // Zmapujeme pole tagů na pole jejich IDček
     tagIds: post.tags.map(t => t.id),
   };
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-4">Upraviť článok</h1>
+      <h1 className="text-2xl font-bold mb-4">Upravit článek</h1>
       <PostForm 
         post={postData} 
         allCategories={categories}
