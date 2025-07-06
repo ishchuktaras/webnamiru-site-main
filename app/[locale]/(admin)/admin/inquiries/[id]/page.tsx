@@ -1,4 +1,4 @@
-// app/(admin)/admin/inquiries/[id]/page.tsx
+// app/[locale]/(admin)/admin/inquiries/[id]/page.tsx
 
 import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
