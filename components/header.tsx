@@ -1,5 +1,3 @@
-// components/header.tsx
-
 "use client";
 
 import Link from "next/link";
@@ -14,7 +12,7 @@ import {
 } from "@/components/ui/navigation-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { MenuIcon, Phone, Mail, ArrowRight, Home, Settings, Briefcase, Star, Users, MessageSquare, Workflow } from "lucide-react"; 
+import { MenuIcon, Phone, Mail, ArrowRight } from "lucide-react"; 
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
@@ -23,14 +21,103 @@ import { ThemeToggle } from "./theme-toggle";
 import InquirySheet from "@/components/InquirySheet"; 
 import React from "react";
 import LanguageSwitcher from '@/components/LanguageSwitcher'; 
+import { useTranslations } from 'next-intl';
+
+// --- LEPŠÍ TYPOVÉ DEFINICE ---
+
+// Typ pro položku v rozbalovacím menu
+interface SubNavItem {
+  key: string;
+  target: string;
+  descKey: string;
+  label: string;
+  description: string;
+}
+
+// Typy pro hlavní navigační položky
+interface BaseNavItem {
+  key: string;
+  label: string;
+}
+
+interface ScrollNavItem extends BaseNavItem {
+  type: 'scroll';
+  target: string;
+}
+
+interface PageNavItem extends BaseNavItem {
+  type: 'page';
+  href: string;
+}
+
+interface DropdownNavItem extends BaseNavItem {
+  type: 'dropdown';
+  items: SubNavItem[];
+}
+
+// Sjednocený typ pro všechny možnosti
+type NavItem = ScrollNavItem | PageNavItem | DropdownNavItem;
+
+
+// Struktura navigačních položek (bez textů) - zůstává stejná
+const navStructure = [
+  { key: 'home', type: 'scroll' as const, target: 'hero-section' },
+  {
+    key: 'services',
+    type: 'dropdown' as const,
+    items: [
+      { key: 'webCreation', target: 'service-packages-section', descKey: 'webCreationDesc' },
+      { key: 'maintenance', target: 'maintenance-section', descKey: 'maintenanceDesc' },
+      { key: 'process', target: 'process-section', descKey: 'processDesc' },
+    ]
+  },
+  {
+    key: 'references',
+    type: 'dropdown' as const,
+    items: [
+      { key: 'caseStudies', target: 'case-studies-section', descKey: 'caseStudiesDesc' },
+      { key: 'forWhom', target: 'for-whom-section', descKey: 'forWhomDesc' },
+      { key: 'testimonials', target: 'testimonials-section', descKey: 'testimonialsDesc' },
+    ]
+  },
+  { key: 'partnership', type: 'scroll' as const, target: 'partners-packages-section' },
+  { key: 'blog', type: 'page' as const, href: '/blog' },
+  { key: 'contact', type: 'page' as const, href: '/kontakt' },
+];
+
 
 export default function Header(): React.JSX.Element {
+  const t = useTranslations('Navigation');
+  const tHeader = useTranslations('Header');
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const headerRef = useRef<HTMLElement>(null);
 
+  // --- TYPOVĚ BEZPEČNÉ VYTVOŘENÍ NAVIGACE ---
+  const navigationItems: NavItem[] = navStructure.map(item => {
+    if (item.type === 'dropdown') {
+      return {
+        ...item,
+        label: t(`${item.key}.label`),
+        items: item.items.map(subItem => ({
+          ...subItem,
+          label: t(`${item.key}.${subItem.key}`),
+          description: t(`${item.key}.${subItem.descKey}`)
+        }))
+      };
+    }
+    // Pro 'scroll' a 'page' typy
+    const baseItem = { key: item.key, label: t(item.key) };
+    if (item.type === 'scroll') {
+      return { ...item, ...baseItem };
+    }
+    // item.type === 'page'
+    return { ...item, ...baseItem };
+  });
+
+  // Zbytek komponenty (useEffect, scrollToSection) zůstává beze změny
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
@@ -68,49 +155,27 @@ export default function Header(): React.JSX.Element {
     }
   };
 
-  const navigationItems = [
-    { label: "Domů", type: 'scroll', target: 'hero-section' },
-    {
-      label: 'Služby',
-      type: 'dropdown',
-      items: [
-        { label: 'Tvorba webu', target: 'service-packages-section', description: 'Balíčky na míru pro váš byznys.' },
-        { label: 'Správa a údržba', target: 'maintenance-section', description: 'Dlouhodobá péče a bezpečnost.' },
-        { label: 'Můj proces', target: 'process-section', description: 'Transparentní postup od A do Z.' },
-      ]
-    },
-    {
-      label: 'Reference',
-      type: 'dropdown',
-      items: [
-        { label: 'Případové studie', target: 'case-studies-section', description: 'Konkrétní výsledky mých projektů.' },
-        { label: 'Pro koho tvořím', target: 'for-whom-section', description: 'Řešení pro různé segmenty.' },
-        { label: 'Co o mně říkají', target: 'testimonials-section', description: 'Hodnocení a zpětná vazba.' },
-      ]
-    },
-    { label: "Partnerství", type: 'scroll', target: 'partners-packages-section' },
-    { label: "Blog", type: 'page', href: '/blog' },
-    { label: "Kontakt", type: 'page', href: '/kontakt' },
-  ];
 
   return (
     <>
+      {/* Horní informační lišta */}
       <div className="hidden lg:block bg-gradient-to-r from-blue-900 to-blue-800 text-white py-2">
         <div className="container mx-auto px-4 flex justify-between items-center text-sm">
            <div className="flex items-center gap-6">
             <div className="flex items-center gap-2 hover:text-blue-200 transition-colors">
               <Phone className="h-4 w-4" />
-              <a href="tel:+420777596216" className="hover:underline">+420 777 596 216</a>
+              <a href={`tel:${tHeader('phone')}`} className="hover:underline">{tHeader('phone')}</a>
             </div>
             <div className="flex items-center gap-2 hover:text-blue-200 transition-colors">
               <Mail className="h-4 w-4" />
-              <a href="mailto:poptavka@webnamiru.site" className="hover:text-blue-200 transition-colors">poptavka@webnamiru.site</a>
+              <a href={`mailto:${tHeader('email')}`} className="hover:text-blue-200 transition-colors">{tHeader('email')}</a>
             </div>
           </div>
-          <div className="text-blue-200 font-medium">🎯 Specializujeme se na Kraj Vysočina</div>
+          <div className="text-blue-200 font-medium">{tHeader('slogan')}</div>
         </div>
       </div>
 
+      {/* Hlavní hlavička */}
       <header ref={headerRef} className={cn("sticky top-0 z-50 w-full transition-all duration-300 ease-in-out", isScrolled ? "bg-background/95 backdrop-blur-md shadow-lg border-b" : "bg-background shadow-sm")}>
         <div className="container mx-auto px-4 lg:px-6 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3 group" aria-label="webnamíru.site - Domovská stránka">
@@ -119,10 +184,11 @@ export default function Header(): React.JSX.Element {
             </div>
             <div className="flex flex-col">
               <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">webnamíru.site</span>
-              <span className="text-xs text-gray-600 dark:text-gray-400 hidden sm:block">Strategické weby pro Vysočinu</span>
+              <span className="text-xs text-gray-600 dark:text-gray-400 hidden sm:block">{tHeader('logoSubtitle')}</span>
             </div>
           </Link>
 
+          {/* Desktopová navigace */}
           <NavigationMenu className="hidden lg:flex">
             <NavigationMenuList>
               {navigationItems.map((item) => (
@@ -132,8 +198,8 @@ export default function Header(): React.JSX.Element {
                       <NavigationMenuTrigger>{item.label}</NavigationMenuTrigger>
                       <NavigationMenuContent>
                         <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-                          {item.items?.map((subItem) => (
-                            <ListItem key={subItem.label} title={subItem.label} onClick={() => scrollToSection(subItem.target!)} href={`/#${subItem.target}`}>
+                          {item.items.map((subItem) => ( // Zde už je `item.items` bezpečně dostupné
+                            <ListItem key={subItem.label} title={subItem.label} onClick={() => scrollToSection(subItem.target)} href={`/#${subItem.target}`}>
                               {subItem.description}
                             </ListItem>
                           ))}
@@ -141,13 +207,12 @@ export default function Header(): React.JSX.Element {
                       </NavigationMenuContent>
                     </>
                   ) : item.type === 'scroll' ? (
-                    // ZMĚNA: Odebrána podmínka '&& pathname === "/"'
-                    <button onClick={() => scrollToSection(item.target!)} className={cn("group inline-flex h-10 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-accent focus:outline-none", activeSection === item.target && pathname === '/' && "bg-accent")}>
+                    <button onClick={() => scrollToSection(item.target)} className={cn("group inline-flex h-10 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-accent focus:outline-none", activeSection === item.target && pathname === '/' && "bg-accent")}>
                       {item.label}
                     </button>
                   ) : ( // item.type === 'page'
-                     <Link href={item.href!} legacyBehavior passHref>
-                        <NavigationMenuLink className={cn("group inline-flex h-10 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-accent", pathname.startsWith(item.href!) && "bg-accent")}>
+                     <Link href={item.href} legacyBehavior passHref>
+                        <NavigationMenuLink className={cn("group inline-flex h-10 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-accent", pathname.startsWith(item.href) && "bg-accent")}>
                           {item.label}
                         </NavigationMenuLink>
                       </Link>
@@ -157,17 +222,19 @@ export default function Header(): React.JSX.Element {
             </NavigationMenuList>
           </NavigationMenu>
 
+          {/* Tlačítka vpravo */}
           <div className="hidden lg:flex items-center gap-4">
             <ThemeToggle />
             <LanguageSwitcher />
             <InquirySheet
-              title="Nezávazná konzultace"
-              description="Zanechte mi kontakt a probereme, jak mohu pomoci vašemu projektu."
+              title={tHeader('inquiryTitle')}
+              description={tHeader('inquiryDescription')}
               serviceInfo="Obecná poptávka z hlavičky"
-              trigger={ <Button className="h-10 px-6 group">Nezávazná konzultace<ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" /></Button> }
+              trigger={ <Button className="h-10 px-6 group">{tHeader('inquiryButton')}<ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" /></Button> }
             />
           </div>
 
+          {/* Mobilní menu */}
           <div className="flex items-center gap-2 lg:hidden">
             <ThemeToggle />
             <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
@@ -182,8 +249,8 @@ export default function Header(): React.JSX.Element {
                         <AccordionItem value={item.label} className="border-b-0">
                           <AccordionTrigger className="p-2 font-medium text-lg hover:no-underline">{item.label}</AccordionTrigger>
                           <AccordionContent className="pl-4">
-                            {item.items?.map((subItem) => (
-                              <button key={subItem.label} onClick={() => scrollToSection(subItem.target!)} className={cn("w-full text-left p-2 rounded-md text-base", activeSection === subItem.target && pathname === '/' ? "bg-accent" : "hover:bg-accent/50")}>
+                            {item.items.map((subItem) => ( // Zde už je `item.items` bezpečně dostupné
+                              <button key={subItem.label} onClick={() => scrollToSection(subItem.target)} className={cn("w-full text-left p-2 rounded-md text-base", activeSection === subItem.target && pathname === '/' ? "bg-accent" : "hover:bg-accent/50")}>
                                 {subItem.label}
                               </button>
                             ))}
@@ -191,12 +258,11 @@ export default function Header(): React.JSX.Element {
                         </AccordionItem>
                       </Accordion>
                     ) : item.type === 'scroll' ? (
-                      // ZMĚNA: Odebrána podmínka '&& pathname === "/"'
-                      <button key={item.label} onClick={() => scrollToSection(item.target!)} className={cn("text-left p-2 rounded-md", activeSection === item.target && pathname === '/' ? "bg-accent" : "hover:bg-accent/50")}>
+                      <button key={item.label} onClick={() => scrollToSection(item.target)} className={cn("text-left p-2 rounded-md", activeSection === item.target && pathname === '/' ? "bg-accent" : "hover:bg-accent/50")}>
                         {item.label}
                       </button>
                     ) : ( // item.type === 'page'
-                      <Link key={item.label} href={item.href!} onClick={() => setIsMobileMenuOpen(false)} className={cn("block p-2 rounded-md", pathname.startsWith(item.href!) ? "bg-accent" : "hover:bg-accent/50")}>
+                      <Link key={item.label} href={item.href} onClick={() => setIsMobileMenuOpen(false)} className={cn("block p-2 rounded-md", pathname.startsWith(item.href) ? "bg-accent" : "hover:bg-accent/50")}>
                         {item.label}
                       </Link>
                     )
@@ -211,6 +277,7 @@ export default function Header(): React.JSX.Element {
   );
 }
 
+// Komponenta ListItem zůstává beze změny
 const ListItem = React.forwardRef<React.ElementRef<"a">, React.ComponentPropsWithoutRef<"a">>(
   ({ className, title, children, ...props }, ref) => {
     return (

@@ -1,0 +1,21 @@
+{
+  "HeroSection": {
+    "badge": "Favorable conditions for new entrepreneurs",
+    "title1": "Websites that",
+    "title2": "earn money.",
+    "subtitle": "Starting a business? I offer <bold>favorable starting conditions</bold> for creating professional websites that will grow with your business in the Vysočina region.",
+    "cta_button1": "Find out the starting conditions",
+    "cta_button2": "View case studies",
+    "trustSignal1": "Specialization in startups",
+    "trustSignal2": "Favorable starting prices",
+    "trustSignal3": "Economic education + IT"
+  },
+  "Header": {
+    "home": "Home",
+    "services": "Services",
+    "references": "References",
+    "partnership": "Partnership",
+    "blog": "Blog",
+    "contact": "Contact"
+  }
+}

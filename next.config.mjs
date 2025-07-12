@@ -1,13 +1,19 @@
+import createNextIntlPlugin from 'next-intl/plugin';
+ 
+// Předejte cestu k vašemu konfiguračnímu souboru
+const withNextIntl = createNextIntlPlugin('./i18n.ts');
+ 
+/** @type {import('next').NextConfig} */
 const nextConfig = {
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  typescript: {
-    ignoreBuildErrors: true,
-  },
+  reactStrictMode: true,
   images: {
-    unoptimized: true,
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+    ],
   },
-}
-
-export default nextConfig
+};
+ 
+export default withNextIntl(nextConfig);

@@ -1,53 +1,52 @@
-// app/[locale]/layout.tsx
-
-import type { Metadata } from "next";
+import { NextIntlClientProvider } from 'next-intl';
+import { getMessages } from 'next-intl/server';
+import { Toaster } from '@/components/ui/sonner';
+import { ThemeProvider } from '@/components/theme-provider';
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Inter } from "next/font/google";
 import { cn } from "@/lib/utils";
-import { ThemeProvider } from "@/components/theme-provider";
-import { Toaster } from "@/components/ui/sonner";
-import { SessionProvider } from "next-auth/react";
-import { NextIntlClientProvider, useMessages } from "next-intl";
-import "../globals.css";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
+const inter = Inter({ subsets: ["latin"] });
 
-export const metadata: Metadata = {
-  title: {
-    default: "webnamiru.site - Strategické weby, které vydělávají",
-    template: "%s | webnamiru.site",
-  },
-  description: "Tvořím weby, které nejsou jen vizitkou, ale funkčním obchodním nástrojem.",
-};
+// Funkce generateStaticParams zajistí, že se stránky pro všechny jazyky vygenerují staticky při buildu
+export function generateStaticParams() {
+  return [{ locale: 'cs' }, { locale: 'en' }, { locale: 'uk' }];
+}
 
-export default function LocaleLayout({
+export default async function LocaleLayout({
   children,
-  params: { locale }
+  params: { locale },
 }: {
   children: React.ReactNode;
   params: { locale: string };
 }) {
-  const messages = useMessages();
+  // TATO ŘÁDKA JE ZÁSADNÍ! Zajišťuje, že se pro daný jazyk načtou správné překlady.
+  unstable_setRequestLocale(locale); 
+
+  const messages = await getMessages();
 
   return (
-    <SessionProvider>
-      <NextIntlClientProvider locale={locale} messages={messages}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <div
-            className={cn(
-              "min-h-screen bg-background font-sans antialiased",
-              inter.variable
-            )}
+    <html lang={locale} suppressHydrationWarning>
+      <body className={cn("min-h-screen bg-background font-sans antialiased", inter.className)}>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <ThemeProvider 
+            attribute="class" 
+            defaultTheme="system" 
+            enableSystem
+            disableTransitionOnChange
           >
             {children}
             <Toaster />
-          </div>
-        </ThemeProvider>
-      </NextIntlClientProvider>
-    </SessionProvider>
+            <Analytics />
+            <SpeedInsights />
+          </ThemeProvider>
+        </NextIntlClientProvider>
+      </body>
+    </html>
   );
+}
+
+function unstable_setRequestLocale(locale: string) {
+  throw new Error('Function not implemented.');
 }

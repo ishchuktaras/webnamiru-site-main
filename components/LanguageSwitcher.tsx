@@ -1,10 +1,7 @@
-// components/LanguageSwitcher.tsx
-
 "use client";
 
-import { useRouter } from 'next/navigation';
-import { usePathname } from 'next/navigation';
 import { useLocale } from 'next-intl';
+import { useRouter, usePathname } from 'next/navigation';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,28 +10,34 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Globe } from "lucide-react";
+import { useState, useEffect, useTransition } from 'react';
 
 export default function LanguageSwitcher() {
+  const [isPending, startTransition] = useTransition();
   const router = useRouter();
   const pathname = usePathname();
   const locale = useLocale();
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const switchLocale = (nextLocale: string) => {
-    // Replace the locale in the pathname (assuming locale is the first segment)
-    const segments = pathname.split('/');
-    if (segments[1] && ['cs', 'en', 'uk'].includes(segments[1])) {
-      segments[1] = nextLocale;
-    } else {
-      segments.splice(1, 0, nextLocale);
-    }
-    const newPath = segments.join('/') || '/';
-    router.replace(newPath);
+    startTransition(() => {
+        const newPathname = pathname.replace(`/${locale}`, `/${nextLocale}`);
+        router.replace(newPathname);
+    });
   };
+
+  if (!isMounted) {
+    return null;
+  }
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon">
+        <Button variant="ghost" size="icon" disabled={isPending}>
           <Globe className="h-[1.2rem] w-[1.2rem]" />
           <span className="sr-only">Změnit jazyk</span>
         </Button>

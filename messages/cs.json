@@ -1,0 +1,21 @@
+{
+  "HeroSection": {
+    "badge": "Výhodné podmínky pro začínající podnikatele",
+    "title1": "Weby, které",
+    "title2": "vydělávají.",
+    "subtitle": "Začínáte podnikat? Nabízím <bold>výhodné startovní podmínky</bold> pro tvorbu profesionálních webů, které porostou s vaším byznysem na Vysočině.",
+    "cta_button1": "Zjistit startovní podmínky",
+    "cta_button2": "Zobrazit případové studie",
+    "trustSignal1": "Specializace na startupy",
+    "trustSignal2": "Výhodné startovní ceny",
+    "trustSignal3": "Ekonomické vzdělání + IT"
+  },
+  "Header": {
+    "home": "Domů",
+    "services": "Služby",
+    "references": "Reference",
+    "partnership": "Partnerství",
+    "blog": "Blog",
+    "contact": "Kontakt"
+  }
+}
