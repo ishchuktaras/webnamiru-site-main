@@ -6,7 +6,7 @@ import React, { useTransition } from "react";
 import { toast } from "sonner";
 import { Mail, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { sendInquiryToClient } from "@/app/(admin)/admin/inquiries/actions";
+import { sendInquiryToClient } from "@/lib/actions/inquiry.actions";
 
 export function SendEmailButton({ inquiryId }: { inquiryId: string }) {
     const [isPending, startTransition] = useTransition();

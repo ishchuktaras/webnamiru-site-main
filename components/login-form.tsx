@@ -4,7 +4,7 @@
 
 import { useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
-import { authenticate } from "@/app/(main)/actions";
+import { authenticate } from "@/lib/actions/auth.actions";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
