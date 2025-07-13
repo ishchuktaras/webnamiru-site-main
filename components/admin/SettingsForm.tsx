@@ -5,7 +5,7 @@
 import { useEffect } from "react";
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
-import { updateSettings } from "@/app/(admin)/admin/settings/actions";
+import { updateSettings } from "@/lib/actions/settings.actions";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";

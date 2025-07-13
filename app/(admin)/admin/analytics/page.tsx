@@ -1,6 +1,6 @@
 // app/admin/analytics/page.tsx
 
-import { getAnalyticsData } from "./actions";
+import { getAnalyticsData } from "@/lib/actions/analytics.actions";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,

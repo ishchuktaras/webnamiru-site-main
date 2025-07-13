@@ -1,7 +1,7 @@
 // app/admin/posts/new/page.tsx
 
 import PostForm from "@/components/admin/PostForm";
-import { createPost } from "../actions";
+import { createPost } from "@/lib/actions/post.actions";
 
 export default function NewPostPage() {
   return (

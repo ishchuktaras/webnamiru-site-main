@@ -1,4 +1,4 @@
-// app/admin/analytics/actions.ts
+// lib/actions/analytics.actions.ts
 
 "use server";
 
@@ -6,7 +6,6 @@ import prisma from "@/lib/prisma";
 
 export async function getAnalyticsData() {
   try {
-    // Použijeme Promise.all pro paralelní načítání dat pro vyšší výkon
     const [
       totalViews,
       totalComments,
@@ -33,7 +32,7 @@ export async function getAnalyticsData() {
             _count: 'desc',
           },
         },
-        take: 5, // Vezmeme top 5 nejčtenějších
+        take: 5,
       }),
     ]);
 
@@ -58,7 +57,7 @@ export async function getAnalyticsData() {
           slug: p.slug,
           views: p._count.views,
           comments: p._count.comments,
-          rating: 0, // Průměrné hodnocení pro jednotlivé články bychom museli počítat zvlášť
+          rating: 0,
         })),
       },
     };

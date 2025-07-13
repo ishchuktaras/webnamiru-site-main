@@ -1,6 +1,6 @@
-// app/admin/page.tsx
+// app/(admin)/admin/page.tsx
 
-import { getDashboardStats } from "./actions";
+import { getDashboardStats } from "@/lib/actions/dashboard.actions";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -14,7 +14,7 @@ import {
   BarChart,
   Settings,
   Tags,
-  Inbox, // PŘIDÁNO: Ikona pro poptávky
+  Inbox, 
 } from "lucide-react";
 
 // Pomocné komponenty (StatCard, ActionCard) zůstávají stejné

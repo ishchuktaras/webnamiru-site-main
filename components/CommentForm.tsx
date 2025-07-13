@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
-import { addComment } from "@/app/(main)/comments/actions"
+import { addComment } from "@/lib/actions/comment.actions"
 import { useRouter } from "next/navigation"
 
 interface CommentFormProps {
@@ -23,7 +23,6 @@ export default function CommentForm({ postId }: CommentFormProps) {
   const prevMessageRef = useRef<string>("")
 
   useEffect(() => {
-    // Only reset and refresh if we have a new success message
     if (
       state.message &&
       state.message !== prevMessageRef.current &&
@@ -45,15 +44,19 @@ export default function CommentForm({ postId }: CommentFormProps) {
           <Label htmlFor="author" className="sr-only">
             Jméno
           </Label>
-          <Input id="author" name="author" placeholder="Vaše jméno" type="text" required className="w-full" />
-          {state.errors?.author && <p className="text-red-500 text-sm mt-1">{state.errors.author.join(", ")}</p>}
+          {/* OPRAVA 1: Změněn 'name' z "author" na "originalAuthor" */}
+          <Input id="author" name="originalAuthor" placeholder="Vaše jméno" type="text" required className="w-full" />
+          {/* OPRAVA 2: Kontrolujeme chybu pro 'originalAuthor' */}
+          {state.errors?.originalAuthor && <p className="text-red-500 text-sm mt-1">{state.errors.originalAuthor.join(", ")}</p>}
         </div>
         <div>
           <Label htmlFor="email" className="sr-only">
             E-mail
           </Label>
-          <Input id="email" name="email" placeholder="Váš e-mail" type="email" required className="w-full" />
-          {state.errors?.email && <p className="text-red-500 text-sm mt-1">{state.errors.email.join(", ")}</p>}
+          {/* OPRAVA 3: Změněn 'name' z "email" na "originalEmail" */}
+          <Input id="email" name="originalEmail" placeholder="Váš e-mail" type="email" required className="w-full" />
+          {/* OPRAVA 4: Kontrolujeme chybu pro 'originalEmail' */}
+          {state.errors?.originalEmail && <p className="text-red-500 text-sm mt-1">{state.errors.originalEmail.join(", ")}</p>}
         </div>
         <div>
           <Label htmlFor="content" className="sr-only">

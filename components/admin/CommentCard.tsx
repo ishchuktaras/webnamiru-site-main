@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Checkbox } from "@/components/ui/checkbox"
 import { CheckCircle, XCircle, Clock, Mail, User, Calendar, FileText, Eye, MessageSquare } from "lucide-react"
-import { approveComment, rejectComment } from "@/app/(admin)/admin/comments/actions"
+import { approveComment, rejectComment } from "@/lib/actions/comment.actions"
 import { toast } from "@/hooks/use-toast"
 import Link from "next/link"
 

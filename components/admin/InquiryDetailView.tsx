@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { sendInquiryToClient } from "@/app/(admin)/admin/inquiries/actions";
+import { sendInquiryToClient } from "@/lib/actions/inquiry.actions";
 import { Mail, Loader2 } from "lucide-react";
 
 // Typy, které potřebujeme

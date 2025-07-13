@@ -1,6 +1,6 @@
 // app/admin/settings/page.tsx
 
-import { getSettings } from "./actions";
+import { getSettings } from "@/lib/actions/settings.actions";
 import SettingsForm from "@/components/admin/SettingsForm";
 
 export default async function SettingsPage() {

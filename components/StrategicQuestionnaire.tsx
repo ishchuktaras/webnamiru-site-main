@@ -8,10 +8,7 @@ import React, {
   createContext,
   useContext,
 } from "react";
-import {
-  submitAnalysisForm,
-  type AnalysisFormState,
-} from "@/app/(forms)/strategicka-analyza/actions";
+import { submitAnalysisForm, type AnalysisFormState } from "@/lib/actions/inquiry.actions"
 import { Button } from "@/components/ui/button";
 import {
   Card,

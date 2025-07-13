@@ -3,7 +3,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getComments } from "@/app/(main)/comments/actions"; // Importujeme naši novou Server Action
+import { getComments } from "@/lib/actions/comment.actions";
 import { type Comment } from "@prisma/client";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";

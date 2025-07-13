@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import prisma from "@/lib/prisma";
 // ZMĚNA: Opravena cesta k importu
-import { getAverageRating } from "@/app/(main)/ratings/actions"; 
+import { getAverageRating } from "@/lib/actions/rating.actions"; 
 
 import Footer from "@/components/Footer";
 import BlogBreadcrumbs from "@/components/blog-breadcrumbs";
@@ -16,7 +16,7 @@ import RelatedPosts from "@/components/related-posts";
 import { Badge } from "@/components/ui/badge";
 import CommentForm from "@/components/CommentForm";
 import CommentsTable from "@/components/CommentsTable";
-import BlogSidebar from "@/components/BlogSidebar"; // ZMĚNA: Přidán import sidebaru
+import BlogSidebar from "@/components/BlogSidebar"; 
 
 export const revalidate = 0;
 

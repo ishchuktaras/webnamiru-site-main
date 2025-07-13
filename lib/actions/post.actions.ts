@@ -1,4 +1,4 @@
-// app/admin/posts/actions.ts
+// lib/actions/post.actions.ts
 
 "use server";
 
@@ -25,17 +25,16 @@ export async function createPost(prevState: any, formData: FormData) {
   if (!validatedFields.success) {
     return { errors: validatedFields.error.flatten().fieldErrors };
   }
-  
+
   const { title, excerpt, content, published } = validatedFields.data;
-  
-  // Zde doplň ID existujícího uživatele/autora
+
   const authorId = "cmchhpjdl0000ijgc6dldvr7h"; // Nahraď skutečným ID autora
 
   try {
     await prisma.post.create({
       data: {
         title,
-        slug: createSlug(title) + '-' + Date.now(), // Přidáme timestamp pro unikátnost
+        slug: createSlug(title) + '-' + Date.now(),
         excerpt,
         content,
         published,
@@ -60,7 +59,7 @@ export async function updatePost(prevState: any, formData: FormData) {
     if (!validatedFields.success) {
         return { errors: validatedFields.error.flatten().fieldErrors };
     }
-    
+
     const { title, excerpt, content, published } = validatedFields.data;
 
     try {
@@ -91,7 +90,6 @@ export async function deletePost(postId: string) {
     return { message: "Chyba při mazání článku." };
   }
 
-  // Znovu načteme data pro tabulku s články a pro blog
   revalidatePath("/admin/posts");
   revalidatePath("/blog");
 }
