@@ -1,128 +1,144 @@
-// app/(main)/blog/page.tsx
+// app/(main)/blog/[slug]/page.tsx
 
-import Link from "next/link";
 import { Suspense } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import BlogReadingTime from "@/components/blog-reading-time";
-// ZMĚNA: Opraven název souboru v importu
-
-import BlogSidebar from "@/components/BlogSidebar";
-import { Post, Category, Tag } from "@prisma/client";
+import { notFound } from "next/navigation";
+import { Metadata } from "next";
 import prisma from "@/lib/prisma";
+import { getAverageRating } from "@/lib/actions/rating.actions"; 
 
-// Typ pro článek s propojenými daty
-type PostWithRelations = Post & {
-  author: { name: string | null };
-  category: Category | null;
-  tags: Tag[];
-};
+import Footer from "@/components/Footer";
+import BlogBreadcrumbs from "@/components/blog-breadcrumbs";
+import BlogReadingTime from "@/components/blog-reading-time";
+import BlogSocialShare from "@/components/blog-social-share";
+import BlogRatingSafe from "@/components/blog-rating-safe";
+import RelatedPosts from "@/components/related-posts";
+import { Badge } from "@/components/ui/badge";
+import CommentForm from "@/components/CommentForm";
+import CommentsTable from "@/components/CommentsTable";
+import BlogSidebar from "@/components/BlogSidebar";
 
-// Funkce pro načtení všech článků
-async function getPosts(): Promise<PostWithRelations[]> {
+export const revalidate = 0;
+
+async function getPostData(slug: string) {
+  const post = await prisma.post.findUnique({
+    where: { 
+      slug: slug,
+      published: true
+    },
+    include: {
+      author: true,
+      category: true,
+      tags: true,
+    },
+  });
+  return post;
+}
+
+export async function generateStaticParams() {
   try {
     const posts = await prisma.post.findMany({
       where: { published: true },
-      orderBy: { createdAt: 'desc' },
-      include: {
-        author: { select: { name: true } },
-        category: true,
-        tags: true,
-      },
+      select: { slug: true },
     });
-    return posts;
+    return posts.map((post) => ({ slug: post.slug }));
   } catch (error) {
-    console.error("Failed to fetch posts:", error);
+    console.error("Error generating static params for blog posts:", error);
     return [];
   }
 }
 
-export default async function BlogPage() {
-  const posts = await getPosts();
-  const featuredPosts = posts.filter((post) => post.featured);
-  
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  try {
+    // OPRAVA: Získáváme slug přímo z params
+    const post = await getPostData(params.slug);
+
+    if (!post) {
+      return { title: "Článek nenalezen" };
+    }
+    return {
+      title: post.seoTitle || post.title,
+      description: post.seoDescription || post.excerpt,
+    };
+  } catch (error) {
+    console.error("Error generating metadata:", error);
+    return {
+      title: "Chyba načítání",
+      description: "Při načítání metadat pro tento článek došlo k chybě.",
+    };
+  }
+}
+
+export default async function BlogPostPage({ params }: { params: { slug:string } }) {
+  // OPRAVA: Získáváme slug přímo z params
+  const post = await getPostData(params.slug);
+
+  if (!post) {
+    notFound();
+  }
+
+  const initialRatingData = await getAverageRating(post.id);
+
   return (
-    <div className="container mx-auto px-4 py-8">
-      <section className="text-center mb-12">
-        <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl mb-4">
-          Blog o webdevelopmentu
-        </h1>
-        <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-          Praktické tipy, návody a poznatky ze světa tvorby webů. Od strategie po technickou realizaci.
-        </p>
-      </section>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 lg:gap-12">
-        
-        <div className="lg:col-span-2 space-y-12">
-          {featuredPosts.length > 0 && (
-            <section>
-              <h2 className="text-2xl font-bold mb-6">Doporučené články</h2>
-              <div className="grid gap-6 md:grid-cols-2">
-                {featuredPosts.map((post) => (
-                  <Card key={post.id} className="group hover:shadow-lg transition-shadow border-2 border-blue-200">
-                    <CardHeader className="pb-3">
-                       <div className="flex items-center gap-2 mb-2">
-                          <Badge variant="default" className="bg-blue-600">Doporučeno</Badge>
-                          <BlogReadingTime readingTime={post.readingTime} />
-                        </div>
-                      <CardTitle className="text-xl leading-tight">
-                        <Link href={`/blog/${post.slug}`} className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{post.title}</Link>
-                      </CardTitle>
-                       <CardDescription className="text-sm">
-                          {post.author.name} • {new Date(post.createdAt).toLocaleDateString("cs-CZ", { year: 'numeric', month: 'long', day: 'numeric' })}
-                       </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3 mb-4">{post.excerpt}</p>
-                      <Link href={`/blog/${post.slug}`} className="inline-flex items-center text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline">Číst více →</Link>
-                    </CardContent>
-                  </Card>
-                ))}
+    <>
+      <div className="container mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-3 lg:gap-12">
+        <article className="lg:col-span-2">
+          <BlogBreadcrumbs postTitle={post.title} />
+          <header className="mb-8">
+            <div className="flex items-center gap-3 mb-4">
+              {post.category && (
+                 <Badge variant="secondary" style={{ backgroundColor: post.category.color || 'grey', color: 'white' }}>
+                    {post.category.name}
+                 </Badge>
+              )}
+              <BlogReadingTime readingTime={post.readingTime} />
+            </div>
+            <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl leading-tight mb-4">{post.title}</h1>
+            <div className="flex items-center justify-between flex-wrap gap-4 mb-6">
+              <div className="flex items-center gap-4 text-gray-600 dark:text-gray-400">
+                <span>{post.author.name}</span>
+                <span>•</span>
+                <time dateTime={post.createdAt.toISOString()}>
+                  {new Date(post.createdAt).toLocaleDateString("cs-CZ", {
+                    year: "numeric", month: "long", day: "numeric",
+                  })}
+                </time>
               </div>
-            </section>
-          )}
-
-          <section>
-            <h2 className="text-2xl font-bold mb-6">Všechny články</h2>
-            {posts.length === 0 ? (
-              <p className="text-center py-12 text-gray-500">Zatím nebyly publikovány žádné články.</p>
-            ) : (
-               <div className="grid gap-6 md:grid-cols-2">
-                {posts.map((post) => (
-                   <Card key={post.id} className="group hover:shadow-lg transition-shadow">
-                     <CardHeader className="pb-3">
-                        <div className="flex items-center gap-2 mb-2">
-                          {post.category && <Badge variant="secondary" style={{ backgroundColor: post.category.color || 'grey', color: 'white' }}>{post.category.name}</Badge>}
-                          <BlogReadingTime readingTime={post.readingTime} />
-                        </div>
-                      <CardTitle className="text-lg leading-tight">
-                         <Link href={`/blog/${post.slug}`} className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">{post.title}</Link>
-                      </CardTitle>
-                       <CardDescription className="text-sm">
-                         {post.author.name} • {new Date(post.createdAt).toLocaleDateString("cs-CZ", { year: 'numeric', month: 'long', day: 'numeric' })}
-                       </CardDescription>
-                     </CardHeader>
-                     <CardContent>
-                       <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3 mb-4">{post.excerpt}</p>
-                       <Link href={`/blog/${post.slug}`} className="inline-flex items-center text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline">
-                        Číst více →
-                       </Link>
-                     </CardContent>
-                   </Card>
-                ))}
-               </div>
-            )}
-          </section>
-        </div>
+              <BlogSocialShare title={post.title} url={`/blog/${post.slug}`} />
+            </div>
+            <div className="flex flex-wrap gap-2 mb-8">
+              {post.tags.map((tag) => (
+                  <Badge key={tag.id} variant="outline" className="text-xs">#{tag.name}</Badge>
+              ))}
+            </div>
+          </header>
+          <div
+            className="prose prose-lg dark:prose-invert max-w-none mb-12"
+            dangerouslySetInnerHTML={{ __html: post.content }}
+          />
+          <div className="mb-12">
+            <BlogRatingSafe 
+              postId={post.id} 
+              initialAverage={initialRatingData.average}
+              initialCount={initialRatingData.count}
+            />
+          </div>
+          <CommentForm postId={post.id} />
+          <CommentsTable postId={post.id} />
+        </article>
 
         <div className="lg:col-span-1">
-            <Suspense fallback={<div>Načítám...</div>}>
-                <BlogSidebar />
+            <Suspense fallback={<div>Načítám sidebar...</div>}>
+              <BlogSidebar />
             </Suspense>
         </div>
-      </div>    
-      
-    </div>
+
+        <div className="lg:col-span-3 mt-16">
+          <Suspense fallback={<div>Načítám související články...</div>}>
+            <RelatedPosts currentPostSlug={post.slug} currentPostCategory={post.category?.slug} />
+          </Suspense>
+        </div>
+      </div>
+      <Footer />
+    </>
   );
 }
