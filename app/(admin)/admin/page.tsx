@@ -14,11 +14,11 @@ import {
   BarChart,
   Settings,
   Tags,
-  Inbox, 
+  Inbox,
+  Briefcase, // Přidána nová ikona
 } from "lucide-react";
 
-// Pomocné komponenty (StatCard, ActionCard) zůstávají stejné
-
+// Pomocné komponenty (StatCard, ActionCard) zůstávají stejné jako ve vašem kódu
 function StatCard({ title, value, icon: Icon, color }: { title: string, value: string | number, icon: React.ElementType, color?: string }) {
   return (
     <Card className={`text-white ${color || 'bg-gray-700'}`}>
@@ -68,18 +68,27 @@ export default async function AdminDashboardPage() {
   return (
     <div className="space-y-8">
       {/* Horní karty se statistikami */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-7">
         <StatCard title="Články" value={stats.postCount} icon={Newspaper} color="bg-blue-600" />
+        {/* PŘIDÁNO: Statistická karta pro projekty */}
+        <StatCard title="Projekty" value={stats.projectCount} icon={Briefcase} color="bg-indigo-600" />
+        <StatCard title="Nové poptávky" value={stats.inquiryCount} icon={Inbox} color="bg-teal-600" />
         <StatCard title="Komentáře" value={stats.totalComments} icon={MessageSquare} color="bg-green-600" />
         <StatCard title="Čeká na schválení" value={stats.pendingComments} icon={CalendarCheck2} color="bg-orange-500" />
         <StatCard title="Zobrazení" value={stats.totalViews.toLocaleString('cs-CZ')} icon={Eye} color="bg-purple-600" />
-        {/* ZMĚNA: Karta pro odběratele nahrazena kartou pro poptávky */}
-        <StatCard title="Nové poptávky" value={stats.inquiryCount} icon={Inbox} color="bg-teal-600" />
         <StatCard title="Prům. hodnocení" value={stats.averageRating} icon={Star} color="bg-yellow-500" />
       </div>
 
       {/* Akční bloky */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {/* PŘIDÁNO: Akční karta pro správu projektů */}
+        <ActionCard 
+            title="Správa Projektů"
+            description="Sledujte průběh zakázek, spravujte smlouvy, úkoly a předávací protokoly."
+            href="/admin/projects"
+            buttonText="Spravovat projekty"
+            icon={Briefcase}
+        />
         <ActionCard 
             title="Správa článků"
             description="Vytvářejte a spravujte blogové příspěvky, kategorie a tagy pro lepší organizaci obsahu."
@@ -107,13 +116,6 @@ export default async function AdminDashboardPage() {
             href="/admin/analytics"
             buttonText="Zobrazit analytiku"
             icon={BarChart}
-        />
-        <ActionCard 
-            title="Kategorie & Tagy"
-            description="Organizujte obsah webu pro lepší orientaci a SEO."
-            href="/admin/taxonomy"
-            buttonText="Spravovat taxonomie"
-            icon={Tags}
         />
         <ActionCard 
             title="Nastavení"

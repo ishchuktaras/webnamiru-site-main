@@ -6,7 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 // ZMĚNA: Přidána ikona Inbox pro poptávky
-import { Home, Newspaper, MessageSquare, BarChart2, Settings, Tags, Inbox } from "lucide-react";
+import { Home, Newspaper, MessageSquare, BarChart2, Settings, Tags, Inbox, Briefcase } from "lucide-react";
 
 const adminNavItems = [
   { href: "/admin", label: "Přehled", icon: Home },
@@ -16,6 +16,7 @@ const adminNavItems = [
   { href: "/admin/inquiries", label: "Poptávky", icon: Inbox },
   { href: "/admin/taxonomy", label: "Kategorie & Tagy", icon: Tags },
   { href: "/admin/analytics", label: "Analytika", icon: BarChart2 },
+  { href: "/admin/projects", icon: Briefcase, label: "Projekty" },
   { href: "/admin/settings", label: "Nastavení", icon: Settings },
 ];
 

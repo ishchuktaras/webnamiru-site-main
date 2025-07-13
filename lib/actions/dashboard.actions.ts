@@ -5,12 +5,14 @@ import prisma from "@/lib/prisma";
 
 export async function getDashboardStats() {
   try {
+    // Spustíme všechny dotazy do databáze paralelně
     const [
       postCount,
       totalComments,
       pendingComments,
       totalViews,
       inquiryCount,
+      projectCount, // PŘIDÁNO: Načítáme počet projektů
       ratingData,
     ] = await prisma.$transaction([
       prisma.post.count(),
@@ -18,7 +20,11 @@ export async function getDashboardStats() {
       prisma.comment.count({ where: { approved: false } }),
       prisma.blogView.count(),
       prisma.projectInquiry.count(),
-      prisma.rating.aggregate({ _avg: { value: true }, _count: true }),
+      prisma.project.count(), // PŘIDÁNO: Dotaz na počet záznamů v Project
+      prisma.rating.aggregate({
+        _avg: { value: true },
+        _count: true,
+      }),
     ]);
 
     const averageRating = ratingData?._avg?.value ?? 0;
@@ -31,7 +37,7 @@ export async function getDashboardStats() {
         pendingComments,
         totalViews,
         inquiryCount,
-        subscriberCount: 0,
+        projectCount, // PŘIDÁNO: Vracíme počet projektů
         averageRating: parseFloat(averageRating.toFixed(1)),
       },
     };

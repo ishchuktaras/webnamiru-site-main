@@ -1,7 +1,7 @@
 // prisma/schema.prisma
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["driverAdapters"]
 }
 
@@ -16,20 +16,20 @@ enum Role {
   SUPERADMIN
 }
 
+// ... (Modely User, Session, VerificationToken, Account, Category, Tag, Post, Comment, Rating, BlogView, ContactSubmission, Setting, Campaign zůstávají stejné) ...
+
 model User {
   id        String    @id @default(cuid())
   name      String?
   email     String    @unique
   image     String?
-  password  String?   // Přidáno pro přihlašování heslem
-  role      Role      @default(USER) // ZMĚNA: Přidáno pole pro roli
+  password  String?
+  role      Role      @default(USER)
   createdAt DateTime  @default(now())
   posts     Post[]
   comments  Comment[]
-
-  // Přidáno pro Auth.js
-  accounts Account[]
-  sessions Session[]
+  accounts  Account[]
+  sessions  Session[]
 }
 
 model Session {
@@ -79,53 +79,45 @@ model Tag {
   id    String @id @default(cuid())
   slug  String @unique
   name  String
-  posts Post[] @relation("PostToTag") // Vazba na články
+  posts Post[] @relation("PostToTag")
 }
 
 model Post {
-  id              String    @id @default(cuid())
-  slug            String    @unique
-  title           String
-  excerpt         String
-  content         String    @db.Text
-  imageUrl        String?
-  published       Boolean   @default(false)
-  featured        Boolean   @default(false)
-  readingTime     Int       @default(5)
-  seoTitle        String?
-  seoDescription  String?
-  
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  String
-
-  category   Category? @relation(fields: [categoryId], references: [id])
-  categoryId String?
-
-  
-  tags     Tag[]  @relation("PostToTag")
-  
-  comments Comment[]
-  ratings  Rating[]
-  views    BlogView[]
+  id             String    @id @default(cuid())
+  slug           String    @unique
+  title          String
+  excerpt        String
+  content        String    @db.Text
+  imageUrl       String?
+  published      Boolean   @default(false)
+  featured       Boolean   @default(false)
+  readingTime    Int       @default(5)
+  seoTitle       String?
+  seoDescription String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  author         User      @relation(fields: [authorId], references: [id])
+  authorId       String
+  category       Category? @relation(fields: [categoryId], references: [id])
+  categoryId     String?
+  tags           Tag[]     @relation("PostToTag")
+  comments       Comment[]
+  ratings        Rating[]
+  views          BlogView[]
 }
 
 model Comment {
-  id           String   @id @default(uuid())
-  originalAuthor    String
-  originalEmail     String
-  content      String
-  approved     Boolean  @default(false)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  
-  post         Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
-  postId       String
-  
-  authorUser   User?    @relation(fields: [authorUserId], references: [id])
-  authorUserId String?
+  id             String   @id @default(uuid())
+  originalAuthor String
+  originalEmail  String
+  content        String
+  approved       Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  post           Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId         String
+  authorUser     User?    @relation(fields: [authorUserId], references: [id])
+  authorUserId   String?
 
   @@index([postId])
   @@index([approved])
@@ -138,6 +130,7 @@ model Rating {
   createdAt DateTime @default(now())
   post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
   postId    String
+
   @@index([postId])
   @@unique([postId, ipAddress])
 }
@@ -149,28 +142,30 @@ model BlogView {
   createdAt DateTime @default(now())
   post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
   postId    String
+
   @@index([postId])
   @@index([createdAt])
 }
 
 model ContactSubmission {
-  id              String   @id @default(uuid())
-  name            String
-  email           String
-  phone           String?
-  message         String
-  inquiryType     String?
-  servicePackage  String?
-  partnerType     String?
-  budget          String?
-  timeline        String?
-  businessType    String?
-  location        String?
-  source          String?
-  status          String   @default("new")
-  notes           String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id             String   @id @default(uuid())
+  name           String
+  email          String
+  phone          String?
+  message        String
+  inquiryType    String?
+  servicePackage String?
+  partnerType    String?
+  budget         String?
+  timeline       String?
+  businessType   String?
+  location       String?
+  source         String?
+  status         String   @default("new")
+  notes          String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
   @@index([status])
   @@index([inquiryType])
   @@index([createdAt])
@@ -183,35 +178,116 @@ model Setting {
 }
 
 model Campaign {
-  id           String    @id @default(cuid())
-  subject      String
-  content      String    @db.Text
-  previewText  String?
-  status       String    @default("draft") // "draft", "sent"
-  sentAt       DateTime?
-  
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  id          String    @id @default(cuid())
+  subject     String
+  content     String    @db.Text
+  previewText String?
+  status      String    @default("draft")
+  sentAt      DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
-// === NOVÉ MODELY PRO STRATEGICKÝ DOTAZNÍK ===
-
-// Hlavní záznam o vyplněném dotazníku
 model ProjectInquiry {
-  id          String   @id @default(cuid())
+  id          String        @id @default(cuid())
   clientName  String
   clientEmail String
   projectName String
-  projectType String?  // "business" nebo "nonprofit"
-  status      String   @default("new")
-  createdAt   DateTime @default(now())
+  projectType String?
+  status      String        @default("new")
+  createdAt   DateTime      @default(now())
   answers     InquiryAnswer[]
+  project     Project?
 }
 
 model InquiryAnswer {
-  id        String   @id @default(cuid())
+  id        String         @id @default(cuid())
   question  String
-  answer    String   @db.Text
+  answer    String         @db.Text
   inquiry   ProjectInquiry @relation(fields: [inquiryId], references: [id], onDelete: Cascade)
   inquiryId String
+}
+
+// ===================================
+// ROZŠÍŘENÁ SPRÁVA PROJEKTŮ
+// ===================================
+
+model Project {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  name        String
+  description String?  @db.Text
+  status      String   @default("Poptávka")
+  price       Float?
+  clientName  String
+  clientEmail String
+  inquiryId   String?  @unique
+  inquiry     ProjectInquiry? @relation(fields: [inquiryId], references: [id])
+  tasks       ProjectTask[]
+  
+  // Vylepšené propojení na dokumenty
+  offer       Offer?
+  contract    Contract?
+  invoices    Invoice[]
+  handover    HandoverProtocol?
+}
+
+model ProjectTask {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  title       String
+  description String?
+  status      String   @default("Čeká")
+  dueDate     DateTime?
+  projectId   String
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+// Model pro Nabídku
+model Offer {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  offerNumber String   @unique
+  fileUrl     String?  // Odkaz na vygenerované PDF
+  status      String   @default("Koncept") // Koncept, Odesláno, Přijato, Zamítnuto
+  validUntil  DateTime
+  projectId   String   @unique
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+// Model pro Smlouvu / Závaznou objednávku
+model Contract {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  fileUrl   String?
+  status    String   @default("Čeká na podpis") // Čeká na podpis, Podepsáno
+  signedAt  DateTime?
+  projectId String   @unique
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+// Vylepšený model pro Faktury (Zálohová i Finální)
+model Invoice {
+  id            String    @id @default(cuid())
+  invoiceNumber String    @unique
+  createdAt     DateTime  @default(now())
+  dueDate       DateTime
+  paidAt        DateTime?
+  amount        Float
+  type          String    // 'Zálohová', 'Finální'
+  status        String    @default("Nezaplaceno") // Nezaplaceno, Zaplaceno, Po splatnosti
+  fileUrl       String?
+  projectId     String
+  project       Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+model HandoverProtocol {
+  id           String   @id @default(cuid())
+  createdAt    DateTime @default(now())
+  fileUrl      String?
+  status       String   @default("Připraveno") // Připraveno, Potvrzeno
+  handedOverAt DateTime?
+  projectId    String   @unique
+  project      Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
 }
