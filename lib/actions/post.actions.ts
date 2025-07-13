@@ -14,7 +14,6 @@ const postSchema = z.object({
   published: z.preprocess((val) => val === 'on', z.boolean()),
 });
 
-// Funkce pro vytvoření unikátního slugu
 function createSlug(title: string) {
     return title.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
 }
@@ -25,9 +24,9 @@ export async function createPost(prevState: any, formData: FormData) {
   if (!validatedFields.success) {
     return { errors: validatedFields.error.flatten().fieldErrors };
   }
-
+  
   const { title, excerpt, content, published } = validatedFields.data;
-
+  
   const authorId = "cmchhpjdl0000ijgc6dldvr7h"; // Nahraď skutečným ID autora
 
   try {
@@ -59,7 +58,7 @@ export async function updatePost(prevState: any, formData: FormData) {
     if (!validatedFields.success) {
         return { errors: validatedFields.error.flatten().fieldErrors };
     }
-
+    
     const { title, excerpt, content, published } = validatedFields.data;
 
     try {
@@ -92,4 +91,24 @@ export async function deletePost(postId: string) {
 
   revalidatePath("/admin/posts");
   revalidatePath("/blog");
+}
+
+// NOVÁ FUNKCE PRO SITEMAP
+export async function getPublishedPosts(): Promise<{ slug: string; updatedAt: Date }[]> {
+  try {
+    const posts = await prisma.post.findMany({
+      where: { published: true },
+      select: {
+        slug: true,
+        updatedAt: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+    return posts;
+  } catch (error) {
+    console.error("Error fetching published posts for sitemap:", error);
+    return [];
+  }
 }
