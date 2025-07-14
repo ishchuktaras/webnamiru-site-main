@@ -249,9 +249,27 @@ model Offer {
   id          String   @id @default(cuid())
   createdAt   DateTime @default(now())
   offerNumber String   @unique
-  fileUrl     String?  // Odkaz na vygenerované PDF
   status      String   @default("Koncept") // Koncept, Odesláno, Přijato, Zamítnuto
   validUntil  DateTime
+  
+  // Stávající pole pro rozsah a cenu
+  summary     String?  @db.Text
+  scope_package String?
+  scope_items Json?
+  price_items Json?
+  price_total Float?
+  
+  // NOVÁ POLE podle "Interního Zadání Projektu"
+  preliminary_package String?  // Předběžné zařazení
+  main_goal           String?  @db.Text // Hlavní cíl webu
+  target_audience     String?  @db.Text // Cílová skupina
+  potential_problems  String?  @db.Text // Potenciální problémy
+  added_value_ideas   String?  @db.Text // Nápady na přidanou hodnotu
+  estimated_delivery  DateTime? // Předběžný odhad termínu
+
+  // Odkaz na vygenerované PDF
+  fileUrl     String?
+  
   projectId   String   @unique
   project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
 }

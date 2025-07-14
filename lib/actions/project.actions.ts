@@ -57,23 +57,48 @@ const offerSchema = z.object({
     offerNumber: z.string().min(1, "Číslo nabídky je povinné."),
     status: z.string(),
     validUntil: z.date({ required_error: "Datum platnosti je povinné." }),
+    summary: z.string().optional(),
+    scope_package: z.string().optional(),
+    scope_items: z.string().transform(str => JSON.parse(str)).optional(),
+    price_items: z.string().transform(str => JSON.parse(str)).optional(),
+    price_total: z.coerce.number().optional(),
     fileUrl: z.string().url("Zadejte platnou URL adresu.").optional().or(z.literal('')),
+    
+    // Nová pole pro validaci
+    preliminary_package: z.string().optional(),
+    main_goal: z.string().optional(),
+    target_audience: z.string().optional(),
+    potential_problems: z.string().optional(),
+    added_value_ideas: z.string().optional(),
+    estimated_delivery: z.preprocess((arg) => {
+        if (typeof arg === 'string' && arg) return new Date(arg);
+        return null;
+    }, z.date().nullable()),
 });
+
 export async function createOrUpdateOffer(prevState: any, formData: FormData) {
-    const validatedFields = offerSchema.safeParse({
-        projectId: formData.get('projectId'),
-        offerNumber: formData.get('offerNumber'),
-        status: formData.get('status'),
-        validUntil: new Date(formData.get('validUntil') as string),
-        fileUrl: formData.get('fileUrl'),
-    });
-    if (!validatedFields.success) return { success: false, message: "Chyba validace.", errors: validatedFields.error.flatten().fieldErrors };
+    const dataToParse = Object.fromEntries(formData.entries());
+    const validatedFields = offerSchema.safeParse(dataToParse);
+
+    if (!validatedFields.success) {
+        console.error(validatedFields.error);
+        return { success: false, message: "Chyba validace.", errors: validatedFields.error.flatten().fieldErrors };
+    }
+    
     const { projectId, ...data } = validatedFields.data;
+
     try {
-        await prisma.offer.upsert({ where: { projectId }, update: data, create: { projectId, ...data } });
+        await prisma.offer.upsert({
+            where: { projectId },
+            update: data,
+            create: { projectId, ...data },
+        });
         revalidatePath(`/admin/projects/${projectId}`);
         return { success: true, message: "Nabídka byla úspěšně uložena." };
-    } catch (error) { return { success: false, message: "Nepodařilo se uložit nabídku." }; }
+    } catch (error) {
+        console.error("Chyba při ukládání nabídky:", error);
+        return { success: false, message: "Nepodařilo se uložit nabídku." };
+    }
 }
 
 // --- AKCE PRO SMLOUVY ---
