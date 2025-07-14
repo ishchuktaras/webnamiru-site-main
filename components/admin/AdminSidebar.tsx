@@ -1,45 +1,64 @@
 // components/admin/AdminSidebar.tsx
-
 "use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
-// ZMĚNA: Přidána ikona Inbox pro poptávky
-import { Home, Newspaper, MessageSquare, BarChart2, Settings, Tags, Inbox, Briefcase } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { handleSignOut } from "@/lib/actions/auth.actions";
+import {
+  LayoutDashboard,
+  Newspaper,
+  MessageSquare,
+  BarChart2,
+  Settings,
+  FileText,
+  Briefcase,
+  GanttChartSquare,
+  LogOut,
+} from "lucide-react";
 
-const adminNavItems = [
-  { href: "/admin", label: "Přehled", icon: Home },
-  { href: "/admin/posts", label: "Články", icon: Newspaper },
-  { href: "/admin/comments", label: "Komentáře", icon: MessageSquare },
-  // PŘIDÁNO: Nová položka pro Poptávky
-  { href: "/admin/inquiries", label: "Poptávky", icon: Inbox },
-  { href: "/admin/taxonomy", label: "Kategorie & Tagy", icon: Tags },
-  { href: "/admin/analytics", label: "Analytika", icon: BarChart2 },
+// Opravený seznam navigačních položek
+const navItems = [
+  { href: "/admin", icon: LayoutDashboard, label: "Přehled" },
   { href: "/admin/projects", icon: Briefcase, label: "Projekty" },
-  { href: "/admin/settings", label: "Nastavení", icon: Settings },
+  { href: "/admin/inquiries", icon: FileText, label: "Poptávky" },
+  { href: "/admin/workflow", icon: GanttChartSquare, label: "Průvodce zakázkou" },
+  { href: "/admin/posts", icon: Newspaper, label: "Články" },
+  { href: "/admin/comments", icon: MessageSquare, label: "Komentáře" },
+  { href: "/admin/analytics", icon: BarChart2, label: "Analytika" },
+  { href: "/admin/settings", icon: Settings, label: "Nastavení" },
 ];
 
 export default function AdminSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-64 flex-shrink-0 bg-gray-100 dark:bg-gray-900 p-4 border-r border-gray-200 dark:border-gray-800 hidden md:block">
-      <nav className="flex flex-col gap-2">
-        {adminNavItems.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className={cn(
-              "flex items-center gap-3 rounded-lg px-3 py-2 text-gray-700 dark:text-gray-300 transition-all hover:bg-gray-200 dark:hover:bg-gray-800",
-              (pathname === item.href || (item.href !== "/admin" && pathname.startsWith(item.href))) && "bg-gray-200 dark:bg-gray-800 font-semibold"
-            )}
-          >
-            <item.icon className="h-4 w-4" />
-            {item.label}
-          </Link>
-        ))}
-      </nav>
+    <aside className="hidden lg:flex flex-col w-64 border-r bg-background p-4 space-y-4">
+      <div className="flex-grow">
+        <nav className="space-y-1">
+          {navItems.map((item) => (
+            <Button
+              key={item.href}
+              asChild
+              variant={pathname === item.href ? "secondary" : "ghost"}
+              className="w-full justify-start"
+            >
+              <Link href={item.href}>
+                <item.icon className="mr-3 h-5 w-5" />
+                <span>{item.label}</span>
+              </Link>
+            </Button>
+          ))}
+        </nav>
+      </div>
+      <div className="mt-auto">
+        <form action={handleSignOut}>
+          <Button variant="outline" className="w-full justify-start">
+            <LogOut className="mr-3 h-5 w-5" />
+            Odhlásit se
+          </Button>
+        </form>
+      </div>
     </aside>
   );
 }

@@ -6,7 +6,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { redirect } from "next/navigation";
 
-// --- AKCE PRO PROJEKTY ---
+// --- AKCE PRO PROJEKTY, NABÍDKY, SMLOUVY, FAKTURY, PŘEDÁNÍ --- (zůstávají beze změny)
 const projectSchema = z.object({
   name: z.string().min(1, "Název projektu je povinný."),
   clientName: z.string().min(1, "Jméno klienta je povinné."),
@@ -15,29 +15,21 @@ const projectSchema = z.object({
   description: z.string().optional(),
   price: z.coerce.number().optional(),
 });
-
 export async function createProject(prevState: any, formData: FormData) {
   const validatedFields = projectSchema.safeParse(Object.fromEntries(formData.entries()));
   if (!validatedFields.success) return { errors: validatedFields.error.flatten().fieldErrors };
-  try {
-    await prisma.project.create({ data: validatedFields.data });
-  } catch (error) {
-    return { message: "Nepodařilo se vytvořit projekt." };
-  }
+  try { await prisma.project.create({ data: validatedFields.data }); } catch (error) { return { message: "Nepodařilo se vytvořit projekt." }; }
   revalidatePath("/admin/projects");
   redirect("/admin/projects");
 }
-
 export async function getProjects() {
   try {
     const projects = await prisma.project.findMany({ orderBy: { createdAt: 'desc' } });
     return { success: true, data: projects };
   } catch (error) {
-    console.error("Chyba při načítání projektů:", error);
     return { success: false, error: "Nepodařilo se načíst projekty." };
   }
 }
-
 export async function getProjectById(projectId: string) {
     try {
       const project = await prisma.project.findUnique({
@@ -51,7 +43,6 @@ export async function getProjectById(projectId: string) {
     }
 }
 
-// --- AKCE PRO NABÍDKY ---
 const offerSchema = z.object({
     projectId: z.string(),
     offerNumber: z.string().min(1, "Číslo nabídky je povinné."),
@@ -63,45 +54,28 @@ const offerSchema = z.object({
     price_items: z.string().transform(str => JSON.parse(str)).optional(),
     price_total: z.coerce.number().optional(),
     fileUrl: z.string().url("Zadejte platnou URL adresu.").optional().or(z.literal('')),
-    
-    // Nová pole pro validaci
     preliminary_package: z.string().optional(),
     main_goal: z.string().optional(),
     target_audience: z.string().optional(),
     potential_problems: z.string().optional(),
     added_value_ideas: z.string().optional(),
-    estimated_delivery: z.preprocess((arg) => {
-        if (typeof arg === 'string' && arg) return new Date(arg);
-        return null;
-    }, z.date().nullable()),
+    estimated_delivery: z.preprocess((arg) => (typeof arg === 'string' && arg ? new Date(arg) : null), z.date().nullable()),
 });
-
 export async function createOrUpdateOffer(prevState: any, formData: FormData) {
     const dataToParse = Object.fromEntries(formData.entries());
     const validatedFields = offerSchema.safeParse(dataToParse);
-
     if (!validatedFields.success) {
         console.error(validatedFields.error);
         return { success: false, message: "Chyba validace.", errors: validatedFields.error.flatten().fieldErrors };
     }
-    
     const { projectId, ...data } = validatedFields.data;
-
     try {
-        await prisma.offer.upsert({
-            where: { projectId },
-            update: data,
-            create: { projectId, ...data },
-        });
+        await prisma.offer.upsert({ where: { projectId }, update: data, create: { projectId, ...data } });
         revalidatePath(`/admin/projects/${projectId}`);
         return { success: true, message: "Nabídka byla úspěšně uložena." };
-    } catch (error) {
-        console.error("Chyba při ukládání nabídky:", error);
-        return { success: false, message: "Nepodařilo se uložit nabídku." };
-    }
+    } catch (error) { return { success: false, message: "Nepodařilo se uložit nabídku." }; }
 }
 
-// --- AKCE PRO SMLOUVY ---
 const contractSchema = z.object({
     projectId: z.string(),
     status: z.string(),
@@ -119,7 +93,6 @@ export async function createOrUpdateContract(prevState: any, formData: FormData)
     } catch (error) { return { success: false, message: "Nepodařilo se uložit smlouvu." }; }
 }
 
-// --- AKCE PRO FAKTURY ---
 const invoiceSchema = z.object({
     projectId: z.string(),
     invoiceNumber: z.string().min(1, "Číslo faktury je povinné."),
@@ -151,7 +124,6 @@ export async function updateInvoiceStatus(invoiceId: string, status: string) {
     } catch (error) { return { success: false, message: "Nepodařilo se aktualizovat fakturu." }; }
 }
 
-// --- AKCE PRO PŘEDÁVACÍ PROTOKOL ---
 const handoverSchema = z.object({
     projectId: z.string(),
     status: z.string(),
@@ -169,34 +141,61 @@ export async function createOrUpdateHandover(prevState: any, formData: FormData)
     } catch (error) { return { success: false, message: "Nepodařilo se uložit předávací protokol." }; }
 }
 
-// --- AKCE PRO ÚKOLY ---
+
+// --- NOVÉ AKCE PRO ÚKOLY ---
+
 const taskSchema = z.object({
     projectId: z.string(),
     title: z.string().min(1, "Název úkolu je povinný."),
 });
+
 export async function createTask(prevState: any, formData: FormData) {
     const validatedFields = taskSchema.safeParse(Object.fromEntries(formData.entries()));
-    if (!validatedFields.success) return { success: false, message: "Chyba validace.", errors: validatedFields.error.flatten().fieldErrors };
+
+    if (!validatedFields.success) {
+        return { success: false, message: "Chyba validace.", errors: validatedFields.error.flatten().fieldErrors };
+    }
+    
     const { projectId, title } = validatedFields.data;
+
     try {
-        await prisma.projectTask.create({ data: { projectId, title } });
+        await prisma.projectTask.create({
+            data: { projectId, title },
+        });
         revalidatePath(`/admin/projects/${projectId}`);
         return { success: true, message: "Úkol byl úspěšně vytvořen." };
-    } catch (error) { return { success: false, message: "Nepodařilo se vytvořit úkol." }; }
+    } catch (error) {
+        return { success: false, message: "Nepodařilo se vytvořit úkol." };
+    }
 }
+
 export async function updateTaskStatus(taskId: string, status: string) {
-    if (!taskId || !status) return { success: false, message: "Chybějící data." };
+    if (!taskId || !status) {
+        return { success: false, message: "Chybějící data." };
+    }
     try {
-        const updatedTask = await prisma.projectTask.update({ where: { id: taskId }, data: { status } });
+        const updatedTask = await prisma.projectTask.update({
+            where: { id: taskId },
+            data: { status },
+        });
         revalidatePath(`/admin/projects/${updatedTask.projectId}`);
         return { success: true, message: `Status úkolu byl změněn.` };
-    } catch (error) { return { success: false, message: "Nepodařilo se aktualizovat úkol." }; }
+    } catch (error) {
+        return { success: false, message: "Nepodařilo se aktualizovat úkol." };
+    }
 }
+
 export async function deleteTask(taskId: string) {
-    if (!taskId) return { success: false, message: "Chybí ID úkolu." };
+    if (!taskId) {
+        return { success: false, message: "Chybí ID úkolu." };
+    }
     try {
-        const deletedTask = await prisma.projectTask.delete({ where: { id: taskId } });
+        const deletedTask = await prisma.projectTask.delete({
+            where: { id: taskId },
+        });
         revalidatePath(`/admin/projects/${deletedTask.projectId}`);
         return { success: true, message: "Úkol byl smazán." };
-    } catch (error) { return { success: false, message: "Nepodařilo se smazat úkol." }; }
+    } catch (error) {
+        return { success: false, message: "Nepodařilo se smazat úkol." };
+    }
 }
