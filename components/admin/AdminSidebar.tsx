@@ -17,12 +17,15 @@ import {
   LogOut,
 } from "lucide-react";
 
-// Opravený seznam navigačních položek
 const navItems = [
   { href: "/admin", icon: LayoutDashboard, label: "Přehled" },
-  { href: "/admin/projects", icon: Briefcase, label: "Projekty" },
+  {
+    href: "/admin/workflow",
+    icon: GanttChartSquare,
+    label: "Průvodce zakázkou",
+  },
   { href: "/admin/inquiries", icon: FileText, label: "Poptávky" },
-  { href: "/admin/workflow", icon: GanttChartSquare, label: "Průvodce zakázkou" },
+  { href: "/admin/projects", icon: Briefcase, label: "Projekty" },
   { href: "/admin/posts", icon: Newspaper, label: "Články" },
   { href: "/admin/comments", icon: MessageSquare, label: "Komentáře" },
   { href: "/admin/analytics", icon: BarChart2, label: "Analytika" },

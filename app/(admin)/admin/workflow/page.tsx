@@ -1,5 +1,11 @@
 // app/(admin)/admin/workflow/page.tsx
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Check, FileText, GanttChartSquare, Milestone } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -13,12 +19,12 @@ const workflowPhases = [
       "Jakmile obdržíte poptávku, založte nový projekt v sekci 'Projekty'.",
       "Zkopírujte údaje od klienta do detailu projektu.",
       "V záložce 'Nabídka' vyplňte sekci 'Interní analýza a poznámky'.",
-      "Odešlete klientovi potvrzovací e-mail a navrhněte termín konzultace."
+      "Odešlete klientovi potvrzovací e-mail a navrhněte termín konzultace.",
     ],
     action: {
       href: "/admin/projects/new",
-      text: "Založit nový projekt"
-    }
+      text: "Založit nový projekt",
+    },
   },
   {
     phase: 2,
@@ -28,12 +34,12 @@ const workflowPhases = [
       "Proveďte s klientem úvodní konzultaci (online nebo osobně).",
       "Na základě získaných informací vyplňte v detailu projektu záložku 'Nabídka'.",
       "Vyplňte všechny části: shrnutí, rozsah prací i cenovou kalkulaci.",
-      "Uložte nabídku a případně vygenerujte PDF, které zašlete klientovi."
+      "Uložte nabídku a případně vygenerujte PDF, které zašlete klientovi.",
     ],
     action: {
       href: "/admin/projects",
-      text: "Přejít na přehled projektů"
-    }
+      text: "Přejít na přehled projektů",
+    },
   },
   {
     phase: 3,
@@ -43,7 +49,7 @@ const workflowPhases = [
       "Po odsouhlasení nabídky klientem přejděte k projektu.",
       "V záložce 'Smlouva' zaznamenejte stav (např. 'Podepsáno').",
       "V záložce 'Faktury' vytvořte novou 'Zálohovou fakturu' na 50 % ceny.",
-      "Po přijetí platby změňte status faktury na 'Zaplaceno'."
+      "Po přijetí platby změňte status faktury na 'Zaplaceno'.",
     ],
   },
   {
@@ -54,18 +60,18 @@ const workflowPhases = [
       "V detailu projektu přejděte na záložku 'Úkoly'.",
       "Vytvořte si seznam všech úkolů, které je potřeba udělat.",
       "Postupně odškrtávejte hotové úkoly, abyste měli přehled o postupu.",
-      "V polovině času zvažte zaslání průběžného reportu klientovi."
+      "V polovině času zvažte zaslání průběžného reportu klientovi.",
     ],
   },
-    {
+  {
     phase: 5,
     title: "Dokončení a Předání",
     goal: "Získat od klienta finální schválení a formálně mu předat hotové dílo.",
     steps: [
-        "Prezentujte klientovi finální verzi webu.",
-        "Po schválení vyplňte v detailu projektu záložku 'Předání'.",
-        "Zaznamenejte datum předání a odkaz na podepsaný protokol.",
-        "Bezpečně předejte klientovi všechny přístupové údaje."
+      "Prezentujte klientovi finální verzi webu.",
+      "Po schválení vyplňte v detailu projektu záložku 'Předání'.",
+      "Zaznamenejte datum předání a odkaz na podepsaný protokol.",
+      "Bezpečně předejte klientovi všechny přístupové údaje.",
     ],
   },
   {
@@ -73,12 +79,12 @@ const workflowPhases = [
     title: "Finální Fakturace a Závěr",
     goal: "Ukončit projekt, získat doplatek a otevřít dveře pro další spolupráci.",
     steps: [
-        "V detailu projektu přejděte na záložku 'Faktury'.",
-        "Vytvořte novou 'Finální fakturu' na zbývajících 50 % ceny.",
-        "Po přijetí platby změňte status faktury na 'Zaplaceno'.",
-        "Pošlete klientovi závěrečný e-mail s poděkováním a žádostí o referenci."
+      "V detailu projektu přejděte na záložku 'Faktury'.",
+      "Vytvořte novou 'Finální fakturu' na zbývajících 50 % ceny.",
+      "Po přijetí platby změňte status faktury na 'Zaplaceno'.",
+      "Pošlete klientovi závěrečný e-mail s poděkováním a žádostí o referenci.",
     ],
-  }
+  },
 ];
 
 export default function WorkflowGuidePage() {
@@ -86,15 +92,18 @@ export default function WorkflowGuidePage() {
     <div className="space-y-8">
       <div className="text-center">
         <GanttChartSquare className="mx-auto h-12 w-12 text-primary" />
-        <h1 className="mt-4 text-3xl font-bold tracking-tight">Kompletní Průvodce Zakázkou</h1>
+        <h1 className="mt-4 text-3xl font-bold tracking-tight">
+          Kompletní Průvodce Zakázkou
+        </h1>
         <p className="mt-2 max-w-2xl mx-auto text-lg text-muted-foreground">
-          Standardizovaný postup pro správu a realizaci klientských projektů od A do Z.
+          Standardizovaný postup pro správu a realizaci klientských projektů od
+          A do Z.
         </p>
       </div>
 
       <div className="relative">
         <div className="absolute left-6 top-6 h-full w-0.5 bg-border -z-10" />
-        
+
         <div className="space-y-12">
           {workflowPhases.map((phase) => (
             <div key={phase.phase} className="relative pl-12">
@@ -118,9 +127,11 @@ export default function WorkflowGuidePage() {
                   </ul>
                   {phase.action && (
                     <div className="pt-4">
-                        <Button asChild>
-                            <Link href={phase.action.href}>{phase.action.text}</Link>
-                        </Button>
+                      <Button asChild>
+                        <Link href={phase.action.href}>
+                          {phase.action.text}
+                        </Link>
+                      </Button>
                     </div>
                   )}
                 </CardContent>
