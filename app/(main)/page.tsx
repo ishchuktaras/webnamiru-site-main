@@ -32,9 +32,9 @@ export default function Page() {
         <MaintenancePackagesSection />
         <CaseStudiesSection />
         <PartnersPackagesSection />
+        <AboutMeContent />
         <FaqSection />
         <ContactInfoSection />
-        <AboutMeContent />
       </Suspense>
       <Footer />
     </main>
