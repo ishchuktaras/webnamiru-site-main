@@ -3,6 +3,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react"; 
 import { Button } from "@/components/ui/button";
 import { handleSignOut } from "@/lib/actions/auth.actions";
 import {
@@ -15,6 +16,7 @@ import {
   Briefcase,
   GanttChartSquare,
   LogOut,
+  Users, 
 } from "lucide-react";
 
 const navItems = [
@@ -34,6 +36,7 @@ const navItems = [
 
 export default function AdminSidebar() {
   const pathname = usePathname();
+  const { data: session } = useSession(); 
 
   return (
     <aside className="hidden lg:flex flex-col w-64 border-r bg-background p-4 space-y-4">
@@ -43,7 +46,7 @@ export default function AdminSidebar() {
             <Button
               key={item.href}
               asChild
-              variant={pathname === item.href ? "secondary" : "ghost"}
+              variant={pathname.startsWith(item.href) && item.href !== "/admin" || pathname === item.href ? "secondary" : "ghost"}
               className="w-full justify-start"
             >
               <Link href={item.href}>
@@ -52,6 +55,29 @@ export default function AdminSidebar() {
               </Link>
             </Button>
           ))}
+                 
+          {session?.user?.role === 'SUPERADMIN' && (
+            <>
+              <div className="pt-2">
+                <hr />
+              </div>
+              <p className="px-3 pt-2 text-xs font-semibold uppercase text-muted-foreground">
+                Super Admin
+              </p>
+              <Button
+                asChild
+                variant={pathname.startsWith("/admin/users") ? "secondary" : "ghost"}
+                className="w-full justify-start"
+              >
+                <Link href="/admin/users">
+                  <Users className="mr-3 h-5 w-5" />
+                  <span>Správa uživatelů</span>
+                </Link>
+              </Button>
+            </>
+          )}
+          
+
         </nav>
       </div>
       <div className="mt-auto">

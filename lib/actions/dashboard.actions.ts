@@ -1,48 +1,63 @@
-// lib/actions/dashboard.actions.ts
-"use server";
+'use server'
 
-import prisma from "@/lib/prisma";
+import prisma from '@/lib/prisma'
+import { auth } from '@/auth'
 
 export async function getDashboardStats() {
   try {
-    // Spustíme všechny dotazy do databáze paralelně
+    const session = await auth()
+
+    // Souběžné dotazy do databáze pro vyšší výkon
     const [
       postCount,
+      projectCount,
+      inquiryCount,
       totalComments,
       pendingComments,
-      totalViews,
-      inquiryCount,
-      projectCount, // PŘIDÁNO: Načítáme počet projektů
-      ratingData,
-    ] = await prisma.$transaction([
+      totalViewsData,
+      averageRatingData,
+    ] = await Promise.all([
       prisma.post.count(),
+      prisma.project.count(),
+      prisma.contactSubmission.count({ where: { status: 'new' } }),
       prisma.comment.count(),
       prisma.comment.count({ where: { approved: false } }),
       prisma.blogView.count(),
-      prisma.projectInquiry.count(),
-      prisma.project.count(), // PŘIDÁNO: Dotaz na počet záznamů v Project
-      prisma.rating.aggregate({
-        _avg: { value: true },
-        _count: true,
-      }),
-    ]);
+      prisma.rating.aggregate({ _avg: { value: true } }),
+    ])
 
-    const averageRating = ratingData?._avg?.value ?? 0;
+    const totalViews = totalViewsData || 0;
+    const averageRating = averageRatingData._avg.value ? averageRatingData._avg.value.toFixed(1) : 'N/A';
+
+    let userCount = 0;
+    // Zjistíme počet uživatelů, pouze pokud je role SUPERADMIN
+    if (session?.user?.role === 'SUPERADMIN') {
+      userCount = await prisma.user.count();
+    }
 
     return {
       success: true,
       data: {
         postCount,
+        projectCount,
+        inquiryCount,
         totalComments,
         pendingComments,
         totalViews,
-        inquiryCount,
-        projectCount, // PŘIDÁNO: Vracíme počet projektů
-        averageRating: parseFloat(averageRating.toFixed(1)),
+        averageRating,
+        userCount, // Přidáváme počet uživatelů
       },
     };
   } catch (error) {
-    console.error("Chyba při načítání statistik pro dashboard:", error);
-    return { success: false, error: "Nepodařilo se načíst statistiky." };
+    console.error('Database Error:', error);
+    let errorMessage = 'Neznámá chyba';
+    if (error instanceof Error) {
+        errorMessage = error.message;
+    }
+    return { 
+        success: false, 
+        error: `Nepodařilo se načíst statistiky: ${errorMessage}`,
+        data: null 
+    };
   }
 }

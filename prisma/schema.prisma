@@ -10,13 +10,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ROZŠÍŘENÉ ROLE PRO LEPŠÍ SPRÁVU TÝMU
 enum Role {
-  USER
-  ADMIN
-  SUPERADMIN
+  USER // Běžný registrovaný uživatel (např. pro komentáře)
+  EDITOR // Copywriter: Může vytvářet a upravovat články na blogu
+  MODERATOR // Marketér: Může spravovat kampaně, SEO, moderovat obsah
+  ADMIN // Administrátor: Správa většiny webu, kromě uživatelů
+  SUPERADMIN // Vlastník: Plný přístup, včetně správy rolí ostatních uživatelů
 }
-
-// ... (Modely User, Session, VerificationToken, Account, Category, Tag, Post, Comment, Rating, BlogView, ContactSubmission, Setting, Campaign zůstávají stejné) ...
 
 model User {
   id        String    @id @default(cuid())
@@ -24,7 +25,7 @@ model User {
   email     String    @unique
   image     String?
   password  String?
-  role      Role      @default(USER)
+  role      Role      @default(USER) // Každý nový uživatel začíná jako 'USER'
   createdAt DateTime  @default(now())
   posts     Post[]
   comments  Comment[]
@@ -74,7 +75,6 @@ model Category {
   posts Post[]
 }
 
-
 model Tag {
   id    String @id @default(cuid())
   slug  String @unique
@@ -83,24 +83,24 @@ model Tag {
 }
 
 model Post {
-  id             String    @id @default(cuid())
-  slug           String    @unique
+  id             String     @id @default(cuid())
+  slug           String     @unique
   title          String
   excerpt        String
-  content        String    @db.Text
+  content        String     @db.Text
   imageUrl       String?
-  published      Boolean   @default(false)
-  featured       Boolean   @default(false)
-  readingTime    Int       @default(5)
+  published      Boolean    @default(false)
+  featured       Boolean    @default(false)
+  readingTime    Int        @default(5)
   seoTitle       String?
   seoDescription String?
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
-  author         User      @relation(fields: [authorId], references: [id])
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  author         User       @relation(fields: [authorId], references: [id])
   authorId       String
-  category       Category? @relation(fields: [categoryId], references: [id])
+  category       Category?  @relation(fields: [categoryId], references: [id])
   categoryId     String?
-  tags           Tag[]     @relation("PostToTag")
+  tags           Tag[]      @relation("PostToTag")
   comments       Comment[]
   ratings        Rating[]
   views          BlogView[]
@@ -131,8 +131,8 @@ model Rating {
   post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
   postId    String
 
-  @@index([postId])
   @@unique([postId, ipAddress])
+  @@index([postId])
 }
 
 model BlogView {
@@ -189,13 +189,13 @@ model Campaign {
 }
 
 model ProjectInquiry {
-  id          String        @id @default(cuid())
+  id          String          @id @default(cuid())
   clientName  String
   clientEmail String
   projectName String
   projectType String?
-  status      String        @default("new")
-  createdAt   DateTime      @default(now())
+  status      String          @default("new")
+  createdAt   DateTime        @default(now())
   answers     InquiryAnswer[]
   project     Project?
 }
@@ -213,35 +213,35 @@ model InquiryAnswer {
 // ===================================
 
 model Project {
-  id          String   @id @default(cuid())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id          String          @id @default(cuid())
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
   name        String
-  description String?  @db.Text
-  status      String   @default("Poptávka")
+  description String?         @db.Text
+  status      String          @default("Poptávka")
   price       Float?
   clientName  String
   clientEmail String
-  inquiryId   String?  @unique
+  inquiryId   String?         @unique
   inquiry     ProjectInquiry? @relation(fields: [inquiryId], references: [id])
   tasks       ProjectTask[]
-  
+
   // Vylepšené propojení na dokumenty
-  offer       Offer?
-  contract    Contract?
-  invoices    Invoice[]
-  handover    HandoverProtocol?
+  offer    Offer?
+  contract Contract?
+  invoices Invoice[]
+  handover HandoverProtocol?
 }
 
 model ProjectTask {
-  id          String   @id @default(cuid())
-  createdAt   DateTime @default(now())
+  id          String    @id @default(cuid())
+  createdAt   DateTime  @default(now())
   title       String
   description String?
-  status      String   @default("Čeká")
+  status      String    @default("Čeká")
   dueDate     DateTime?
   projectId   String
-  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  project     Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
 }
 
 // Model pro Nabídku
@@ -251,38 +251,38 @@ model Offer {
   offerNumber String   @unique
   status      String   @default("Koncept") // Koncept, Odesláno, Přijato, Zamítnuto
   validUntil  DateTime
-  
+
   // Stávající pole pro rozsah a cenu
-  summary     String?  @db.Text
+  summary       String? @db.Text
   scope_package String?
-  scope_items Json?
-  price_items Json?
-  price_total Float?
-  
+  scope_items   Json?
+  price_items   Json?
+  price_total   Float?
+
   // NOVÁ POLE podle "Interního Zadání Projektu"
-  preliminary_package String?  // Předběžné zařazení
-  main_goal           String?  @db.Text // Hlavní cíl webu
-  target_audience     String?  @db.Text // Cílová skupina
-  potential_problems  String?  @db.Text // Potenciální problémy
-  added_value_ideas   String?  @db.Text // Nápady na přidanou hodnotu
+  preliminary_package String? // Předběžné zařazení
+  main_goal           String?   @db.Text // Hlavní cíl webu
+  target_audience     String?   @db.Text // Cílová skupina
+  potential_problems  String?   @db.Text // Potenciální problémy
+  added_value_ideas   String?   @db.Text // Nápady na přidanou hodnotu
   estimated_delivery  DateTime? // Předběžný odhad termínu
 
   // Odkaz na vygenerované PDF
-  fileUrl     String?
-  
-  projectId   String   @unique
-  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  fileUrl String?
+
+  projectId String  @unique
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 }
 
 // Model pro Smlouvu / Závaznou objednávku
 model Contract {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
+  id        String    @id @default(cuid())
+  createdAt DateTime  @default(now())
   fileUrl   String?
-  status    String   @default("Čeká na podpis") // Čeká na podpis, Podepsáno
+  status    String    @default("Čeká na podpis") // Čeká na podpis, Podepsáno
   signedAt  DateTime?
-  projectId String   @unique
-  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId String    @unique
+  project   Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
 }
 
 // Vylepšený model pro Faktury (Zálohová i Finální)
@@ -293,7 +293,7 @@ model Invoice {
   dueDate       DateTime
   paidAt        DateTime?
   amount        Float
-  type          String    // 'Zálohová', 'Finální'
+  type          String // 'Zálohová', 'Finální'
   status        String    @default("Nezaplaceno") // Nezaplaceno, Zaplaceno, Po splatnosti
   fileUrl       String?
   projectId     String
@@ -301,11 +301,11 @@ model Invoice {
 }
 
 model HandoverProtocol {
-  id           String   @id @default(cuid())
-  createdAt    DateTime @default(now())
+  id           String    @id @default(cuid())
+  createdAt    DateTime  @default(now())
   fileUrl      String?
-  status       String   @default("Připraveno") // Připraveno, Potvrzeno
+  status       String    @default("Připraveno") // Připraveno, Potvrzeno
   handedOverAt DateTime?
-  projectId    String   @unique
-  project      Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId    String    @unique
+  project      Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
 }
