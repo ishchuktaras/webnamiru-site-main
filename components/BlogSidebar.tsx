@@ -75,9 +75,9 @@ export default async function BlogSidebar() {
       <AffiliateLinkCard 
         title="Nástroje, kterým věřím"
         description="Pro své projekty i pro klienty sázím na ověřenou kvalitu a skvělou podporu od WEDOS."
-        link="https://www.wedos.cz/?ap=KdCnWf" // <-- ZDE VLOŽ SVŮJ AFFILIATE LINK!
+        link="https://www.wedos.cz/?ap=KdCnWf" 
         buttonText="Prozkoumat hosting WEDOS"
-        imageUrl="/images/logo/logo-hor-s.png" // <-- Ujisti se, že máš logo na této cestě
+        imageUrl="/images/logo/logo-hor-s.png" 
         partnerName="WEDOS"
       />
     </aside>

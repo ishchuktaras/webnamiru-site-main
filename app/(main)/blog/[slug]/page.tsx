@@ -4,10 +4,7 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import prisma from "@/lib/prisma";
-// ZMĚNA: Opravena cesta k importu
-import { getAverageRating } from "@/lib/actions/rating.actions"; 
-
-import Footer from "@/components/Footer";
+import { getAverageRating } from "@/lib/actions/rating.actions";
 import BlogBreadcrumbs from "@/components/blog-breadcrumbs";
 import BlogReadingTime from "@/components/blog-reading-time";
 import BlogSocialShare from "@/components/blog-social-share";
@@ -48,10 +45,10 @@ export async function generateStaticParams() {
   }
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+export async function generateMetadata({ params: {slug} }: { params: { slug: string } }): Promise<Metadata> {
   try {
-    // ZMĚNA: Odstraněno 'await' před params
-    const { slug } = params;
+    
+   {/* const { slug } = params; */}
     const post = await getPostData(slug);
 
     if (!post) {
@@ -70,9 +67,9 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   }
 }
 
-export default async function BlogPostPage({ params }: { params: { slug:string } }) {
-  // ZMĚNA: Odstraněno 'await' před params
-  const { slug } = params;
+export default async function BlogPostPage({ params: {slug} }: { params: { slug:string } }) {
+  
+  { /* const { slug } = params; */}
   const post = await getPostData(slug);
 
   if (!post) {
@@ -82,7 +79,7 @@ export default async function BlogPostPage({ params }: { params: { slug:string }
   const initialRatingData = await getAverageRating(post.id);
 
   return (
-    // ZMĚNA: Používáme grid pro rozdělení na hlavní obsah a sidebar
+    
     <div className="container mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-3 lg:gap-12">
       
       {/* Hlavní obsah článku (zabírá 2/3 šířky na desktopu) */}

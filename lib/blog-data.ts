@@ -32,7 +32,7 @@ export const blogPosts: BlogPost[] = [
     tags: ["strategie", "business", "roi", "webdevelopment"],
     readingTime: 8,
     featured: true,
-    image: "/images/blog/strategie-web.jpg",
+    image: "/images/blog/designer.jpeg",
     seoTitle: "Strategie pro úspěšný web 2025 | Web na míru",
     seoDescription:
       "Jak vytvořit web, který skutečně vydělává? Přečtěte si o strategickém přístupu k webdevelopmentu s důrazem na ROI a obchodní cíle.",
@@ -75,7 +75,7 @@ export const blogPosts: BlogPost[] = [
     tags: ["responzivni-design", "mobile", "ux", "seo"],
     readingTime: 6,
     featured: false,
-    image: "/images/blog/responzivni-design.jpg",
+    image: "/images/blog/responziv_design.jpeg",
     seoTitle: "Responzivní design 2025 - Proč je nezbytný pro každý web",
     seoDescription:
       "Zjistěte, proč je responzivní design klíčový pro úspěch vašeho webu. Vliv na SEO, uživatelskou zkušenost a konverze.",
@@ -115,7 +115,7 @@ export const blogPosts: BlogPost[] = [
     tags: ["seo", "lokalni-seo", "vysocina", "male-firmy"],
     readingTime: 10,
     featured: true,
-    image: "/images/blog/seo-vysocina.jpg",
+    image: "/images/blog/SEO_optimalizace.jpeg",
     seoTitle: "SEO pro malé firmy Vysočina | Lokální optimalizace 2025",
     seoDescription:
       "Kompletní průvodce SEO optimalizací pro malé firmy na Vysočině. Lokální SEO strategie, které skutečně fungují.",
@@ -182,7 +182,7 @@ export const blogPosts: BlogPost[] = [
     tags: ["nextjs", "wordpress", "cms", "performance"],
     readingTime: 12,
     featured: false,
-    image: "/images/blog/nextjs-vs-wordpress.jpg",
+    image: "/images/blog/Next.js_WordPress.jpeg",
     seoTitle: "Next.js vs WordPress 2025 - Kompletní srovnání pro váš web",
     seoDescription:
       "Detailní srovnání Next.js a WordPress. Výhody, nevýhody a kdy použít kterou technologii pro váš web.",
@@ -270,7 +270,7 @@ export const blogPosts: BlogPost[] = [
     tags: ["trendy", "design", "ux", "ai"],
     readingTime: 7,
     featured: false,
-    image: "/images/blog/webove-trendy-2025.jpg",
+    image: "/images/blog/webové_trendy.jpeg",
     seoTitle: "Webové trendy 2025 - Co bude letos v designu důležité",
     seoDescription:
       "Objevte nejdůležitější webové trendy roku 2025. AI integrace, minimalistický design, dark mode a další trendy.",

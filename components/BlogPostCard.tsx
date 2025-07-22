@@ -9,6 +9,7 @@ import { Post, Category, User } from '@prisma/client';
 type PostWithRelations = Post & {
   author: User;
   category: Category | null;
+  image?: string | null;
 };
 
 interface BlogPostCardProps {
@@ -19,9 +20,8 @@ export default function BlogPostCard({ post }: BlogPostCardProps) {
   return (
     <article key={post.id} className="group flex flex-col overflow-hidden rounded-lg border bg-card text-card-foreground shadow-sm transition-all hover:shadow-md">
       <Link href={`/blog/${post.slug}`} className="block overflow-hidden">
-        <Image
-          
-          src={'/placeholder.svg'}
+        <Image          
+          src={post.image || '/placeholder.svg'}
           alt={`Náhledový obrázek pro článek ${post.title}`}
           width={800}
           height={400}
