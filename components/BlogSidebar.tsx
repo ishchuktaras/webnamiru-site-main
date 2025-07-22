@@ -4,7 +4,7 @@ import Link from "next/link";
 import prisma from "@/lib/prisma";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import AffiliateLinkCard from "@/components/AffiliateLinkCard"; 
+import AffiliateLinkCard from "@/components/AffiliateLinkCard";
 import { Folder, Hash } from "lucide-react";
 
 async function getSidebarData() {
@@ -24,7 +24,7 @@ async function getSidebarData() {
     },
     orderBy: {
       posts: {
-        _count: 'desc',
+        _count: "desc",
       },
     },
     take: 10, // Zobrazíme 10 nejpoužívanějších tagů
@@ -47,7 +47,11 @@ export default async function BlogSidebar() {
         </CardHeader>
         <CardContent className="flex flex-col gap-2">
           {categories.map((category) => (
-            <Link key={category.id} href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors flex justify-between">
+            <Link
+              key={category.id}
+              href={`/blog/kategorie/${category.slug}`}
+              className="text-sm text-muted-foreground hover:text-primary transition-colors flex justify-between"
+            >
               <span>{category.name}</span>
               <span>({category._count.posts})</span>
             </Link>
@@ -64,20 +68,25 @@ export default async function BlogSidebar() {
         </CardHeader>
         <CardContent className="flex flex-wrap gap-2">
           {tags.map((tag) => (
-            <Badge key={tag.id} variant="secondary">
-              <Link href="#">{tag.name}</Link>
-            </Badge>
+            <Link key={tag.id} href={`/blog/tagy/${tag.slug}`}>
+              <Badge
+                variant="secondary"
+                className="cursor-pointer hover:bg-primary hover:text-primary-foreground"
+              >
+                {tag.name}
+              </Badge>
+            </Link>
           ))}
         </CardContent>
       </Card>
 
       {/* Sekce s affiliate doporučením */}
-      <AffiliateLinkCard 
+      <AffiliateLinkCard
         title="Nástroje, kterým věřím"
         description="Pro své projekty i pro klienty sázím na ověřenou kvalitu a skvělou podporu od WEDOS."
-        link="https://www.wedos.cz/?ap=KdCnWf" 
+        link="https://www.wedos.cz/?ap=KdCnWf"
         buttonText="Prozkoumat hosting WEDOS"
-        imageUrl="/images/logo/logo-hor-s.png" 
+        imageUrl="/images/logo/logo-hor-s.png"
         partnerName="WEDOS"
       />
     </aside>

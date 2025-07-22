@@ -6,7 +6,7 @@ import BlogReadingTime from '@/components/blog-reading-time';
 import { Post, Category, User } from '@prisma/client';
 
 // Rozšíříme základní typ Post o načtené relace (autora a kategorii)
-type PostWithRelations = Post & {
+export type PostWithRelations = Post & {
   author: User;
   category: Category | null;
   image?: string | null;

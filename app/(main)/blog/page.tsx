@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { Metadata } from "next";
 import prisma from "@/lib/prisma";
 import BlogSidebar from "@/components/BlogSidebar";
-import BlogPostCard from "@/components/BlogPostCard"; 
+import BlogPostCard, { type PostWithRelations } from "@/components/BlogPostCard"; 
 
 export const metadata: Metadata = {
   title: "Blog | webnamiru.site",
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 };
 
 // Funkce pro načtení všech publikovaných příspěvků
-async function getPosts() {
+async function getPosts(): Promise<PostWithRelations[]> {
   const posts = await prisma.post.findMany({
     where: { published: true },
     include: {
@@ -46,7 +46,7 @@ export default async function BlogPage() {
             {posts.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {posts.map((post) => (
-                  <BlogPostCard key={post.id} post={post as any} />
+                  <BlogPostCard key={post.id} post={post} />
                 ))}
               </div>
             ) : (

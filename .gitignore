@@ -200,3 +200,6 @@ temp/
 
 # Workspace files
 pnpm-workspace.yaml
+
+# Local development data files
+lib/blog-data-copy.ts
