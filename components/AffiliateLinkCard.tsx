@@ -32,7 +32,7 @@ export default function AffiliateLinkCard({
                 alt={`Logo ${partnerName}`}
                 width={120}
                 height={40}
-                className="object-contain"
+                className="w-full h-auto object-contain"
             />
         </div>
       </CardHeader>
