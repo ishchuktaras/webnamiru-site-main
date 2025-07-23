@@ -1,29 +1,37 @@
+// components/blog-tags.tsx
+
 "use client"
 
 import { Badge } from "@/components/ui/badge"
-import { getAllTags } from "@/lib/blog-data"
+import Link from "next/link"
+
+// Očekáváme pole objektů, ne jen stringů
+interface Tag {
+  slug: string;
+  name: string;
+}
 
 interface BlogTagsProps {
+  tags: Tag[]; // Změněno z getAllTags() na props
   selectedTags?: string[]
-  onTagClick?: (tag: string) => void
   limit?: number
 }
 
-export default function BlogTags({ selectedTags = [], onTagClick, limit }: BlogTagsProps) {
-  const allTags = getAllTags()
-  const displayTags = limit ? allTags.slice(0, limit) : allTags
+export default function BlogTags({ tags, selectedTags = [], limit }: BlogTagsProps) {
+  // Zobrazíme buď všechny tagy, nebo jen omezený počet
+  const displayTags = limit ? tags.slice(0, limit) : tags
 
   return (
     <div className="flex flex-wrap gap-2">
       {displayTags.map((tag) => (
-        <Badge
-          key={tag}
-          variant={selectedTags.includes(tag) ? "default" : "secondary"}
-          className={`cursor-pointer transition-colors ${onTagClick ? "hover:bg-blue-100 dark:hover:bg-blue-900" : ""}`}
-          onClick={() => onTagClick?.(tag)}
-        >
-          #{tag}
-        </Badge>
+        <Link key={tag.slug} href={`/blog/tagy/${tag.slug}`}>
+          <Badge
+            variant={selectedTags.includes(tag.name) ? "default" : "secondary"}
+            className="cursor-pointer transition-colors hover:bg-primary hover:text-primary-foreground"
+          >
+            #{tag.name}
+          </Badge>
+        </Link>
       ))}
     </div>
   )

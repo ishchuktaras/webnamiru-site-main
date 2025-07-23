@@ -55,7 +55,7 @@ export default async function AdminPostsPage() {
           <TableBody>
             {posts.map((post) => (
               <TableRow key={post.id}>
-                {/* ZMĚNA ZDE: Přidány třídy pro barvu textu v dark modu */}
+                
                 <TableCell className="font-medium text-gray-900 dark:text-gray-100">
                   <a href={`/blog/${post.slug}`} target="_blank" rel="noopener noreferrer" className="hover:underline">
                     {post.title}
@@ -66,9 +66,9 @@ export default async function AdminPostsPage() {
                     {post.published ? "Publikováno" : "Koncept"}
                   </Badge>
                 </TableCell>
-                {/* ZMĚNA ZDE: Přidány třídy pro barvu textu v dark modu */}
+                
                 <TableCell className="text-gray-600 dark:text-gray-300">{post.category?.name || 'N/A'}</TableCell>
-                {/* ZMĚNA ZDE: Přidány třídy pro barvu textu v dark modu */}
+                
                 <TableCell className="text-gray-600 dark:text-gray-300">
                   {new Date(post.createdAt).toLocaleDateString("cs-CZ")}
                 </TableCell>

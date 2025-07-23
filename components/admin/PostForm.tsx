@@ -2,7 +2,7 @@
 
 "use client";
 
-// ZMĚNA 1: Změna importu z 'react-dom' na 'react' a přejmenování hooku
+
 import { useActionState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,7 +21,7 @@ interface PostFormProps {
 
 export default function PostForm({ action, post }: PostFormProps) {
   const initialState = { message: "", errors: {} };
-  // ZMĚNA 2: Přejmenování volání hooku
+  
   const [state, formAction] = useActionState(action, initialState);
 
   return (

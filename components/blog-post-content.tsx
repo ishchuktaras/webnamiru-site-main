@@ -1,20 +1,30 @@
-import type { BlogPost } from "@/lib/blog-data"
+// components/blog-post-content.tsx
+
+import type { PostWithDetails } from "@/app/(main)/blog/[slug]/page";
 
 interface BlogPostContentProps {
-  post: BlogPost
+  post: PostWithDetails;
 }
 
 export default function BlogPostContent({ post }: BlogPostContentProps) {
   return (
-    <article className="container px-4 md:px-6 py-12 md:py-24 lg:py-32 max-w-3xl mx-auto">
-      <header className="space-y-4 mb-8 text-center">
-        <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl leading-tight">{post.title}</h1>
-        <p className="text-gray-500 dark:text-gray-400 text-lg">
-          {post.author} |{" "}
-          {new Date(post.date).toLocaleDateString("cs-CZ", { year: "numeric", month: "long", day: "numeric" })}
-        </p>
-      </header>
-      <div className="prose prose-lg dark:prose-invert mx-auto" dangerouslySetInnerHTML={{ __html: post.content }} />
+    <article>
+      {/* Hlavní obrázek článku */}
+      {post.imageUrl && (
+        <div className="relative w-full h-64 md:h-96 mb-8 rounded-lg overflow-hidden">
+          <img
+            src={post.imageUrl}
+            alt={`Náhledový obrázek pro článek ${post.title}`}
+            className="w-full h-full object-cover"
+          />
+        </div>
+      )}
+
+      {/* Tělo článku */}
+      <div
+        className="prose prose-lg dark:prose-invert max-w-none"
+        dangerouslySetInnerHTML={{ __html: post.content }}
+      />
     </article>
-  )
+  );
 }

@@ -6,7 +6,7 @@ import { useState, useEffect, useTransition, useActionState } from "react";
 import { Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { addRating } from "@/lib/actions/rating.actions";
-import { toast } from "sonner"; // OPRAVA: Přidán chybějící import
+import { toast } from "sonner";
 
 interface BlogRatingSafeProps {
   postId: string;
