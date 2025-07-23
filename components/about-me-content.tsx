@@ -177,7 +177,7 @@ export default function AboutMeContent() {
             <div className="absolute -bottom-6 -right-6 bg-white dark:bg-gray-800 p-4 rounded-xl shadow-lg border">
               <div className="flex items-center gap-2">
                 <Calendar className="h-5 w-5 text-blue-600" />
-                <span className="font-semibold">5+ let zkušeností</span>
+                <span className="font-semibold">3+ let zkušeností</span>
               </div>
             </div>
           </div>
