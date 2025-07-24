@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import BlogReadingTime from "@/components/blog-reading-time";
 import { Post, Category, User } from "@prisma/client";
 
+// Rozšíříme základní typ Post o načtené relace
 export type PostWithRelations = Post & {
   author: User;
   category: Category | null;
@@ -28,6 +29,7 @@ export default function BlogPostCard({ post }: BlogPostCardProps) {
       >
         <div className="relative aspect-[2/1] w-full">
           <Image
+            // ZMĚNA ZDE: Používáme `post.imageUrl` místo `post.image`
             src={post.imageUrl || "/placeholder.svg"}
             alt={`Náhledový obrázek pro článek ${post.title}`}
             fill
