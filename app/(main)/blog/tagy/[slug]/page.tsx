@@ -1,3 +1,5 @@
+// app/(main)/blog/tagy/[slug]/page.tsx
+
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import prisma from '@/lib/prisma';
