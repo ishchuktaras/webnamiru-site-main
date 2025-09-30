@@ -1,89 +1,82 @@
 // components/hero-section.tsx
+'use client';
 
-"use client";
+import Image from 'next/image';
+import Link from 'next/link';
+import { motion, Variants } from 'framer-motion';
+import { ArrowRight, Zap, ShieldCheck, BrainCircuit } from 'lucide-react';
 
-import Image from "next/image";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import {
-  ArrowRight,
-  CheckCircle,
-  TrendingUp,
-  Users,
-  Award,
-} from "lucide-react";
-import { useEffect, useState } from "react";
+import { Button } from '@/components/ui/button';
+import InquirySheet from './InquirySheet';
 
-export default function HeroSection() {
-  const [isMounted, setIsMounted] = useState(false);
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15,
+    },
+  },
+};
 
-  useEffect(() => {
-    // Po načtení komponenty na klientovi nastavíme isMounted na true
-    // Tím se na hlavní sekci přidá třída "mounted", která spustí naše CSS animace
-    setIsMounted(true);
-  }, []);
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: 'easeOut',
+    },
+  },
+};
 
-  const trustSignals = [
-    { icon: Users, text: "Specializace na startupy" },
-    { icon: TrendingUp, text: "Výhodné startovní ceny" },
-    { icon: Award, text: "Ekonomické vzdělání + IT" },
-  ];
+const premiumSignals = [
+  { icon: Zap, text: 'Moderní technologie' },
+  { icon: ShieldCheck, text: 'Výkon a bezpečnost' },
+  { icon: BrainCircuit, text: 'Strategický přístup' },
+];
 
+export function HeroSection() {
   return (
-    <section 
-      data-section="hero-section" 
-      className={`relative w-full py-16 md:py-24 lg:py-32 xl:py-40 overflow-hidden ${isMounted ? "mounted" : ""}`}
+    <motion.section
+      className="relative w-full overflow-hidden bg-gradient-to-br from-blue-50 via-white to-blue-50 py-24 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 md:py-32 lg:py-40"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
     >
-      {/* Background s gradientem a vzorem zůstává stejný */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-        <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] dark:bg-grid-slate-700/25"></div>
-      </div>
+      <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] dark:bg-grid-slate-700/25"></div>
 
-      <div className="relative container px-4 md:px-6 grid gap-12 lg:grid-cols-2 lg:gap-16 items-center">
-        {/* Textový obsah */}
+      <div className="relative container grid items-center gap-12 px-4 md:px-6 lg:grid-cols-2 lg:gap-16">
+        
         <div className="flex flex-col justify-center space-y-8 text-center lg:text-left">
-          
-          {/* Badge */}
-          <div data-animate-item style={{ transitionDelay: '100ms' }}>
-            <Badge className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-900 dark:text-green-100 text-sm font-medium">
-              <CheckCircle className="h-4 w-4" />
-              Výhodné podmínky pro začínající podnikatele
-            </Badge>
-          </div>
-
-          {/* Hlavní nadpis */}
-          <div data-animate-item style={{ transitionDelay: '200ms' }}>
+          <motion.div variants={itemVariants}>
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
-              <span className="bg-gradient-to-r from-gray-900 via-blue-800 to-gray-900 dark:from-white dark:via-blue-300 dark:to-white bg-clip-text text-transparent">
-                Weby, které
+              <span className="bg-gradient-to-r from-gray-900 via-blue-800 to-gray-900 bg-clip-text text-transparent dark:from-white dark:via-blue-300 dark:to-white">
+                Měním nápady v
               </span>
               <br />
               <span className="bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-                vydělávají.
+                ziskové aplikace.
               </span>
             </h1>
-          </div>
+          </motion.div>
 
-          {/* Podnadpis */}
-          <div data-animate-item style={{ transitionDelay: '300ms' }}>
-            <p className="max-w-[600px] text-lg md:text-xl text-gray-600 dark:text-gray-300 mx-auto lg:mx-0 leading-relaxed">
-              Začínáte podnikat? Nabízím{" "}
-              <span className="font-semibold text-blue-700 dark:text-blue-300">
-                výhodné startovní podmínky
-              </span>{" "}
-              pro tvorbu profesionálních webů, které porostou s vaším byznysem
-              na Vysočině.
-            </p>
-          </div>
+          <motion.p
+            variants={itemVariants}
+            className="mx-auto max-w-[600px] text-lg leading-relaxed text-gray-600 dark:text-gray-300 md:text-xl lg:mx-0"
+          >
+            Specializuji se na vývoj rychlých a bezpečných digitálních řešení na
+            míru, která přináší měřitelné výsledky a posouvají vaše podnikání
+            vpřed na Vysočině.
+          </motion.p>
 
-          {/* Trust Signals */}
-          <div data-animate-item style={{ transitionDelay: '400ms' }}>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center lg:text-left">
-              {trustSignals.map((signal, index) => (
+          <motion.div variants={itemVariants}>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+              {premiumSignals.map((signal) => (
                 <div
-                  key={index}
-                  className="flex items-center justify-center lg:justify-start gap-2"
+                  key={signal.text}
+                  className="flex items-center justify-center gap-2 lg:justify-start"
                 >
                   <signal.icon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                   <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -92,95 +85,89 @@ export default function HeroSection() {
                 </div>
               ))}
             </div>
-          </div>
+          </motion.div>
 
-          {/* CTA Tlačítka */}
-          <div data-animate-item style={{ transitionDelay: '500ms' }}>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <Button
-                className="group h-12 px-8 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 text-base font-medium"
-                asChild
-              >
-                <Link href="/sluzby/balicky">
-                  Zjistit startovní podmínky
+          <motion.div
+            variants={itemVariants}
+            className="flex flex-col gap-4 sm:flex-row sm:justify-center lg:justify-start"
+          >
+            {/* === OPRAVA ZDE === */}
+            <InquirySheet
+              trigger={
+                <Button
+                  size="lg"
+                  className="group h-12 bg-gradient-to-r from-blue-600 to-blue-700 px-8 text-base font-medium text-white shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+                >
+                  Nezávazná poptávka
                   <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-                </Link>
-              </Button>
-              <Button
-                variant="outline"
-                className="h-12 px-8 border-2 border-gray-300 hover:border-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-300 text-base font-medium group"
-                asChild
-              >
-                <Link href="/pripadove-studie">
-                  Zobrazit případové studie
-                  <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-                </Link>
-              </Button>
-            </div>
-          </div>
-          
+                </Button>
+              }
+              title="Pojďme společně nastartovat váš projekt"
+              description="Vyplňte krátký dotazník a já se vám co nejdříve ozvu s konkrétními návrhy a dalším postupem."
+              serviceInfo={undefined} 
+            />
+            
+            <Button
+              asChild
+              variant="outline"
+              className="group h-12 border-2 px-8 text-base font-medium transition-all duration-300 hover:scale-105 hover:border-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+            >
+              <Link href="/pripadove-studie">
+                Prohlédnout projekty
+                <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+              </Link>
+            </Button>
+          </motion.div>
         </div>
 
-        {/* Obrázek */}
-        <div data-animate-item style={{ transitionDelay: '300ms' }}>
-            <div className="relative flex justify-center lg:justify-end">
-                {/* Dekorační prvky zůstávají stejné */}
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-blue-600 rounded-2xl transform rotate-3 scale-105 opacity-20"></div>
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-blue-700 rounded-2xl transform -rotate-2 scale-110 opacity-10"></div>
+        <motion.div variants={itemVariants} className="relative flex justify-center lg:justify-end">
+          <div className="absolute inset-0 scale-105 transform rounded-2xl bg-gradient-to-r from-blue-400 to-blue-600 opacity-20 rotate-3"></div>
+          <div className="absolute inset-0 scale-110 transform rounded-2xl bg-gradient-to-r from-blue-500 to-blue-700 opacity-10 -rotate-2"></div>
 
-                <div className="relative z-0 max-w-lg mx-auto lg:max-w-none">
-                <Image
-                    src="/images/website-hero.jpg"
-                    width={600}
-                    height={600}
-                    alt="Profesionální fotografie - ekonom a webový vývojář analyzující obchodní grafy a webové metriky, symbolizující strategický přístup k tvorbě webů"
-                    className="relative w-full h-auto aspect-square overflow-hidden rounded-2xl object-cover shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-105"
-                    priority
-                />
-                <div className="absolute -top-4 -right-4 bg-white dark:bg-gray-800 rounded-xl p-3 shadow-xl z-10">
-                    <div className="flex items-center gap-2">
-                    <TrendingUp className="h-5 w-5 text-green-500" />
-                    <span className="text-sm font-bold text-green-600">
-                        Startovní ceny
-                    </span>
-                    </div>
-                </div>
-
-                <div className="absolute -bottom-4 -left-4 bg-white dark:bg-gray-800 rounded-xl p-3 shadow-xl z-10">
-                    <div className="flex items-center gap-2">
-                    <Users className="h-5 w-5 text-blue-500" />
-                    <span className="text-sm font-bold text-blue-600">
-                        Pro startupy
-                    </span>
-                    </div>
-                </div>
-                </div>
+          <div className="relative z-10 mx-auto max-w-lg lg:max-w-none">
+            <Image
+              src="/images/website-hero.jpg"
+              width={600}
+              height={600}
+              alt="Strategický vývoj webových aplikací - developer analyzující data a metriky"
+              className="aspect-square h-auto w-full rounded-2xl object-cover shadow-2xl transition-all duration-500 hover:scale-105 hover:shadow-3xl"
+              priority
+            />
+            <div className="absolute -top-4 -right-4 z-20 rounded-xl bg-white p-3 shadow-xl dark:bg-gray-800">
+              <div className="flex items-center gap-2">
+                <Zap className="h-5 w-5 text-yellow-500" />
+                <span className="text-sm font-bold text-gray-800 dark:text-white">
+                  Next.js & React
+                </span>
+              </div>
             </div>
-        </div>
+          </div>
+        </motion.div>
       </div>
 
-      {/* Schema.org data zůstávají stejná */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebSite",
-            name: "Web na míru",
-            description: "Strategické weby, které vydělávají pro firmy v Kraji Vysočina",
-            url: "https://webnamiru.site",
+            '@context': 'https://schema.org',
+            '@type': 'WebSite',
+            name: 'Web na míru',
+            description: 'Vývoj ziskových webových aplikací v Kraji Vysočina',
+            url: 'https://webnamiru.site',
             areaServed: {
-              "@type": "State",
-              name: "Kraj Vysočina",
+              '@type': 'State',
+              name: 'Kraj Vysočina',
             },
             founder: {
-              "@type": "Person",
-              name: "Taras Ishchuk",
-              jobTitle: "Web Developer & Business Analyst",
+              '@type': 'Person',
+              name: 'Taras Ishchuk',
+              jobTitle: 'Web Developer & Business Analyst',
             },
           }),
         }}
       />
-    </section>
+    </motion.section>
   );
 }
+
+export default HeroSection;

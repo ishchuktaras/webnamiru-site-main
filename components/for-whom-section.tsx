@@ -1,118 +1,154 @@
 // components/for-whom-section.tsx
+'use client';
 
-"use client";
+import { motion, Variants } from 'framer-motion';
+import { Briefcase, Gem, Building, ArrowRight, XCircle } from 'lucide-react';
+import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Button } from './ui/button';
+import Link from 'next/link';
 
-// ZMĚNA: Odstraněny importy pro Button, Link a ikonu ArrowRight
-import { Factory, Utensils, Sprout, Globe } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import SectionWrapper from "./SectionWrapper";
-
-export default function ForWhomSection() {
-  const segments = [
-    {
-      icon: Factory,
-      title: "Výrobní SME a Řemeslníci",
-      problem: "13% stavebních firem nemá web",
-      solution:
-        "Získejte B2B poptávky a exportní příležitosti prostřednictvím profesionální online prezentace vaší technické expertízy.",
-      features: ["B2B katalogy", "Exportní prezentace", "Technické specifikace"],
-    },
-    {
-      icon: Utensils,
-      title: "Poskytovatelé Služeb",
-      problem: "Nízká online konverze",
-      solution: "Plný rezervační kalendář díky webu s online objednávkami, platbami a automatickým sledováním zakázek.",
-      features: ["Online rezervace", "Platební brána", "CRM integrace"],
-    },
-    {
-      icon: Sprout,
-      title: "Místní Producenti a Farmáři",
-      problem: "Chybí online prodej",
-      solution: "E-shop s příběhem vaší značky, který osloví i 35% seniorů díky jednoduchému a přístupnému designu.",
-      features: ["E-commerce", "Storytelling", "Přístupný design"],
-    },
-    {
-      icon: Globe,
-      title: "Podnikatelé-cizinci",
-      problem: "Jazykové a kulturní bariéry",
-      solution: "Повний сервіс вашою рідною мовою + strategická podpora pro úspěšnou integraci na český trh.",
-      features: ["Vícejazyčnost", "Kulturní adaptace", "Lokální SEO"],
-    },
-  ];
-
-  return (
-    <SectionWrapper
-      id="for-whom-section"
-      badgeText="Cílové skupiny"
-      title={
-        <>
-          Řešení šité na míru <span className="text-blue-600">vašemu segmentu</span>
-        </>
-      }
-      subtitle="Každý segment má specifické problémy. Můj strategický přístup kombinuje ekonomickou expertízu s technickými dovednostmi pro maximální ROI."
-      className="bg-white dark:bg-gray-900" 
-    >
-      <div className="mx-auto grid max-w-6xl items-stretch gap-8 py-12 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 lg:gap-8">
-        {segments.map((segment, index) => {
-          const IconComponent = segment.icon;
-          return (
-            <div key={index}>
-              <Card
-                className="flex flex-col h-full text-center p-6 shadow-custom-md hover:shadow-custom-lg transition-all duration-300 dark:bg-gray-950 border-l-4 border-l-blue-600 hover:-translate-y-2"
-              >
-                <CardHeader className="pb-4">
-                  <div className="mx-auto p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg mb-4">
-                    <IconComponent className="h-8 w-8 text-blue-600 dark:text-blue-400" />
-                  </div>
-                  <CardTitle className="text-lg font-bold">{segment.title}</CardTitle>
-                  <div className="text-sm text-red-600 dark:text-red-400 font-medium">⚠️ {segment.problem}</div>
-                </CardHeader>
-                <CardContent className="flex-1 flex flex-col justify-between space-y-4">
-                  <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">{segment.solution}</p>
-                  <div className="space-y-2 pt-4">
-                    <div className="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wide">
-                      Klíčové funkce:
-                    </div>
-                    <div className="flex flex-wrap gap-1 justify-center">
-                      {segment.features.map((feature, featureIndex) => (
-                        <span
-                          key={featureIndex}
-                          className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs rounded-full"
-                        >
-                          {feature}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </CardContent>
-                {/* ZMĚNA: Celý tento blok s tlačítkem byl odstraněn */}
-              </Card>
-            </div>
-          );
-        })}
-      </div>
-      
-       <div className="mt-16 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg p-8 border border-blue-200 dark:border-blue-800">
-        <div className="text-center">
-          <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
-            Proč strategický přístup funguje
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div>
-              <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">+187%</div>
-              <div className="text-sm text-gray-600 dark:text-gray-300">růst IT sektoru - využijte příležitost</div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">86,9%</div>
-              <div className="text-sm text-gray-600 dark:text-gray-300">firem má web - buďte mezi nimi</div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">ROI</div>
-              <div className="text-sm text-gray-600 dark:text-gray-300">měřitelná návratnost investice</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </SectionWrapper>
-  );
+// Definuje typ pro jednotlivé profily ideálních klientů
+interface IdealClientProfile {
+  icon: React.ElementType;
+  title: string;
+  description: string;
+  features: string[];
 }
+
+// Data pro jednotlivé karty, přímo navázaná na strategický plán
+const idealClientProfiles: IdealClientProfile[] = [
+  {
+    icon: Building,
+    title: 'Výrobní a B2B firmy',
+    description:
+      'Pro firmy, které potřebují víc než jen online vizitku. Tvořím robustní B2B portály a platformy, které digitalizují vaše obchodní procesy.',
+    features: [
+      'B2B klientské portály',
+      'Integrace s ERP a CRM systémy',
+      'Technické produktové katalogy',
+    ],
+  },
+  {
+    icon: Gem,
+    title: 'Prémiové služby a turismus',
+    description:
+      'Pro hotely, penziony a poskytovatele zážitků, kteří chtějí maximalizovat přímé rezervace a prezentovat svou jedinečnost na té nejvyšší úrovni.',
+    features: [
+      'Rezervační systémy na míru',
+      'Vizuálně působivé prezentace',
+      'Vícejazyčná podpora',
+    ],
+  },
+  {
+    icon: Briefcase,
+    title: 'Zavedení profesionálové',
+    description:
+      'Pro advokáty, architekty či finanční poradce, kteří chtějí posílit svou digitální image, důvěryhodnost a efektivně komunikovat s klienty.',
+    features: [
+      'Bezpečné klientské zóny',
+      'Moderní a důvěryhodný design',
+      'Prezentace odbornosti a referencí',
+    ],
+  },
+];
+
+// Varianty animací pro Framer Motion
+const sectionVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2,
+    },
+  },
+};
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: 'easeOut',
+    },
+  },
+};
+
+export const ForWhomSection = () => {
+  return (
+    <motion.section
+      className="py-24 sm:py-32"
+      variants={sectionVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.2 }}
+    >
+      <div className="container mx-auto px-4">
+        {/* === Titulek sekce === */}
+        <motion.div
+          className="mx-auto max-w-3xl text-center"
+          variants={itemVariants}
+        >
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+            Pro koho je spolupráce ideální?
+          </h2>
+          <p className="mt-4 text-lg text-muted-foreground">
+            Nesnažím se být řešením pro každého. Specializuji se na partnery,
+            kteří vnímají web jako strategickou investici do růstu svého
+            podnikání.
+          </p>
+        </motion.div>
+
+        {/* === Karty s profily ideálních klientů === */}
+        <div className="mx-auto mt-16 grid max-w-md grid-cols-1 gap-8 md:max-w-4xl md:grid-cols-2 lg:max-w-none lg:grid-cols-3">
+          {idealClientProfiles.map((profile, index) => (
+            <motion.div key={index} variants={itemVariants}>
+              <Card className="flex h-full flex-col overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-xl">
+                <CardHeader>
+                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+                    <profile.icon className="h-6 w-6" />
+                  </div>
+                  <CardTitle>{profile.title}</CardTitle>
+                  <CardDescription>{profile.description}</CardDescription>
+                </CardHeader>
+                <div className="flex-grow p-6 pt-0">
+                  <ul className="space-y-2 text-sm text-muted-foreground">
+                    {profile.features.map((feature, i) => (
+                      <li key={i} className="flex items-start">
+                        <ArrowRight className="mr-2 mt-1 h-4 w-4 flex-shrink-0 text-primary" />
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* === Sekce "Pro koho to není" === */}
+        <motion.div
+          className="mx-auto mt-20 max-w-4xl rounded-lg border bg-secondary p-8"
+          variants={itemVariants}
+        >
+          <div className="flex flex-col items-center text-center">
+            <XCircle className="h-12 w-12 text-muted-foreground" />
+            <h3 className="mt-4 text-2xl font-semibold">
+              Kdy pravděpodobně nebudu ten pravý
+            </h3>
+            <p className="mt-4 max-w-2xl text-muted-foreground">
+              Pokud je vaším jediným kritériem nejnižší cena, hledáte co
+              nejrychlejší řešení bez strategie nebo potřebujete jen jednoduchou
+              vizitku na šabloně, pravděpodobně si nebudeme rozumět. Věřím v
+              hodnotu, ne v cenovou válku.
+            </p>
+            <Button asChild variant="link" className="mt-4">
+              <Link href="/o-mne">Více o mém přístupu</Link>
+            </Button>
+          </div>
+        </motion.div>
+      </div>
+    </motion.section>
+  );
+};

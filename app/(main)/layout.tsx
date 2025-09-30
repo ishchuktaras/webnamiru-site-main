@@ -1,6 +1,6 @@
 // app/(main)/layout.tsx
 
-import Header from "@/components/header";
+import { Header } from "@/components/Header"; 
 
 import GdprConsent from "@/components/gdpr-consent";
 import ReCaptchaProvider from "@/components/ReCaptchaProvider";
