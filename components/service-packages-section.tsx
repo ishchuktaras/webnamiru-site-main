@@ -1,153 +1,156 @@
 // components/service-packages-section.tsx
+'use client';
 
-"use client";
+import { motion, Variants } from 'framer-motion';
+import { Check, ArrowRight } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
+import SectionWrapper from './SectionWrapper';
+import InquirySheet from './InquirySheet';
 
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { CheckCircle, ArrowRight, FileText, PiggyBank } from "lucide-react";
-import { servicePackages } from "@/lib/data";
-import SectionWrapper from "./SectionWrapper";
-import InquirySheet from "./InquirySheet";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+// Definuje typ pro balíček služeb
+interface ServicePackage {
+  title: string;
+  price: string;
+  description: string;
+  features: string[];
+  isFeatured?: boolean;
+  ctaText: string;
+  serviceInfo: string;
+}
+
+// Data pro balíčky podle nové prémiové strategie
+const servicePackages: ServicePackage[] = [
+  {
+    title: 'Digitální Základ',
+    price: 'od 80 000 Kč',
+    description: 'Pro profesionály a menší firmy, které potřebují špičkovou a výkonnou online prezentaci.',
+    features: [
+      'Zakázkový design na míru',
+      'Vývoj na moderní technologii (Next.js)',
+      'Responzivita pro všechna zařízení',
+      'Základní SEO optimalizace',
+      'Nasazení a konfigurace',
+    ],
+    ctaText: 'Mám zájem',
+    serviceInfo: 'webova-aplikace',
+  },
+  {
+    title: 'Motor Růstu',
+    price: 'od 150 000 Kč',
+    description: 'Pro rostoucí firmy a prémiové služby, které vyžadují pokročilé funkce a integrace.',
+    features: [
+      'Vše z balíčku Digitální Základ',
+      'Rezervační systémy',
+      'Platební brány a e-commerce funkce',
+      'Integrace s CRM a API třetích stran',
+      'Pokročilá analytika a reporting',
+    ],
+    isFeatured: true,
+    ctaText: 'Chci nastartovat růst',
+    serviceInfo: 'e-commerce',
+  },
+  {
+    title: 'Řešení na Míru',
+    price: 'Individuální',
+    description: 'Pro zavedené B2B firmy a projekty se specifickými požadavky na míru.',
+    features: [
+      'Vše z balíčku Motor Růstu',
+      'B2B klientské portály',
+      'Integrace s ERP a firemními systémy',
+      'Pokročilé bezpečnostní protokoly',
+      'Neomezená škálovatelnost',
+    ],
+    ctaText: 'Poptat řešení',
+    serviceInfo: 'dlouhodoba-spoluprace',
+  },
+];
+
+// Varianty animací
+const sectionVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.2 },
+  },
+};
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: 'easeOut' },
+  },
+};
 
 export default function ServicePackagesSection() {
-  const packages = servicePackages;
-
   return (
     <SectionWrapper
       id="service-packages-section"
-      badgeText="Balíčky na míru"
-      title="Vyberte si balíček, který podpoří váš růst."
-      subtitle="Nabízím transparentní balíčky služeb, které jsou navrženy tak, aby vyhovovaly různým potřebám a rozpočtům podnikatelů na Vysočině."
-      className="bg-white dark:bg-gray-900"
+      badgeText="Služby a Ceny"
+      title="Investice, která se vám vrátí"
+      subtitle="Každý projekt začíná placenou strategickou analýzou (od 15 000 Kč), abychom zajistili, že finální řešení bude přesně odpovídat vašim obchodním cílům. Níže jsou orientační cenové úrovně."
     >
-      <div className="mb-24 max-w-4xl mx-auto">
-        <Tabs defaultValue="included" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="included">Co je vždy v ceně?</TabsTrigger>
-            <TabsTrigger value="extras">Na co se připravit?</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="included">
-            <Card className="border-green-200 dark:border-green-800">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-green-700 dark:text-green-400">
-                  <CheckCircle /> Vždy zahrnuto v ceně
-                </CardTitle>
-                <CardDescription>
-                  Tyto položky jsou základem každého projektu a jsou již započítány v ceně balíčků.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-3 text-sm text-gray-700 dark:text-gray-300">
-                   <li className="flex items-start gap-3"><CheckCircle className="h-4 w-4 text-green-500 mt-1 shrink-0" /><span>**Úvodní konzultace a analýza** vašich potřeb a cílů.</span></li>
-                   <li className="flex items-start gap-3"><CheckCircle className="h-4 w-4 text-green-500 mt-1 shrink-0" /><span>**Responzivní design**, který skvěle vypadá na všech zařízeních.</span></li>
-                   <li className="flex items-start gap-3"><CheckCircle className="h-4 w-4 text-green-500 mt-1 shrink-0" /><span>**Základní on-page SEO**, aby vás vyhledávače našly.</span></li>
-                   <li className="flex items-start gap-3"><CheckCircle className="h-4 w-4 text-green-500 mt-1 shrink-0" /><span>**Nasazení webu** na vaši doménu a doporučený hosting.</span></li>
-                   <li className="flex items-start gap-3"><CheckCircle className="h-4 w-4 text-green-500 mt-1 shrink-0" /><span>**Školení pro obsluhu webu**, abyste si mohli sami snadno upravovat obsah.</span></li>
-                   <li className="flex items-start gap-3"><CheckCircle className="h-4 w-4 text-green-500 mt-1 shrink-0" /><span>**Technická záruka 30 dní** po spuštění pro případné doladění.</span></li>
-                </ul>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="extras">
-             <Card className="border-orange-200 dark:border-orange-800">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-orange-700 dark:text-orange-400">
-                    <PiggyBank /> Náklady navíc
-                </CardTitle>
-                <CardDescription>
-                  Položky a služby, které nejsou součástí ceny balíčků, a jak probíhá platba.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                 <div>
-                    <h4 className="font-semibold mb-2 flex items-center gap-2"><FileText className="h-4 w-4" />Služby nad rámec balíčků</h4>
-                    <ul className="space-y-3 text-sm text-gray-700 dark:text-gray-300 pl-4">
-                      <li className="flex items-start gap-3"><span className="text-orange-500 mt-1 shrink-0">■</span><span>**Hosting a doména** – roční poplatky třetím stranám (rád s výběrem pomohu).</span></li>
-                      <li className="flex items-start gap-3"><span className="text-orange-500 mt-1 shrink-0">■</span><span>**Tvorba obsahu** – psaní textů, grafika či focení (nabízeno v rámci balíčku Strategické Partnerství).</span></li>
-                      <li className="flex items-start gap-3"><span className="text-orange-500 mt-1 shrink-0">■</span><span>**Licence prémiových pluginů**, pokud je projekt vyžaduje.</span></li>
-                    </ul>
-                 </div>
-                 <div className="border-t pt-6">
-                    <h4 className="font-semibold mb-2 flex items-center gap-2"><PiggyBank className="h-4 w-4" />Proces platby</h4>
-                     <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Spolupráce je založena na férovém a jednoduchém platebním modelu.</p>
-                    <div className="flex flex-col md:flex-row justify-center items-center gap-4 md:gap-8 text-lg font-medium">
-                      <div className="flex items-center gap-2">
-                        <span className="text-3xl font-bold text-blue-600">50%</span>
-                        <span>záloha před zahájením prací</span>
-                      </div>
-                      <div className="text-2xl text-gray-300 dark:text-gray-600">→</div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-3xl font-bold text-blue-600">50%</span>
-                        <span>doplatek po schválení</span>
-                      </div>
-                    </div>
-                 </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
-      </div>
-
-      <div className="mx-auto grid max-w-6xl items-stretch gap-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
-        {packages.map((pkg, index) => {
-          const IconComponent = pkg.icon;
-          return (
+      <motion.div
+        className="mx-auto mt-16 grid max-w-md grid-cols-1 gap-8 md:max-w-4xl lg:max-w-none lg:grid-cols-3"
+        variants={sectionVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+      >
+        {servicePackages.map((pkg) => (
+          <motion.div key={pkg.title} variants={itemVariants}>
             <Card
-              key={pkg.name}
-              className={`flex flex-col p-6 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 dark:bg-gray-950 relative ${
-                pkg.popular ? "border-2 border-blue-500 dark:border-blue-400" : "border-transparent"
-              }`}
-            >
-              {pkg.popular && (
-                <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white px-4 py-1">Nejpopulárnější</Badge>
+              className={cn(
+                'flex h-full flex-col',
+                pkg.isFeatured && 'border-primary shadow-2xl'
               )}
-              <CardHeader className="pb-4">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className={`p-2 rounded-lg ${pkg.popular ? "bg-blue-100 dark:bg-blue-900/20" : "bg-gray-100 dark:bg-gray-800"}`}>
-                    <IconComponent className={`h-6 w-6 ${pkg.popular ? "text-blue-600 dark:text-blue-400" : "text-gray-600 dark:text-gray-400"}`} />
+            >
+              <CardHeader className="relative">
+                {pkg.isFeatured && (
+                  <div className="absolute -top-4 right-6 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground">
+                    Nejoblíbenější
                   </div>
-                  <CardTitle className="text-2xl font-bold text-black dark:text-gray-50">{pkg.name}</CardTitle>
-                </div>
-                <div className="flex items-baseline gap-2 mt-4">
-                  <p className="text-3xl font-extrabold text-black dark:text-gray-50">{pkg.price}</p>
-                  {pkg.originalPrice && (<p className="text-lg text-gray-500 line-through">{pkg.originalPrice}</p>)}
-                </div>
-                <div className="flex flex-wrap gap-2 mt-3">
-                  <Badge variant="outline" className="text-xs">⏱️ {pkg.timeline}</Badge>
-                  <Badge variant="outline" className="text-xs">🎧 {pkg.support}</Badge>
-                </div>
+                )}
+                <CardTitle>{pkg.title}</CardTitle>
+                <CardDescription className="text-4xl font-bold">
+                  {pkg.price}
+                </CardDescription>
+                <CardDescription>{pkg.description}</CardDescription>
               </CardHeader>
               <CardContent className="flex-grow">
-                <p className="text-gray-600 dark:text-gray-400 mt-2 mb-6 min-h-[4rem]">{pkg.description}</p>
-                <ul className="space-y-3 text-gray-700 dark:text-gray-300">
+                <ul className="space-y-3">
                   {pkg.features.map((feature, i) => (
-                    <li key={i} className="flex items-start gap-3">
-                      <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 shrink-0" />
-                      <span className="text-sm leading-relaxed">{feature}</span>
+                    <li key={i} className="flex items-start">
+                      <Check className="mr-3 h-5 w-5 flex-shrink-0 text-green-500" />
+                      <span className="text-muted-foreground">{feature}</span>
                     </li>
                   ))}
                 </ul>
-                <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                  <p className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-1">Cílová skupina:</p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">{pkg.targetAudience}</p>
-                </div>
               </CardContent>
-              <div className="mt-auto pt-6">
+              <CardFooter>
                 <InquirySheet
-                  title={`Poptávka balíčku: ${pkg.name}`}
-                  description="Děkuji za váš zájem! Vyplňte prosím své kontaktní údaje a já se vám co nejdříve ozvu."
-                  serviceInfo={`Tvorba webu - balíček ${pkg.name}`}
-                  trigger={<Button className="w-full h-12 text-base group">Získat nabídku <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" /></Button>}
+                  trigger={
+                    <Button
+                      size="lg"
+                      className="group w-full"
+                      variant={pkg.isFeatured ? 'default' : 'outline'}
+                    >
+                      {pkg.ctaText}
+                      <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    </Button>
+                  }
+                  title={`Poptávka: ${pkg.title}`}
+                  description="Skvělý výběr! Vyplňte prosím krátký dotazník a já se vám co nejdříve ozvu."
+                  serviceInfo={pkg.serviceInfo}
                 />
-              </div>
+              </CardFooter>
             </Card>
-          );
-        })}
-      </div>
+          </motion.div>
+        ))}
+      </motion.div>
     </SectionWrapper>
   );
 }

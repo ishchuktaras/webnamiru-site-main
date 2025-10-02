@@ -1,67 +1,110 @@
 // components/process-section.tsx
+'use client';
 
-"use client";
+import { motion, Variants } from 'framer-motion';
+import { BrainCircuit, Code, Rocket, Handshake } from 'lucide-react';
+import SectionWrapper from './SectionWrapper';
 
-import { Search, Code, TrendingUp } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import SectionWrapper from "./SectionWrapper";
+// Definuje typ pro jednotlivé kroky procesu
+interface ProcessStep {
+  icon: React.ElementType;
+  title: string;
+  description: string;
+}
 
-
-const processSteps = [
+// Data pro jednotlivé kroky, upravená pro prémiovou strategii
+const processSteps: ProcessStep[] = [
   {
-    icon: <Search className="h-12 w-12 text-blue-600 dark:text-blue-400" />,
-    title: "1. Strategický audit a návrh řešení",
+    icon: BrainCircuit,
+    title: '1. Strategická Analýza',
     description:
-      "Nejdříve analyzuji váš byznys, cíle a konkurenci. Výstupem je jasná strategie, jak web přispěje k vašemu růstu a jaké KPI budeme sledovat.",
+      'Každý úspěšný projekt začíná hloubkovým pochopením vašich cílů. Společně definujeme klíčové metriky úspěchu (KPIs), cílovou skupinu a technické požadavky. Výstupem je jasná projektová roadmapa.',
   },
   {
-    icon: <Code className="h-12 w-12 text-blue-600 dark:text-blue-400" />,
-    title: "2. Realizace webu na míru",
+    icon: Code,
+    title: '2. Design & Vývoj na Míru',
     description:
-      "Na základě schválené strategie vytvořím technicky precizní a funkční web. Každý prvek slouží obchodnímu cíli, s moderním a responzivním designem.",
+      'Na základě strategie vytvořím moderní a uživatelsky přívětivý design. Následuje vývoj vysoce výkonné a bezpečné webové aplikace s použitím nejmodernějších technologií (Next.js, React).',
   },
   {
-    icon: <TrendingUp className="h-12 w-12 text-blue-600 dark:text-blue-400" />,
-    title: "3. Partnerství pro správu a růst",
+    icon: Rocket,
+    title: '3. Předání & Školení',
     description:
-      "Nabízím dlouhodobou správu, pravidelné aktualizace a optimalizaci výkonu webu. Jsme partneři pro váš kontinuální online růst.",
+      'Po důkladném testování nasadím aplikaci na produkční prostředí. Provedu vás administrací a ukážu vám, jak efektivně spravovat nový web, abyste byli plně soběstační.',
+  },
+  {
+    icon: Handshake,
+    title: '4. Partnerství & Růst',
+    description:
+      'Spuštěním projektu naše spolupráce nekončí. Nabízím dlouhodobé partnerství, které zahrnuje technickou podporu, pravidelnou optimalizaci výkonu a strategické poradenství pro další růst.',
   },
 ];
 
+// Varianty animací
+const sectionVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2,
+    },
+  },
+};
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, x: -30 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      duration: 0.5,
+      ease: 'easeOut',
+    },
+  },
+};
+
 export default function ProcessSection() {
-  // ZMĚNA: Veškerá logika pro animaci je pryč.
-  
   return (
     <SectionWrapper
       id="process-section"
-      badgeText="Proces"
-      title="Váš úspěch ve 3 krocích."
-      subtitle="Můj transparentní a osvědčený proces zajišťuje, že váš web bude nejen krásný, ale především efektivní obchodní nástroj."
-      className="bg-white dark:bg-gray-900"
+      badgeText="Náš proces"
+      title="Od nápadu k ziskové aplikaci"
+      subtitle="Spolupráce se mnou je transparentní a strukturovaný proces, který zaručuje, že se váš projekt bude ubírat správným směrem od samého začátku."
+      className="bg-gray-50 dark:bg-gray-900/50"
     >
-      {/* Unikátní obsah sekce - mřížka s kroky procesu */}
-      <div className="mx-auto grid max-w-6xl items-start gap-8 py-12 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 lg:gap-12">
-        {processSteps.map((step, index) => (
-          // ZMĚNA: Odebrány atributy pro animaci
-          <div key={index}>
-            <Card
-              className="flex flex-col h-full text-center p-6 shadow-custom-md hover:shadow-custom-lg transition-all duration-300 dark:bg-gray-950 border-l-4 border-l-blue-500 relative hover:-translate-y-2"
+      <div className="relative mx-auto mt-16 max-w-4xl">
+        {/* Vertikální propojovací čára */}
+        <div className="absolute left-8 top-8 h-full w-px -translate-x-1/2 bg-border" aria-hidden="true" />
+
+        <motion.div
+          className="space-y-12"
+          variants={sectionVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+        >
+          {processSteps.map((step, index) => (
+            <motion.div
+              key={index}
+              className="relative flex items-start"
+              variants={itemVariants}
             >
-              <div className="absolute -top-3 -right-3 bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold shadow-lg">
-                {index + 1}
-              </div>
-              <CardHeader>
-                <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-full mb-4 self-center">
-                  {step.icon}
+              {/* Ikona a její pozadí */}
+              <div className="z-10 flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full bg-background shadow-md">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                  <step.icon className="h-6 w-6" />
                 </div>
-                <CardTitle className="mt-4 text-xl font-bold">{step.title}</CardTitle>
-              </CardHeader>
-              <CardContent className="text-gray-500 dark:text-gray-400 flex-1">
-                {step.description}
-              </CardContent>
-            </Card>
-          </div>
-        ))}
+              </div>
+              {/* Textový obsah */}
+              <div className="ml-6">
+                <h3 className="text-xl font-semibold">{step.title}</h3>
+                <p className="mt-2 text-muted-foreground">
+                  {step.description}
+                </p>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
       </div>
     </SectionWrapper>
   );
