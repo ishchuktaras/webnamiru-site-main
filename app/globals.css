@@ -72,9 +72,11 @@
   [data-section="hero-section"] [data-animate-item] {
     opacity: 0;
     transform: translateY(1rem);
-    transition: opacity 0.7s ease, transform 0.7s ease;
+    transition:
+      opacity 0.7s ease,
+      transform 0.7s ease;
   }
-  
+
   /* Společné styly pro většinu sekcí */
   [data-section="problem-section"] [data-animate-item],
   [data-section="solution-section"] [data-animate-item],
@@ -83,9 +85,15 @@
   [data-section="process-section"] [data-animate-item],
   [data-section="partners-packages-section"] [data-animate-item],
   [data-section="service-packages-section"] [data-animate-item],
-  [data-section="partners-section"] [data-animate-item] { /* <- Přidáno */
+  [data-section="partners-section"] [data-animate-item] {
     opacity: 0;
     transform: translateY(1.5rem);
-    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    transition:
+      opacity 0.6s ease-out,
+      transform 0.6s ease-out;
+  }
+
+  .grecaptcha-badge {
+    visibility: hidden !important;
   }
 }

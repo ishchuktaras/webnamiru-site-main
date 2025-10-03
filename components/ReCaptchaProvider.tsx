@@ -13,12 +13,22 @@ export default function ReCaptchaProvider({
   const recaptchaKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
 
   if (!recaptchaKey) {
-    console.error("reCAPTCHA site key not found. Please check your .env.local file.");
-    return <>{children}</>; // Vrátíme děti i v případě chyby, aby se web nezbořil
+    console.error(
+      "reCAPTCHA site key not found. Please check your .env.local file."
+    );
+    return <>{children}</>;
   }
 
   return (
-    <GoogleReCaptchaProvider reCaptchaKey={recaptchaKey}>
+    <GoogleReCaptchaProvider
+      reCaptchaKey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
+      scriptProps={{
+        async: true,
+        defer: true,
+        appendTo: "head"
+      }}
+      language="cs"
+    >
       {children}
     </GoogleReCaptchaProvider>
   );

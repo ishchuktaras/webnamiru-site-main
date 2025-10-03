@@ -1,84 +1,93 @@
-// app/kontakt/page.tsx
+// app/(main)/kontakt/page.tsx
 
-import { MapPin, Mail, Phone } from "lucide-react";
-import { Metadata } from "next";
-import { ContactCard } from "@/components/ContactCard";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { Metadata } from 'next';
+import Link from 'next/link';
+import { Mail, Phone, ArrowRight, Linkedin, Github, FileText, Building } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import InquirySheet from '@/components/InquirySheet';
 
-// Metadata pro SEO a název v prohlížeči
 export const metadata: Metadata = {
-  title: "Kontakt | webnamíru.site",
-  description:
-    "Máte dotaz, nebo chcete nezávaznou poptávku? Zavolejte mi, napište e-mail, nebo se podívejte na často kladené otázky. Jsem tu pro vás.",
+  title: 'Kontakt | webnamiru.site',
+  description: 'Máte projekt nebo jen nápad? Pojďme se spojit a probrat, jak mohu pomoci vašemu byznysu růst. Nabízím nezávaznou konzultaci.',
 };
 
-// Hlavní komponenta stránky
 export default function KontaktPage() {
   return (
-    <main className="py-12 md:py-24 lg:py-32 bg-gray-50 dark:bg-gray-950">
+    <main className="py-16 md:py-24 lg:py-32 bg-gray-50 dark:bg-black">
       <div className="container px-4 md:px-6">
         {/* Úvodní sekce */}
         <div className="flex flex-col items-center justify-center space-y-4 text-center mb-16">
-          <div className="inline-block rounded-lg bg-blue-100 px-3 py-1 text-sm text-blue-700 dark:bg-blue-900/40 dark:text-blue-300">
+          <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary font-semibold">
             Kontakt
           </div>
-          <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            Pojďme se spojit
-          </h2>
-          
-          <p className="max-w-[700px] text-gray-600 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-300">
-            Máte nápad, nebo jen potřebujete poradit? Vyberte si způsob
-            kontaktu, který je vám nejpříjemnější. Těším se na naši spolupráci.
+          <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl bg-gradient-to-r from-gray-900 via-blue-800 to-gray-900 bg-clip-text text-transparent dark:from-white dark:via-blue-300 dark:to-white">
+            Pojďme tvořit
+          </h1>
+          <p className="max-w-[700px] text-muted-foreground md:text-xl">
+            Jsem připraven vám naslouchat. Ať už máte konkrétní projekt, nebo jen nápad, ozvěte se a společně probereme další kroky.
           </p>
         </div>
 
-        
-        <div className="mx-auto grid max-w-5xl grid-cols-1 gap-8 md:grid-cols-3">
-          <ContactCard icon={Mail} title="Přímý e-mail">
-            <p>Nejlepší způsob pro zahájení konverzace a zaslání poptávky.</p>
-            <a
-              href="mailto:poptavka@webnamiru.site"
-              className="font-semibold text-blue-600 dark:text-blue-400 hover:underline text-lg"
-            >
-              poptavka@webnamiru.site
-            </a>
-          </ContactCard>
+        {/* Hlavní obsah - dva sloupce */}
+        <div className="mx-auto grid max-w-6xl items-start gap-12 lg:grid-cols-5">
+          {/* Levý sloupec - Preferovaný kontakt (formulář) */}
+          <div className="lg:col-span-3 space-y-8 rounded-2xl border bg-card p-8 shadow-lg">
+            <div className="space-y-3">
+              <FileText className="h-10 w-10 text-primary" />
+              <h2 className="text-3xl font-bold">Startovací bod vašeho projektu</h2>
+              <p className="text-muted-foreground">
+                Nejlepším způsobem, jak začít, je vyplnění strategického dotazníku. Pomůže mi to rychle pochopit vaše cíle a připravit pro vás co nejrelevantnější návrhy.
+              </p>
+            </div>
+            <InquirySheet
+              title="Pojďme společně nastartovat váš projekt"
+              description="Vyplňte krátký dotazník a já se vám co nejdříve ozvu s konkrétními návrhy a dalším postupem."
+              serviceInfo="Obecná poptávka (ze stránky Kontakt)"
+              trigger={
+                <Button size="lg" className="group w-full sm:w-auto">
+                  Vyplnit strategický dotazník
+                  <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                </Button>
+              }
+            />
+          </div>
 
-          <ContactCard icon={Phone} title="Telefonický kontakt">
-            <p>Pro rychlé dotazy a operativní záležitosti.</p>
-            <a
-              href="tel:+420777596216"
-              className="font-semibold text-blue-600 dark:text-blue-400 hover:underline text-lg"
-            >
-              +420 777 596 216
-            </a>
-            <p className="text-sm text-gray-500">Po–Pá, 9:00 – 17:00</p>
-          </ContactCard>
-
-          <ContactCard icon={MapPin} title="Působnost">
-            <p>Pro klienty z Vysočiny nabízím možnost osobní schůzky.</p>
-            <p className="font-semibold text-gray-800 dark:text-gray-200 text-lg">
-              Jihlava, Kraj Vysočina
-            </p>
-          </ContactCard>
-        </div>
-
-        {/* Mapa na konci stránky zůstává */}
-        <div className="mx-auto mt-24 max-w-7xl rounded-2xl overflow-hidden shadow-2xl border border-gray-200 dark:border-gray-800">
-          <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d165383.17697207602!2d15.421966021679685!3d49.39564999999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x470d0323de140229%3A0x400af0f6614e590!2sJihlava!5e0!3m2!1scs!2scz!4v1719506161830!5m2!1scs!2scz"
-            width="100%"
-            height="450"
-            style={{ border: 0 }}
-            allowFullScreen={true}
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-          ></iframe>
+          {/* Pravý sloupec - Přímé kontakty */}
+          <div className="lg:col-span-2 space-y-8 rounded-2xl border bg-muted/20 p-8">
+             <div className="space-y-3">
+                <h3 className="text-2xl font-semibold">Přímý kontakt</h3>
+                <p className="text-muted-foreground">Pro rychlejší dotazy nebo pokud preferujete přímou komunikaci.</p>
+             </div>
+             <div className="space-y-4">
+              <a href="mailto:poptavka@webnamiru.site" className="group flex items-center gap-4">
+                <Mail className="h-6 w-6 text-primary" />
+                <span className="text-lg font-medium group-hover:underline">poptavka@webnamiru.site</span>
+              </a>
+              <div className="flex items-center gap-4">
+                <Phone className="h-6 w-6 text-muted-foreground" />
+                <span className="text-lg text-muted-foreground">(Připravuje se)</span>
+              </div>
+            </div>
+            <div className="border-t pt-6 space-y-3">
+                 <h4 className="text-lg font-semibold">Sledujte mě</h4>
+                 <div className="flex items-center gap-2">
+                    <Button asChild variant="outline" size="icon">
+                        <Link href="#" target="_blank" aria-label="LinkedIn"><Linkedin className="h-5 w-5" /></Link>
+                    </Button>
+                    <Button asChild variant="outline" size="icon">
+                        <Link href="https://github.com/ishchuktaras" target="_blank" aria-label="GitHub"><Github className="h-5 w-5" /></Link>
+                    </Button>
+                 </div>
+            </div>
+            <div className="border-t pt-6 space-y-2">
+                <h4 className="text-lg font-semibold flex items-center gap-2"><Building className="h-5 w-5" /> Fakturační údaje</h4>
+                <p className="text-muted-foreground">
+                    Taras Ishchuk
+                    <br />
+                    IČO: 19523253
+                </p>
+            </div>
+          </div>
         </div>
       </div>
     </main>

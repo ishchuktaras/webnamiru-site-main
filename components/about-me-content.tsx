@@ -7,7 +7,7 @@ import { motion, Variants } from 'framer-motion';
 import { ArrowRight, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import SectionWrapper from './SectionWrapper';
 import { skills, achievements, certificates } from '@/lib/data';
 
@@ -51,10 +51,11 @@ export default function AboutMeContent() {
         >
           <div className="relative h-[400px] w-full lg:h-[500px]">
             <Image
-              src="/images/zakladatel.jpg" // Ujistěte se, že cesta k fotce je správná
+              src="/images/zakladatel.jpg"
               alt="Portrét Tarase Ishchuka"
               fill
-              className="rounded-3xl object-cover shadow-2xl"
+              // === OPRAVA ZDE ===
+              className="rounded-3xl object-cover object-top shadow-2xl" // Přidána třída 'object-top'
             />
           </div>
           <div className="space-y-6">
@@ -103,45 +104,47 @@ export default function AboutMeContent() {
           </div>
         </motion.div>
 
-        {/* === Sekce Dovedností a Certifikátů === */}
-        <motion.div
-          className="grid gap-12 lg:grid-cols-2"
-          variants={itemVariants}
-        >
-          <div>
-            <h3 className="mb-6 text-2xl font-semibold">Klíčové dovednosti</h3>
-            <div className="flex flex-wrap gap-3">
-              {skills.map((skill) => (
-                <Badge key={skill} variant="default" className="px-4 py-2 text-sm">
-                  {skill}
-                </Badge>
-              ))}
+        {/* === Sekce Vzdělání a Certifikací (Digitální odznaky) === */}
+        <motion.div className="space-y-12" variants={itemVariants}>
+            <div>
+                <h3 className="mb-8 text-center text-3xl font-bold">Vzdělání a certifikace</h3>
+                <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                    {certificates.map((cert) => {
+                        const Icon = cert.icon;
+                        return (
+                            <Card key={cert.id} className="flex flex-col border-0 bg-background shadow-lg">
+                                <CardHeader className="flex flex-row items-center gap-4">
+                                    <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                                        <Icon className="h-6 w-6" />
+                                    </div>
+                                    <div>
+                                        <CardTitle>{cert.title}</CardTitle>
+                                        <CardDescription>{cert.institution}, {cert.year}</CardDescription>
+                                    </div>
+                                </CardHeader>
+                                <CardContent>
+                                    <p className="text-muted-foreground">{cert.description}</p>
+                                </CardContent>
+                            </Card>
+                        );
+                    })}
+                </div>
+                <p className="mt-8 text-center text-sm text-muted-foreground">
+                    Originály všech dokumentů jsou na vyžádání k dispozici během úvodní konzultace.
+                </p>
             </div>
-          </div>
-          <div>
-            <h3 className="mb-6 text-2xl font-semibold">Certifikáty</h3>
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-              {certificates.map((cert) => (
-                <a
-                  key={cert.id}
-                  href={cert.image}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group relative block aspect-square w-full overflow-hidden rounded-lg"
-                >
-                  <Image
-                    src={cert.image}
-                    alt={cert.title}
-                    fill
-                    className="object-cover transition-transform duration-300 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
-                    <Download className="h-8 w-8 text-white" />
-                  </div>
-                </a>
-              ))}
+
+            {/* === Sekce Dovedností === */}
+            <div>
+                <h3 className="mb-8 text-center text-3xl font-bold">Technologie, se kterými pracuji</h3>
+                <div className="flex flex-wrap justify-center gap-3">
+                {skills.map((skill) => (
+                    <Badge key={skill} variant="default" className="px-4 py-2 text-base">
+                    {skill}
+                    </Badge>
+                ))}
+                </div>
             </div>
-          </div>
         </motion.div>
       </motion.div>
     </SectionWrapper>

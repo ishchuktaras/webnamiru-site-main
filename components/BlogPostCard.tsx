@@ -1,12 +1,13 @@
 // components/BlogPostCard.tsx
+import Image from 'next/image';
+import Link from 'next/link';
+import { ArrowRight, Calendar, Clock } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
+import { formatDate } from '@/lib/formatDate'; // Předpokládám existenci této funkce
+import { Post, User, Category } from '@prisma/client';
 
-import Link from "next/link";
-import Image from "next/image";
-import { Badge } from "@/components/ui/badge";
-import BlogReadingTime from "@/components/blog-reading-time";
-import { Post, Category, User } from "@prisma/client";
-
-// Rozšíříme základní typ Post o načtené relace
+// Váš typ, který již pravděpodobně máte
 export type PostWithRelations = Post & {
   author: User;
   category: Category | null;
@@ -17,73 +18,50 @@ interface BlogPostCardProps {
 }
 
 export default function BlogPostCard({ post }: BlogPostCardProps) {
+  // Odhadovaná doba čtení, pokud ji nemáte v DB
+  const readingTime = Math.ceil((post.content?.split(' ').length || 200) / 200);
+
   return (
-    <article
-      key={post.id}
-      className="group flex flex-col overflow-hidden rounded-lg border bg-card text-card-foreground shadow-sm transition-all hover:shadow-md"
-    >
-      <Link
-        href={`/blog/${post.slug}`}
-        className="block overflow-hidden"
-        aria-label={`Přejít na článek ${post.title}`}
-      >
-        <div className="relative aspect-[2/1] w-full">
-          <Image
-            // ZMĚNA ZDE: Používáme `post.imageUrl` místo `post.image`
-            src={post.imageUrl || "/placeholder.svg"}
-            alt={`Náhledový obrázek pro článek ${post.title}`}
-            fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className="object-cover transition-transform duration-300 ease-in-out group-hover:scale-105"
-          />
-        </div>
+    <Card className="group relative flex h-full flex-col overflow-hidden rounded-2xl border-0 shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-2">
+      <Link href={`/blog/${post.slug}`} className="absolute inset-0 z-10">
+        <span className="sr-only">{post.title}</span>
       </Link>
-      <div className="flex flex-1 flex-col justify-between p-6">
-        <div>
-          <div className="mb-3 flex items-center gap-3 text-sm">
-            {post.category && (
-              <Link href={`/blog/kategorie/${post.category.slug}`}>
-                <Badge variant="secondary">{post.category.name}</Badge>
-              </Link>
-            )}
-            <BlogReadingTime readingTime={post.readingTime} />
-          </div>
-          <Link href={`/blog/${post.slug}`}>
-            <h3 className="text-xl font-bold leading-tight tracking-tight group-hover:text-primary">
-              {post.title}
-            </h3>
-          </Link>
-          <p className="mt-3 text-base text-muted-foreground line-clamp-3">
+      
+      <div className="relative h-52 w-full">
+        <Image
+          src={post.imageUrl || '/placeholder.svg'} // Použije placeholder, pokud obrázek není
+          alt={`Náhledový obrázek pro článek ${post.title}`}
+          fill
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
+        />
+      </div>
+
+      <CardContent className="flex flex-1 flex-col p-6">
+        <div className="flex-1">
+          {post.category && (
+            <Badge variant="secondary" className="mb-3">{post.category.name}</Badge>
+          )}
+          <h3 className="mb-3 text-xl font-bold group-hover:text-primary transition-colors">
+            {post.title}
+          </h3>
+          <p className="mb-6 text-sm text-muted-foreground line-clamp-3">
             {post.excerpt}
           </p>
         </div>
-        <div className="mt-6 flex items-center">
-          <div className="flex-shrink-0">
-            <span className="sr-only">{post.author.name}</span>
-            <Image
-              className="h-10 w-10 rounded-full object-cover"
-              src={post.author.image || "/placeholder-user.jpg"}
-              alt={`Profilový obrázek autora ${post.author.name}`}
-              width={40}
-              height={40}
-            />
-          </div>
-          <div className="ml-3">
-            <p className="text-sm font-medium text-foreground">
-              {post.author.name}
-            </p>
-            <div className="flex space-x-1 text-sm text-muted-foreground">
-              <time dateTime={post.createdAt.toISOString()}>
-                {new Date(post.createdAt).toLocaleDateString("cs-CZ", {
-                  day: "numeric",
-                  month: "long",
-                  year: "numeric",
-                })}
-              </time>
-            </div>
+        
+        <div className="mt-auto border-t pt-4">
+          <div className="flex items-center justify-between text-xs text-muted-foreground">
+             <div className="flex items-center gap-2">
+                <Calendar className="h-4 w-4" />
+                <span>{formatDate(post.createdAt)}</span>
+             </div>
+             <div className="flex items-center gap-2">
+                <Clock className="h-4 w-4" />
+                <span>{readingTime} min čtení</span>
+             </div>
           </div>
         </div>
-      </div>
-    </article>
+      </CardContent>
+    </Card>
   );
 }
