@@ -3,7 +3,7 @@
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import Image from 'next/image';
-import Link from 'next/link';
+import Link from 'next/link'; // OPRAVA: Přidán chybějící import
 import { Suspense } from 'react';
 import { Calendar, Clock, UserCircle, Tag } from 'lucide-react';
 
@@ -113,6 +113,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             
             {/* Hlavní obsah článku */}
             <main className="lg:col-span-3">
+              {/* OPRAVA: Komponenta očekává celý 'post' objekt */}
               <BlogPostContent post={post} />
 
               {/* Tagy a Sdílení */}
@@ -127,15 +128,15 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                         ))}
                     </div>
                 )}
-                {/* OPRAVA: Předáváme props 'title' a 'slug' samostatně */}
-                <BlogSocialShare title={post.title} slug={post.slug} />
+                {/* OPRAVA: Komponenta očekává 'post' objekt */}
+                <BlogSocialShare post={{ title: post.title, slug: post.slug }} />
               </div>
 
-              {/* Související články */}
-              {post.category && (
+              {/* Související články - zobrazí se, jen pokud má článek kategorii */}
+              {post.categoryId && (
                 <Suspense fallback={<div>Načítám související články...</div>}>
-                    {/* OPRAVA: Předáváme props 'category' (slug) a 'excludePostId' */}
-                    <RelatedPosts category={post.category.slug} excludePostId={post.id} />
+                    {/* OPRAVA: Předáváme props, které komponenta očekává */}
+                    <RelatedPosts categoryId={post.categoryId} currentPostId={post.id} />
                 </Suspense>
               )}
 

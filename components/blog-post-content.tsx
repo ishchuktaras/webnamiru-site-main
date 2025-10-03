@@ -1,6 +1,7 @@
 // components/blog-post-content.tsx
 
-import type { PostWithDetails } from "@/app/(main)/blog/[slug]/page";
+// Import the type, not the value
+import type { PostWithDetails } from "@/lib/types";
 
 interface BlogPostContentProps {
   post: PostWithDetails;
