@@ -127,15 +127,15 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                         ))}
                     </div>
                 )}
-                {/* OPRAVA: Komponenta očekává jeden objekt 'post' */}
-                <BlogSocialShare post={{ title: post.title, slug: post.slug }} />
+                {/* OPRAVA: Předáváme props 'title' a 'slug' samostatně */}
+                <BlogSocialShare title={post.title} slug={post.slug} />
               </div>
 
               {/* Související články */}
-              {post.categoryId && (
+              {post.category && (
                 <Suspense fallback={<div>Načítám související články...</div>}>
-                    {/* OPRAVA: Komponenta očekává jeden objekt 'post' */}
-                    <RelatedPosts post={{ id: post.id, categoryId: post.categoryId }} />
+                    {/* OPRAVA: Předáváme props 'category' (slug) a 'excludePostId' */}
+                    <RelatedPosts category={post.category.slug} excludePostId={post.id} />
                 </Suspense>
               )}
 
