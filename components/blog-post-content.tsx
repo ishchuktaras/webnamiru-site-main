@@ -11,7 +11,7 @@ export default function BlogPostContent({ post }: BlogPostContentProps) {
   return (
     <article>
       {/* Hlavní obrázek článku */}
-      {post.imageUrl && (
+      {/* {post.imageUrl && (
         <div className="relative w-full h-64 md:h-96 mb-8 rounded-lg overflow-hidden">
           <img
             src={post.imageUrl}
@@ -19,7 +19,7 @@ export default function BlogPostContent({ post }: BlogPostContentProps) {
             className="w-full h-full object-cover"
           />
         </div>
-      )}
+      )} */}
 
       {/* Tělo článku */}
       <div
