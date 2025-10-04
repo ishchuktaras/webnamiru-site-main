@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useState } from "react";
-import { toast } from "react-hot-toast"; // Pro notifikace
+import { toast } from "react-hot-toast";
 import { X } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
@@ -27,7 +27,11 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import ReCaptcha from "./ReCaptchaProvider"; // Předpokládám, že ho máte
+
+// OPRAVA: Importujeme přímo GoogleReCaptcha
+import { GoogleReCaptcha } from "react-google-recaptcha-v3"; 
+// OPRAVA: Už nepotřebujeme importovat ReCaptcha od nás, jen Provider v Root Layoutu
+// import ReCaptcha from "./ReCaptchaProvider"; 
 
 // Schema pro validaci formuláře
 const formSchema = z.object({
@@ -37,14 +41,13 @@ const formSchema = z.object({
   email: z.string().email({
     message: "Zadejte platný e-mail.",
   }),
-  phone: z.string().optional(), // Telefon je volitelný
+  phone: z.string().optional(),
   service: z.string().min(1, {
     message: "Vyberte prosím službu.",
   }),
   message: z.string().min(10, {
     message: "Zpráva musí mít alespoň 10 znaků.",
   }),
-  // recaptchaToken: z.string().min(1, { message: "Ověřte prosím, že nejste robot." }), // Pokud používáte reCAPTCHA
 });
 
 export default function ContactForm({ onClose }: { onClose?: () => void }) {
@@ -62,6 +65,11 @@ export default function ContactForm({ onClose }: { onClose?: () => void }) {
     },
   });
 
+  // OPRAVA: Funkce pro získání reCAPTCHA tokenu
+  const handleRecaptchaVerify = (token: string) => {
+    setRecaptchaToken(token);
+  };
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (!recaptchaToken) {
         toast.error("Prosím, ověřte, že nejste robot.");
@@ -70,7 +78,7 @@ export default function ContactForm({ onClose }: { onClose?: () => void }) {
 
     setIsLoading(true);
     try {
-      const response = await fetch("/api/contact", { // Odesílání na váš API endpoint
+      const response = await fetch("/api/contact", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -84,10 +92,10 @@ export default function ContactForm({ onClose }: { onClose?: () => void }) {
       }
 
       toast.success("Poptávka byla úspěšně odeslána! Ozveme se Vám co nejdříve.");
-      form.reset(); // Vyprázdnění formuláře po úspěchu
+      form.reset();
       setRecaptchaToken(null); // Reset reCAPTCHA tokenu
       if (onClose) {
-        onClose(); // Zavřít dialog, pokud je předán
+        onClose();
       }
     } catch (error: any) {
       console.error("Chyba při odesílání formuláře:", error);
@@ -204,8 +212,8 @@ export default function ContactForm({ onClose }: { onClose?: () => void }) {
             )}
           />
 
-            {/* ReCAPTCHA integrace */}
-            <ReCaptcha onVerify={setRecaptchaToken} />
+            {/* OPRAVA: Vykreslujeme GoogleReCaptcha přímo zde */}
+            <GoogleReCaptcha onVerify={handleRecaptchaVerify} />
 
           <Button type="submit" className="w-full" disabled={isLoading}>
             {isLoading ? "Odesílám..." : "Odeslat poptávku"}
