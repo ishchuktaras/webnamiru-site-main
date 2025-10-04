@@ -48,8 +48,8 @@ export const Header = () => {
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2" onClick={closeMenu}>
           <Image
-            src="/images/logo/logo.svg" // <-- 2. Použití SVG loga
-            alt="Web Na Míru - Vývoj moderních webových aplikací v Jihlavě" // Vylepšený alt text
+            src="/images/logo/logo.svg" 
+            alt="Web Na Míru - Vývoj moderních webových aplikací v Jihlavě" 
             width={160}
             height={40}
             priority

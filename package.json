@@ -68,6 +68,7 @@
     "react-dom": "^19",
     "react-google-recaptcha-v3": "^1.11.0",
     "react-hook-form": "^7.58.1",
+    "react-hot-toast": "^2.6.0",
     "react-resizable-panels": "latest",
     "recharts": "latest",
     "resend": "latest",
