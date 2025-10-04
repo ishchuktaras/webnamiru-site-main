@@ -23,7 +23,7 @@ export default function ReCaptcha({ onVerify }: ReCaptchaProps) {
 
   if (!siteKey) {
     console.error("Missing NEXT_PUBLIC_RECAPTCHA_SITE_KEY environment variable.");
-    return null; // Nebo zobrazte chybovou zprávu
+    return null; 
   }
 
   return (
@@ -35,6 +35,7 @@ export default function ReCaptcha({ onVerify }: ReCaptchaProps) {
         appendTo: "head",
         nonce: undefined,
       }}
+      language="cs"
     >
       <GoogleReCaptcha onVerify={handleRecaptchaChange} />
     </GoogleReCaptchaProvider>
