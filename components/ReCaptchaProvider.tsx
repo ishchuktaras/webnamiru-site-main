@@ -11,11 +11,10 @@ interface ReCaptchaWrapperProps {
 
 export default function ReCaptchaWrapper({ children }: ReCaptchaWrapperProps) {
   const [siteKey, setSiteKey] = useState<string | null>(null);
-  const [isReCaptchaScriptLoaded, setIsReCaptchaScriptLoaded] = useState(false); // Sledujeme pouze načtení skriptu
-  const [reCaptchaError, setReCaptchaError] = useState<string | null>(null); // Nový stav pro chyby
+  const [isReCaptchaScriptLoaded, setIsReCaptchaScriptLoaded] = useState(false);
+  const [reCaptchaError, setReCaptchaError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Načtěte klíč na klientovi
     if (process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY) {
       setSiteKey(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY);
     } else {
@@ -25,7 +24,7 @@ export default function ReCaptchaWrapper({ children }: ReCaptchaWrapperProps) {
     }
   }, []);
 
-  // Pokud je chyba v klíči, zobrazíme ji a nic víc
+  // Pokud je chyba v klíči, zobrazíme ji prominentně
   if (reCaptchaError) {
     return (
       <div className="flex items-center justify-center p-4 text-red-500 min-h-screen">
@@ -34,17 +33,13 @@ export default function ReCaptchaWrapper({ children }: ReCaptchaWrapperProps) {
     );
   }
 
-  // Pokud klíč ještě není načten, zobrazíme loading a čekáme
+  // Pokud klíč ještě není načten, zobrazíme (neviditelný) loading a čekáme
   if (!siteKey) {
     return (
-      <div className="flex items-center justify-center p-4 text-gray-500 min-h-screen">
-        Načítám konfiguraci zabezpečení...
-      </div>
+      <div className="sr-only">Načítám konfiguraci zabezpečení...</div> // sr-only pro skrytí vizuálně
     );
   }
 
-  // Vždy vykreslíme Script komponentu, když je siteKey k dispozici
-  // (to spustí načítání reCAPTCHA skriptu)
   const reCaptchaScript = (
     <Script
       src={`https://www.google.com/recaptcha/api.js?render=${siteKey}`}
@@ -61,18 +56,14 @@ export default function ReCaptchaWrapper({ children }: ReCaptchaWrapperProps) {
     />
   );
 
-  // Pokud reCAPTCHA skript ještě není načten, zobrazíme loading zprávu PŘED dětmi
-  // a vykreslíme samotné děti uvnitř placeholderu, abychom zjistili, zda děti fungují.
+  // Pokud reCAPTCHA skript ještě není načten, vykreslíme children obalené neviditelným divem.
+  // Loading zpráva je nyní vizuálně skrytá.
   if (!isReCaptchaScriptLoaded) {
     return (
       <>
         {reCaptchaScript}
-        <div className="flex items-center justify-center p-4 text-gray-500 min-h-screen">
-          Načítám zabezpečení formuláře... (Skript se načítá)
-        </div>
-        {/* Zde prozatím vykreslíme children bez provideru, abychom viděli, zda se vůbec zobrazí */}
-        {/* Pokud se děti vykreslí, problém je s providerem. Pokud ne, problém je v dětech. */}
-        {children} 
+        <div className="sr-only">Načítám zabezpečení formuláře... (Skript se načítá)</div>
+        {children} {/* Děti se vykreslí ihned, což je správné chování pro většinu stránek */}
       </>
     );
   }
@@ -87,9 +78,8 @@ export default function ReCaptchaWrapper({ children }: ReCaptchaWrapperProps) {
         appendTo: "head",
         nonce: undefined,
       }}
-      // useRecaptchaNet={true} // Prozatím nechejme zakomentované
     >
-      {reCaptchaScript} {/* I provider potřebuje tento skript */}
+      {reCaptchaScript} {/* Udržujeme Script komponentu uvnitř Provideru */}
       {children}
     </GoogleReCaptchaProvider>
   );

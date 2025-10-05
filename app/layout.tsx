@@ -116,7 +116,7 @@ export default function RootLayout({
             <ReCaptchaWrapper>
               {children}
             </ReCaptchaWrapper>
-            <Toaster />
+            <Toaster richColors position="top-right" className="z-[9999]" />
           </ThemeProvider>
         </SessionProvider>
         <Analytics />
