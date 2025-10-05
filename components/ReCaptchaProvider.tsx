@@ -1,60 +1,68 @@
 // components/ReCaptchaProvider.tsx
-"use client"; // Důležité: Označuje komponentu jako klientskou
+"use client";
 
 import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
 import { ReactNode, useEffect, useState } from "react";
+import Script from "next/script"; // Importujeme komponentu Script z Next.js
 
-// Definice props pro naši obalovou komponentu
 interface ReCaptchaWrapperProps {
   children: ReactNode;
 }
 
-// Exportujeme komponentu ReCaptchaWrapper, která obaluje children
 export default function ReCaptchaWrapper({ children }: ReCaptchaWrapperProps) {
-  // Stav pro uložení site key, který se načte asynchronně (na klientovi)
   const [siteKey, setSiteKey] = useState<string | null>(null);
+  const [scriptLoaded, setScriptLoaded] = useState(false); // Nový stav pro sledování načtení skriptu
 
-  // useEffect pro načtení site key po mountu komponenty na klientovi
   useEffect(() => {
-    // Kontrola, zda je proměnná prostředí dostupná
+    // Načtěte klíč na klientovi
     if (process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY) {
       setSiteKey(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY);
     } else {
-      // Pokud klíč chybí, zalogujeme chybu do konzole
       console.error("Chyba: Chybí proměnná prostředí NEXT_PUBLIC_RECAPTCHA_SITE_KEY.");
-      // Můžete zde také nastavit nějaký chybový stav nebo toast notifikaci
     }
-  }, []); // Prázdné pole závislostí zajišťuje spuštění pouze jednou po mountu
+  }, []);
 
-  // Pokud site key ještě není k dispozici (načítá se, nebo chybí),
-  // můžeme zobrazit placeholder nebo nic, aby se GoogleReCaptchaProvider
-  // nevykreslil s undefined klíčem.
-  if (!siteKey) {
+  // Vykreslujeme GoogleReCaptchaProvider až poté, co je klíč k dispozici A skript je načten
+  if (!siteKey || !scriptLoaded) {
+    // Můžete zobrazit loading spinner nebo placeholder
     return (
-      <div className="flex items-center justify-center p-4 text-gray-500">
-        Načítám zabezpečení formuláře...
-      </div>
+      <>
+        {/* Použijeme Next.js Script pro explicitní načtení reCAPTCHA */}
+        {siteKey && (
+          <Script
+            src={`https://www.google.com/recaptcha/api.js?render=${siteKey}`}
+            strategy="afterInteractive" // Načte se po hydrataci, ale předtím, než se stránka stane interaktivní
+            onLoad={() => {
+              console.log("reCAPTCHA script has loaded.");
+              setScriptLoaded(true); // Označí, že skript byl načten
+            }}
+            onError={(e) => {
+              console.error("Chyba při načítání reCAPTCHA skriptu:", e);
+              // Zde můžete nastavit chybový stav nebo zobrazit zprávu uživateli
+            }}
+          />
+        )}
+        <div className="flex items-center justify-center p-4 text-gray-500">
+          Načítám zabezpečení formuláře...
+        </div>
+      </>
     );
   }
 
-  // Jakmile je siteKey k dispozici, vykreslíme GoogleReCaptchaProvider
+  // Až když je klíč a skript načten, vykreslíme GoogleReCaptchaProvider a zbytek aplikace
   return (
     <GoogleReCaptchaProvider
-      reCaptchaKey={siteKey} // Zde předáváme platný site key
+      reCaptchaKey={siteKey}
       scriptProps={{
-        async: true, // Asynchronní načítání skriptu
-        defer: true, // Odložené spuštění skriptu
-        appendTo: "head", // Kam se má skript přidat (hlavička je obvyklá)
-        nonce: undefined, // Volitelné, pro CSP (Content Security Policy)
+        async: true,
+        defer: true,
+        appendTo: "head",
+        nonce: undefined,
       }}
-      // Zajišťuje použití recaptcha.net, což může pomoci v některých regionech
+      // Zde můžeme volitelně zkusit useRecaptchaNet={true} pokud problém přetrvá
       useRecaptchaNet={true} 
-      // Důležité pro v3: automaticky vygeneruje token při načtení
-      // V ContactForm.tsx pak použijeme useGoogleReCaptcha().executeRecaptcha() pro konkrétní akce
-      // Zde můžeme také nastavit language="cs" pro češtinu
-      language="cs"
     >
-      {children} {/* Zde se vykreslí zbytek vaší aplikace */}
+      {children}
     </GoogleReCaptchaProvider>
   );
 }
