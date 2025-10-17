@@ -1,12 +1,12 @@
 // components/contact-info-section.tsx
-'use client';
+"use client";
 
-import { motion, Variants } from 'framer-motion';
-import { Mail, Phone, ArrowRight, Linkedin, Github } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import SectionWrapper from './SectionWrapper';
-import InquirySheet from './InquirySheet';
-import Link from 'next/link';
+import { motion, Variants } from "framer-motion";
+import { Mail, Phone, ArrowRight, Linkedin, Github } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import SectionWrapper from "./SectionWrapper";
+import InquirySheet from "./InquirySheet";
+import Link from "next/link";
 
 // Varianty animací
 const sectionVariants: Variants = {
@@ -22,7 +22,7 @@ const itemVariants: Variants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5, ease: 'easeOut' },
+    transition: { duration: 0.5, ease: "easeOut" },
   },
 };
 
@@ -52,9 +52,9 @@ export default function ContactInfoSection() {
               Připraveni posunout váš byznys na další úroveň?
             </h3>
             <p className="mt-4 text-muted-foreground">
-              Nejlepší čas začít byl včera. Druhý nejlepší je právě teď.
-              Vyplňte strategický dotazník a já se vám co nejdříve ozvu s
-              konkrétními návrhy.
+              Nejlepší čas začít byl včera. Druhý nejlepší je právě teď. Vyplňte
+              strategický dotazník a já se vám co nejdříve ozvu s konkrétními
+              návrhy.
             </p>
             <div className="mt-8">
               <InquirySheet
@@ -89,24 +89,8 @@ export default function ContactInfoSection() {
               <div className="flex items-center gap-4">
                 <Phone className="h-6 w-6 text-primary" />
                 <span className="text-lg text-muted-foreground">
-                  +420 777 777 777 (Připravuje se)
+                  +420 777 596 216 
                 </span>
-              </div>
-            </div>
-
-            <div className="mt-8 border-t pt-8">
-              <h4 className="text-lg font-semibold">Sledujte mě</h4>
-              <div className="mt-4 flex items-center gap-4">
-                <Button asChild variant="outline" size="icon">
-                  <Link href="#" target="_blank" aria-label="LinkedIn">
-                    <Linkedin className="h-5 w-5" />
-                  </Link>
-                </Button>
-                <Button asChild variant="outline" size="icon">
-                  <Link href="https://github.com/ishchuktaras" target="_blank" aria-label="GitHub">
-                    <Github className="h-5 w-5" />
-                  </Link>
-                </Button>
               </div>
             </div>
 
@@ -115,7 +99,7 @@ export default function ContactInfoSection() {
               <p className="mt-2 text-muted-foreground">
                 Taras Ishchuk
                 <br />
-                IČO: 19523253
+                IČO: 00000000 <span className="text-lg text-muted-foreground">(Připravuje se)</span>
               </p>
             </div>
           </motion.div>

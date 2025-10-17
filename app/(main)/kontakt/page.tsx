@@ -68,17 +68,7 @@ export default function KontaktPage() {
                 <span className="text-lg text-muted-foreground">(Připravuje se)</span>
               </div>
             </div>
-            <div className="border-t pt-6 space-y-3">
-                 <h4 className="text-lg font-semibold">Sledujte mě</h4>
-                 <div className="flex items-center gap-2">
-                    <Button asChild variant="outline" size="icon">
-                        <Link href="#" target="_blank" aria-label="LinkedIn"><Linkedin className="h-5 w-5" /></Link>
-                    </Button>
-                    <Button asChild variant="outline" size="icon">
-                        <Link href="https://github.com/ishchuktaras" target="_blank" aria-label="GitHub"><Github className="h-5 w-5" /></Link>
-                    </Button>
-                 </div>
-            </div>
+            
             <div className="border-t pt-6 space-y-2">
                 <h4 className="text-lg font-semibold flex items-center gap-2"><Building className="h-5 w-5" /> Fakturační údaje</h4>
                 <p className="text-muted-foreground">
