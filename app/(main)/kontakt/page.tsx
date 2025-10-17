@@ -65,7 +65,7 @@ export default function KontaktPage() {
               </a>
               <div className="flex items-center gap-4">
                 <Phone className="h-6 w-6 text-muted-foreground" />
-                <span className="text-lg text-muted-foreground">(Připravuje se)</span>
+                <span className="text-lg text-muted-foreground">+420 777 596 216</span>
               </div>
             </div>
             
