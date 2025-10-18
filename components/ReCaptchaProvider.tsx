@@ -1,12 +1,9 @@
 // components/ReCaptchaProvider.tsx
 "use client";
 
-import React, { ReactNode, useEffect, useState } from "react";
-
-// Chyba byla způsobena tím, že se standardní importy pokoušely načíst knihovny,
-// které nejsou v tomto prostředí dostupné. Oprava spočívá v manuálním vložení
-// skriptu do hlavičky dokumentu, což je spolehlivý způsob v jakémkoliv React prostředí.
-// Knihovna 'react-google-recaptcha-v3' a Next.js 'Script' komponenta nejsou pro tento účel potřeba.
+import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
+import { ReactNode, useEffect, useState } from "react";
+import Script from "next/script"; 
 
 interface ReCaptchaWrapperProps {
   children: ReactNode;
@@ -14,48 +11,67 @@ interface ReCaptchaWrapperProps {
 
 export default function ReCaptchaWrapper({ children }: ReCaptchaWrapperProps) {
   const [siteKey, setSiteKey] = useState<string | null>(null);
-  const [reCaptchaError, setReCaptchaError] = useState<string | null>(null);
-
+  const [isReCaptchaReady, setIsReCaptchaReady] = useState(false); 
   useEffect(() => {
-    // Načtení klíče z environment variables
-    const key = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
-    if (key) {
-      setSiteKey(key);
+    // Načtěte klíč na klientovi
+    if (process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY) {
+      setSiteKey(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY);
     } else {
-      const errorMessage = "Chyba: Chybí proměnná prostředí NEXT_PUBLIC_RECAPTCHA_SITE_KEY.";
-      console.error(errorMessage);
-      setReCaptchaError(errorMessage);
+      console.error("Chyba: Chybí proměnná prostředí NEXT_PUBLIC_RECAPTCHA_SITE_KEY.");
+      // Můžete zde přidat logiku pro zobrazení chyby uživateli
     }
   }, []);
 
-  useEffect(() => {
-    // Pokud máme klíč a skript ještě není na stránce, vložíme ho
-    if (siteKey && !document.querySelector(`script[src*="recaptcha/api.js"]`)) {
-      const script = document.createElement("script");
-      // Přidán parametr &hl=cs pro vynucení češtiny
-      script.src = `https://www.google.com/recaptcha/api.js?render=${siteKey}&hl=cs`;
-      script.async = true;
-      script.defer = true;
-      script.onerror = () => {
-          const errorMessage = "Chyba při načítání reCAPTCHA skriptu.";
-          console.error(errorMessage);
-          setReCaptchaError(errorMessage);
-      };
-      document.head.appendChild(script);
-    }
-  }, [siteKey]);
-
-  if (reCaptchaError) {
+  // Vykreslujeme Script komponentu bez ohledu na isReCaptchaReady, ale až po siteKey
+  // GoogleReCaptchaProvider by měl být uvnitř, až když je script naceteny.
+  // Zkusíme jednodušší strukturu bez podmíněného renderu children uvnitř provideru
+  // a místo toho podmíněně renderujeme celou aplikaci.
+  if (!siteKey) {
     return (
-      <div className="flex items-center justify-center p-4 text-red-500 min-h-screen">
-        {reCaptchaError}
+      <div className="flex items-center justify-center p-4 text-gray-500 min-h-screen">
+        Chyba: Chybí klíč reCAPTCHA. Kontaktujte prosím administrátora.
       </div>
     );
   }
 
-  // Komponenta nyní pouze obaluje potomky, samotnou logiku řeší useEffect.
-  // GoogleReCaptchaProvider není potřeba, protože jeho hlavní funkcí je právě vložení skriptu,
-  // což jsme udělali ručně pro lepší kontrolu a opravu chyby.
-  return <>{children}</>;
-}
+  return (
+    <>
+      {/* Script komponenta se načte, jakmile je siteKey k dispozici */}
+      <Script
+        src={`https://www.google.com/recaptcha/api.js?render=${siteKey}`}
+        strategy="afterInteractive" // Načte se po hydrataci
+        onLoad={() => {
+          console.log("reCAPTCHA script has loaded.");
+          setIsReCaptchaReady(true); // Nastavíme, že je reCAPTCHA skript načten
+        }}
+        onError={(e) => {
+          console.error("Chyba při načítání reCAPTCHA skriptu:", e);
+          // Zde můžete nastavit chybový stav
+          // setIsReCaptchaReady(false); // V případě chyby není připraveno
+        }}
+      />
 
+      {/* Zobrazíme loading zprávu, dokud není reCAPTCHA skript načten */}
+      {!isReCaptchaReady ? (
+        <div className="flex items-center justify-center p-4 text-gray-500 min-h-screen">
+          Načítám zabezpečení formuláře...
+        </div>
+      ) : (
+        // Jakmile je reCAPTCHA skript načten, vykreslíme GoogleReCaptchaProvider
+        // a uvnitř něj zbytek aplikace (children).
+        <GoogleReCaptchaProvider
+          reCaptchaKey={siteKey}
+          scriptProps={{
+            async: true,
+            defer: true,
+            appendTo: "head",
+            nonce: undefined,
+          }}
+          // useRecaptchaNet={true} // Tuto možnost prozatím necháme zakomentovanou pro zjednodušení
+        >
+          {children} {/* Zde se vykreslí zbytek vaší aplikace */}
+        </GoogleReCaptchaProvider>
+      )}
+    </>
+  );
+}
