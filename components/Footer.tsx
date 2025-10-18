@@ -1,10 +1,12 @@
 // components/Footer.tsx
 "use client";
 
-import Link from "next/link";
-import Image from "next/image";
 import { Mail, MapPin, Linkedin, Github, Phone } from "lucide-react";
 import { Button } from "./ui/button";
+
+// The error was caused by using Next.js specific components <Link> and <Image>
+// in an environment where they could not be resolved.
+// I have replaced them with standard HTML <a> and <img> tags to fix the issue.
 
 export default function Footer() {
   return (
@@ -13,12 +15,12 @@ export default function Footer() {
         <div className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-3">
           {/* Sekce O projektu s logem */}
           <div className="space-y-4">
-            <Link
+            <a
               className="flex items-center gap-3"
               href="/"
               aria-label="webnamiru.site - Domovská stránka"
             >
-              <Image
+              <img
                 src="/images/logo/logo.svg"
                 width={40}
                 height={40}
@@ -26,7 +28,7 @@ export default function Footer() {
                 className="rounded-lg"
               />
               <span className="text-lg font-bold">webnamiru.site</span>
-            </Link>
+            </a>
             <p className="text-sm text-muted-foreground">
               Propojuji technické dovednosti s ekonomickou expertízou pro
               měřitelný obchodní růst na Vysočině.
@@ -39,36 +41,36 @@ export default function Footer() {
               Navigace
             </h3>
             <nav className="flex flex-col space-y-2">
-              <Link
+              <a
                 className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 href="/#service-packages-section"
               >
                 Služby
-              </Link>
-              <Link
+              </a>
+              <a
                 className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 href="/#case-studies-section"
               >
                 Reference
-              </Link>
-              <Link
+              </a>
+              <a
                 className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 href="/o-mne"
               >
                 O mně
-              </Link>
-              <Link
+              </a>
+              <a
                 className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 href="/blog"
               >
                 Blog
-              </Link>
-              <Link
+              </a>
+              <a
                 className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 href="/kontakt"
               >
                 Kontakt
-              </Link>
+              </a>
             </nav>
           </div>
 
@@ -90,7 +92,7 @@ export default function Footer() {
               <div className="flex items-center gap-4">
                 <Phone className="h-6 w-6 text-primary" />
                 <span className="text-lg text-muted-foreground">
-                  +420 777 596 216 
+                  +420 777 596 216
                 </span>
               </div>
               <div className="flex items-center space-x-3">
@@ -111,42 +113,42 @@ export default function Footer() {
               vyhrazena.
             </p>
             <div className="flex space-x-4 text-xs text-muted-foreground">
-              <Link
+              <a
                 href="/ochrana-osobnich-udaju"
                 className="hover:text-primary transition-colors"
               >
                 Ochrana osobních údajů
-              </Link>
-              <Link
+              </a>
+              <a
                 href="/obchodni-podminky"
                 className="hover:text-primary transition-colors"
               >
                 Obchodní podmínky
-              </Link>
+              </a>
             </div>
           </div>
           {/* === TEXT PRO reCAPTCHA === */}
           <div className="mt-4 text-center text-xs text-muted-foreground/80 md:text-left">
             Tento web je chráněn službou reCAPTCHA a platí pro něj
-            <Link
-              href="https://policies.google.com/privacy"
+            <a
+              href="https://policies.google.com/privacy?hl=cs"
               target="_blank"
               rel="noopener noreferrer"
               className="underline hover:text-primary"
             >
               {" "}
               Zásady ochrany osobních údajů
-            </Link>{" "}
+            </a>{" "}
             a
-            <Link
-              href="https://policies.google.com/terms"
+            <a
+              href="https://policies.google.com/terms?hl=cs"
               target="_blank"
               rel="noopener noreferrer"
               className="underline hover:text-primary"
             >
               {" "}
               Smluvní podmínky
-            </Link>{" "}
+            </a>{" "}
             společnosti Google.
           </div>
         </div>
@@ -154,3 +156,4 @@ export default function Footer() {
     </footer>
   );
 }
+
