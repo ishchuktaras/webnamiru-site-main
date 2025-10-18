@@ -2,14 +2,16 @@
 
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { cn } from "@/lib/utils";
-import { ThemeProvider } from "@/components/theme-provider";
-import { Toaster } from "@/components/ui/sonner";
+import { cn } from "../lib/utils";
+import { ThemeProvider } from "../components/theme-provider";
+import { Toaster } from "../components/ui/sonner";
 import { SessionProvider } from "next-auth/react"; 
 import "./globals.css";
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
-import ReCaptchaWrapper from "@/components/ReCaptchaProvider"; 
+import ReCaptchaWrapper from "../components/ReCaptchaProvider"; 
+import { getSettings } from "../lib/actions/settings.actions";
+import GoogleAnalytics from "../components/GoogleAnalytics";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -93,11 +95,13 @@ export const metadata: Metadata = {
   // },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const settings = await getSettings();
+
   return (
     <html lang="cs" suppressHydrationWarning>
       <body
@@ -106,6 +110,7 @@ export default function RootLayout({
           inter.variable
         )}
       >
+        {settings.googleAnalyticsId && <GoogleAnalytics gaId={settings.googleAnalyticsId} />}
         <SessionProvider>
           <ThemeProvider
             attribute="class"
@@ -125,3 +130,4 @@ export default function RootLayout({
     </html>
   );
 }
+
