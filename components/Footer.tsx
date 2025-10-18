@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Mail, MapPin, Linkedin, Github } from "lucide-react";
+import { Mail, MapPin, Linkedin, Github, Phone } from "lucide-react";
 import { Button } from "./ui/button";
 
 export default function Footer() {
@@ -87,6 +87,12 @@ export default function Footer() {
                   poptavka@webnamiru.site
                 </span>
               </a>
+              <div className="flex items-center gap-4">
+                <Phone className="h-6 w-6 text-primary" />
+                <span className="text-lg text-muted-foreground">
+                  +420 777 596 216 
+                </span>
+              </div>
               <div className="flex items-center space-x-3">
                 <MapPin className="h-5 w-5 text-muted-foreground flex-shrink-0" />
                 <span className="text-sm text-muted-foreground">

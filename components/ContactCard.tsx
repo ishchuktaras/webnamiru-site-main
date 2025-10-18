@@ -1,7 +1,15 @@
-import { Mail } from "lucide-react"; // Ikonu si bude brát jako props
+import { Mail } from "lucide-react"; 
+import type { ComponentType, SVGProps, ReactNode } from "react";
 
-// Přijímá ikonu jako komponentu (Icon), nadpis (title) a obsah (children)
-export function ContactCard({ icon: Icon, title, children }) {
+export function ContactCard({
+  icon: Icon,
+  title,
+  children,
+}: {
+  icon: ComponentType<SVGProps<SVGSVGElement>>;
+  title: ReactNode;
+  children?: ReactNode;
+}) {
   return (
     <div className="flex flex-col items-center text-center p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
       <div className="p-4 bg-blue-100 dark:bg-blue-900/40 rounded-full mb-4">
