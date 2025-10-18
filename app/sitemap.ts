@@ -73,9 +73,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'yearly', 
       priority: 0.4 
     },
-    
-    { url: `${baseUrl}/sluzby`, lastModified: new Date().toISOString(), changeFrequency: 'monthly', priority: 0.8 }, 
-    { url: `${baseUrl}/pripadove-studie`, lastModified: new Date().toISOString(), changeFrequency: 'weekly', priority: 0.8 },
+    // Přidejte další statické stránky přímo sem, v plném formátu
+    // { url: `${baseUrl}/sluzby`, lastModified: new Date().toISOString(), changeFrequency: 'monthly', priority: 0.8 }, 
+    // { url: `${baseUrl}/pripadove-studie`, lastModified: new Date().toISOString(), changeFrequency: 'weekly', priority: 0.8 },
   ];
 
   return [
