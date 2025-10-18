@@ -6,17 +6,17 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Menu, X } from 'lucide-react';
+import { Menu } from 'lucide-react';
 
-import { siteConfig } from '@/lib/site-config'; // <-- 1. Import centralizované konfigurace
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
+import { siteConfig } from '../lib/site-config';
+import { cn } from '../lib/utils';
+import { Button } from './ui/button';
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTrigger,
-} from '@/components/ui/sheet';
+} from './ui/sheet';
 import { ThemeToggle } from './theme-toggle';
 
 export const Header = () => {
@@ -147,3 +147,4 @@ export const Header = () => {
     </header>
   );
 };
+

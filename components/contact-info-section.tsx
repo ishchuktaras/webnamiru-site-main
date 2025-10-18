@@ -1,5 +1,5 @@
 // components/contact-info-section.tsx
-"use client";
+'use client';
 
 import { motion, Variants } from "framer-motion";
 import { Mail, Phone, ArrowRight, Linkedin, Github } from "lucide-react";
@@ -89,7 +89,7 @@ export default function ContactInfoSection() {
               <div className="flex items-center gap-4">
                 <Phone className="h-6 w-6 text-primary" />
                 <span className="text-lg text-muted-foreground">
-                  +420 777 596 216 
+                  +420 777 596 216
                 </span>
               </div>
             </div>
@@ -108,3 +108,4 @@ export default function ContactInfoSection() {
     </SectionWrapper>
   );
 }
+
