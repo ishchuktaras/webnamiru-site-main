@@ -68,7 +68,7 @@ export function HeroSection() {
           >
             Specializuji se na vývoj rychlých a bezpečných digitálních řešení na
             míru, která přináší měřitelné výsledky a posouvají vaše podnikání
-            vpřed na Vysočině.
+            vpřed.
           </motion.p>
 
           <motion.div variants={itemVariants}>
