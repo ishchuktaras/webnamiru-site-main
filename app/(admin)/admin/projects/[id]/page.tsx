@@ -1,6 +1,5 @@
 // app/(admin)/admin/projects/[id]/page.tsx
-
-import { getProjectById } from "@/lib/actions/project.actions";
+import { getProjectById } from "@/lib/actions/project.actions"; // deleteProject už není potřeba importovat přímo sem
 import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import ProjectDetailTabs from "@/components/admin/ProjectDetailTabs";
@@ -11,7 +10,13 @@ import {
   CircleDollarSign,
   CheckCircle,
   Clock,
+  Edit,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { auth } from "@/auth";
+import { Role } from "@prisma/client";
+import DeleteProjectDialog from "@/components/admin/DeleteProjectDialog";
 
 // Funkce pro výběr barvy a ikony statusu
 const getStatusProps = (status: string) => {
@@ -22,6 +27,8 @@ const getStatusProps = (status: string) => {
       return { color: "bg-green-500", icon: CheckCircle };
     case "Poptávka":
       return { color: "bg-yellow-500", icon: Briefcase };
+    case "Zrušeno":
+      return { color: "bg-red-500", icon: Briefcase };
     default:
       return { color: "bg-gray-500", icon: Briefcase };
   }
@@ -32,6 +39,9 @@ export default async function ProjectDetailPage({
 }: {
   params: { id: string };
 }) {
+  const session = await auth();
+  const isSuperAdmin = session?.user?.role === Role.SUPERADMIN;
+
   const { data: project, error } = await getProjectById(params.id);
 
   if (error || !project) {
@@ -69,15 +79,32 @@ export default async function ProjectDetailPage({
                   : "Cena nespecifikována"}
               </span>
             </div>
+            {project.description && (
+              <div className="flex items-start gap-2 max-w-full">
+                 <span className="font-semibold">Popis:</span>
+                 <p className="text-muted-foreground break-words whitespace-pre-line">{project.description}</p>
+              </div>
+            )}
           </div>
         </div>
-        <div>
+        <div className="flex items-center gap-2">
           <Badge
             className={`text-white text-base px-4 py-2 ${statusColor}`}
           >
             <StatusIcon className="mr-2 h-5 w-5" />
             {project.status}
           </Badge>
+
+          {isSuperAdmin && (
+            <>
+              <Button asChild variant="outline" size="sm">
+                <Link href={`/admin/projects/${project.id}/edit`}>
+                  <Edit className="h-4 w-4" />
+                </Link>
+              </Button>
+              <DeleteProjectDialog projectId={project.id} projectName={project.name} />
+            </>
+          )}
         </div>
       </div>
 
