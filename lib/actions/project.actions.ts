@@ -3,10 +3,14 @@
 
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-import { z } from "zod";
+import { z } from "zod"; // Zod je stále potřeba pro schémata v tomto souboru
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { Role } from "@prisma/client";
+
+// Importujeme schémata a typy z nového souboru
+import { projectSchema, ActionReturnType, ZodFieldErrors } from "@/lib/schemas/project.schemas";
+
 
 // --- Pomocná funkce pro ověření role SUPERADMIN ---
 async function checkSuperAdminAuth() {
@@ -15,29 +19,6 @@ async function checkSuperAdminAuth() {
     redirect("/admin?error=unauthorized");
   }
 }
-
-// --- SCHÉMATA ---
-export const projectSchema = z.object({ // Exportujeme schema pro použití v ProjectForm
-  name: z.string().min(1, "Název projektu je povinný."),
-  clientName: z.string().min(1, "Jméno klienta je povinné."),
-  clientEmail: z.string().email("Neplatný formát e-mailu."),
-  status: z.string().min(1, "Status je povinný."),
-  description: z.string().optional().nullable(),
-  price: z.coerce.number().optional().nullable(),
-});
-
-// Typ pro chyby vrácené ze Zod (odpovídá `flatten().fieldErrors`)
-export type ZodFieldErrors<T extends z.ZodTypeAny> = { // Exportujeme typ
-  [K in keyof z.infer<T>]?: string[];
-} & { formErrors?: string[] };
-
-
-// Vytvořte globální typ pro návratové hodnoty server akcí, které používají zprávu a potenciální chyby
-export type ActionReturnType<T extends z.ZodTypeAny> = { // Exportujeme typ
-  success: boolean;
-  message: string;
-  errors?: ZodFieldErrors<T>;
-};
 
 // --- AKCE PRO PROJEKTY ---
 
@@ -86,7 +67,6 @@ export async function getProjectById(projectId: string) {
     }
 }
 
-// === AKCE PRO AKTUALIZACI PROJEKTU ===
 export async function updateProject(
   projectId: string,
   prevState: any,
@@ -117,14 +97,11 @@ export async function updateProject(
   }
 }
 
-// === AKCE PRO MAZÁNÍ PROJEKTU ===
 export async function deleteProject(projectId: string): Promise<ActionReturnType<typeof projectSchema>> {
   await checkSuperAdminAuth();
 
   try {
     await prisma.$transaction(async (tx) => {
-      // Předpokládáme, že máte vztahy nastavené a modely existují
-      // a chcete smazat závislé záznamy.
       await tx.projectTask.deleteMany({ where: { projectId } });
       await tx.offer.deleteMany({ where: { projectId } });
       await tx.contract.deleteMany({ where: { projectId } });
@@ -143,7 +120,6 @@ export async function deleteProject(projectId: string): Promise<ActionReturnType
     return { success: false, message: e.message || "Nepodařilo se smazat projekt." };
   }
 }
-
 
 // --- AKCE PRO NABÍDKY ---
 const offerSchema = z.object({

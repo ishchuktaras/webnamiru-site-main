@@ -4,7 +4,7 @@
 import { useRouter } from 'next/navigation';
 import { useForm, FieldError } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
+import * as z from 'zod'; // Zod je stále potřeba pro `z.infer`
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -25,24 +25,20 @@ import {
 } from '@/components/ui/select';
 import { toast } from 'sonner';
 
-import {
-  projectSchema,
-  ActionReturnType,
-  ZodFieldErrors,
-} from '@/lib/actions/project.actions';
+// Importujeme typy a schémata z nového souboru
+import { projectSchema, ActionReturnType, ZodFieldErrors, ProjectFormValues } from '@/lib/schemas/project.schemas';
 
-export type ProjectFormValues = z.infer<typeof projectSchema>;
 
 type ProjectFormActionReturnType = ActionReturnType<typeof projectSchema>;
 
 interface ProjectFormProps {
   action: (
-    projectId: string | null, // Zde může být null
+    projectId: string | null,
     prevState: any,
     formData: FormData
   ) => Promise<ProjectFormActionReturnType>;
   defaultValues?: ProjectFormValues;
-  projectId?: string | null; // <-- ZDE ZMĚNA: Povolíme null
+  projectId?: string | null;
 }
 
 export default function ProjectForm({ action, defaultValues, projectId }: ProjectFormProps) {
@@ -73,7 +69,6 @@ export default function ProjectForm({ action, defaultValues, projectId }: Projec
       formData.append('description', values.description);
     }
 
-    // Akci předáváme projectId, který může být string nebo null
     const result = await action(projectId || null, null, formData);
 
     if (result.success) {
