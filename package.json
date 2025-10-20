@@ -82,8 +82,8 @@
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
     "@types/node": "^22",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
     "@types/ws": "^8.18.1",
     "dotenv-cli": "^7.4.2",
     "postcss": "^8.5",

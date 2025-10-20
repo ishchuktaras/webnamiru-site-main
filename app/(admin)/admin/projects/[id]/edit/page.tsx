@@ -1,42 +1,50 @@
 // app/(admin)/admin/projects/[id]/edit/page.tsx
 import ProjectForm from "@/components/admin/ProjectForm";
-import { getProjectById, updateProject } from "@/lib/actions/project.actions";
+import { getProjectById, updateProject as serverUpdateProject } from "@/lib/actions/project.actions"; // Přejmenujeme import
 import { notFound } from "next/navigation";
-import { auth } from "@/auth";
-import { Role } from "@prisma/client";
 
-export default async function EditProjectPage({
-  params,
-}: {
+interface EditProjectPageProps {
   params: { id: string };
-}) {
-  const session = await auth();
-  if (!session || session.user?.role !== Role.SUPERADMIN) {
-    notFound(); // Nebo redirect('/admin?error=unauthorized');
-  }
+}
 
-  const { data: project, error } = await getProjectById(params.id);
+export default async function EditProjectPage({ params }: EditProjectPageProps) {
+  const { id: projectId } = params;
+  const projectResult = await getProjectById(projectId);
 
-  if (error || !project) {
+  if (!projectResult.success || !projectResult.data) {
     notFound();
   }
 
-  // Připravíme defaultValues pro formulář z dat projektu
+  const project = projectResult.data;
+
   const defaultValues = {
     name: project.name,
     clientName: project.clientName,
     clientEmail: project.clientEmail,
     status: project.status,
+    description: project.description,
     price: project.price,
-    description: project.description, // Může být null, pokud je typ nullable
   };
+
+  // Vytvoříme obalovací Server Action pro updateProject
+  async function projectUpdateAction(currentProjectId: string | null, prevState: any, formData: FormData) {
+    "use server"; // <-- Klíčové! Označí tuto funkci jako Server Action
+    if (!currentProjectId) {
+      throw new Error("Missing projectId for update action.");
+    }
+    return serverUpdateProject(currentProjectId, prevState, formData);
+  }
+
 
   return (
     <div>
       <h1 className="text-2xl font-bold mb-8">Upravit projekt: {project.name}</h1>
-      {/* action očekává (projectId, prevState, formData) */}
-      {/* projectId je zde ID aktuálního projektu. prevState je null. */}
-      <ProjectForm action={(pId, prevState, formData) => updateProject(pId!, prevState, formData)} defaultValues={defaultValues} projectId={project.id} />
+      {/* Nyní předáváme přímo Server Action */}
+      <ProjectForm
+        action={projectUpdateAction}
+        defaultValues={defaultValues}
+        projectId={projectId}
+      />
     </div>
   );
 }
