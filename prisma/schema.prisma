@@ -193,8 +193,10 @@ model ProjectInquiry {
   clientEmail String
   projectName String
   projectType String?
+  description String?         @db.Text
   status      String          @default("new")
   createdAt   DateTime        @default(now())
+  updatedAt   DateTime?        @updatedAt
   answers     InquiryAnswer[]
   project     Project?
 }
