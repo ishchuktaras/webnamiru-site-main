@@ -9,7 +9,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import StrategicQuestionnaire from './StrategicQuestionnaire'; // Nyní se připojí ke správné komponentě
+
 
 interface InquirySheetProps {
   trigger: React.ReactNode;
@@ -34,7 +34,7 @@ export default function InquirySheet({
         </SheetHeader>
         <div className="mt-4">
           {/* Toto volání je teď 100% správné */}
-          <StrategicQuestionnaire selectedService={serviceInfo} />
+          
         </div>
       </SheetContent>
     </Sheet>
