@@ -18,7 +18,7 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 // Definujte si základní URL pro dynamické generování v meta datech
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://webnamiru.site';
 
-// === ZDOKONALENÉ SEO METADATA ===
+// === SEO METADATA ===
 export const metadata: Metadata = {
   // Základní SEO
   metadataBase: new URL(BASE_URL), 

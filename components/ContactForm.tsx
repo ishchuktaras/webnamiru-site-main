@@ -1,5 +1,4 @@
 // components/ContactForm.tsx
-
 "use client";
 
 import { useForm } from "react-hook-form";
@@ -13,13 +12,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   Form,
   FormControl,
   FormField,
@@ -27,79 +19,78 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { GoogleReCaptcha } from "react-google-recaptcha-v3";
 
-// OPRAVA: Importujeme přímo GoogleReCaptcha
-import { GoogleReCaptcha } from "react-google-recaptcha-v3"; 
-// OPRAVA: Už nepotřebujeme importovat ReCaptcha od nás, jen Provider v Root Layoutu
-// import ReCaptcha from "./ReCaptchaProvider"; 
-
-// Schema pro validaci formuláře
-const formSchema = z.object({
-  name: z.string().min(2, {
-    message: "Jméno musí mít alespoň 2 znaky.",
-  }),
-  email: z.string().email({
-    message: "Zadejte platný e-mail.",
-  }),
-  phone: z.string().optional(),
-  service: z.string().min(1, {
-    message: "Vyberte prosím službu.",
-  }),
-  message: z.string().min(10, {
-    message: "Zpráva musí mít alespoň 10 znaků.",
-  }),
+const contactSchema = z.object({
+  name: z.string().min(2, { message: "Jméno musí mít alespoň 2 znaky." }),
+  email: z.string().email({ message: "Zadejte platný e-mail." }),
+  message: z.string().min(10, { message: "Zpráva musí mít alespoň 10 znaků." }),
 });
 
-export default function ContactForm({ onClose }: { onClose?: () => void }) {
+// ZDE JE KLÍČOVÁ ZMĚNA: Definice props pro ContactForm
+interface ContactFormProps {
+  onClose?: () => void;
+  defaultSubject?: string; // Tuto prop potřebuješ!
+}
+
+// ZDE JE KLÍČOVÁ ZMĚNA: Přijímání props
+export default function ContactForm({
+  onClose,
+  defaultSubject = "",
+}: ContactFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof contactSchema>>({
+    resolver: zodResolver(contactSchema),
     defaultValues: {
       name: "",
       email: "",
-      phone: "",
-      service: "",
-      message: "",
+      message: defaultSubject ? `${defaultSubject}: ` : "", // Nastaví výchozí zprávu
     },
   });
 
-  // OPRAVA: Funkce pro získání reCAPTCHA tokenu
   const handleRecaptchaVerify = (token: string) => {
     setRecaptchaToken(token);
   };
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof contactSchema>) {
     if (!recaptchaToken) {
-        toast.error("Prosím, ověřte, že nejste robot.");
-        return;
+      toast.error("Prosím, ověřte, že nejste robot.");
+      return;
     }
 
     setIsLoading(true);
     try {
-      const response = await fetch("/api/contact", {
+      const response = await fetch("/api/send-email", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ ...values, recaptchaToken }),
+        body: JSON.stringify({
+          ...values,
+          recaptchaToken,
+          inquiryType: defaultSubject || "Obecná poptávka",
+        }),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || "Nepodařilo se odeslat poptávku.");
+        throw new Error(errorData.message || "Nepodařilo se odeslat zprávu.");
       }
 
-      toast.success("Poptávka byla úspěšně odeslána! Ozveme se Vám co nejdříve.");
+      toast.success("Vaše zpráva byla odeslána! Brzy se Vám ozveme.");
       form.reset();
-      setRecaptchaToken(null); // Reset reCAPTCHA tokenu
+      setRecaptchaToken(null);
       if (onClose) {
         onClose();
       }
     } catch (error: any) {
-      console.error("Chyba při odesílání formuláře:", error);
-      toast.error(error.message || "Došlo k chybě při odesílání poptávky. Zkuste to prosím znovu.");
+      console.error("Chyba při odesílání kontaktního formuláře:", error);
+      toast.error(
+        error.message ||
+          "Došlo k chybě při odesílání zprávy. Zkuste to prosím znovu."
+      );
     } finally {
       setIsLoading(false);
     }
@@ -119,10 +110,10 @@ export default function ContactForm({ onClose }: { onClose?: () => void }) {
         </Button>
       )}
       <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
-        Pojďme společně nastartovat váš projekt
+        Nezávazná poptávka
       </h2>
       <p className="text-gray-400 mb-8">
-        Vyplňte krátký dotazník a já se vám co nejdříve ozvu s konkrétními návrhy a dalším postupem.
+        Zanechte nám zprávu a brzy se vám ozvu.
       </p>
 
       <Form {...form}>
@@ -132,9 +123,15 @@ export default function ContactForm({ onClose }: { onClose?: () => void }) {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-gray-300">Jméno a příjmení</FormLabel>
+                <FormLabel className="text-gray-300">
+                  Jméno a příjmení
+                </FormLabel>
                 <FormControl>
-                  <Input placeholder="Jan Novák" className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-primary" {...field} />
+                  <Input
+                    placeholder="Jan Novák"
+                    className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-primary"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -148,47 +145,13 @@ export default function ContactForm({ onClose }: { onClose?: () => void }) {
               <FormItem>
                 <FormLabel className="text-gray-300">E-mail</FormLabel>
                 <FormControl>
-                  <Input type="email" placeholder="jan.novak@email.cz" className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-primary" {...field} />
+                  <Input
+                    type="email"
+                    placeholder="jan.novak@email.cz"
+                    className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-primary"
+                    {...field}
+                  />
                 </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="phone"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-gray-300">Telefon (nepovinné)</FormLabel>
-                <FormControl>
-                  <Input type="tel" placeholder="+420 123 456 789" className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-primary" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="service"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-gray-300">O jakou službu máte zájem?</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <FormControl>
-                    <SelectTrigger className="bg-gray-800 border-gray-700 text-white [&>span]:text-gray-500">
-                      <SelectValue placeholder="Vyberte službu" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent className="bg-gray-800 border-gray-700 text-white">
-                    <SelectItem value="web-na-miru">Web na míru</SelectItem>
-                    <SelectItem value="e-shop">E-shop</SelectItem>
-                    <SelectItem value="seo-optimalizace">SEO optimalizace</SelectItem>
-                    <SelectItem value="strategicka-analyza">Strategická analýza</SelectItem>
-                    <SelectItem value="jina-sluzba">Jiná služba</SelectItem>
-                  </SelectContent>
-                </Select>
                 <FormMessage />
               </FormItem>
             )}
@@ -202,7 +165,7 @@ export default function ContactForm({ onClose }: { onClose?: () => void }) {
                 <FormLabel className="text-gray-300">Vaše zpráva</FormLabel>
                 <FormControl>
                   <Textarea
-                    placeholder="Řekněte nám více o Vašich cílech a představách..."
+                    placeholder="Popište stručně váš projekt nebo dotaz."
                     className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-primary min-h-[120px]"
                     {...field}
                   />
@@ -212,11 +175,10 @@ export default function ContactForm({ onClose }: { onClose?: () => void }) {
             )}
           />
 
-            {/* OPRAVA: Vykreslujeme GoogleReCaptcha přímo zde */}
-            <GoogleReCaptcha onVerify={handleRecaptchaVerify} />
+          <GoogleReCaptcha onVerify={handleRecaptchaVerify} />
 
           <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Odesílám..." : "Odeslat poptávku"}
+            {isLoading ? "Odesílám..." : "Odeslat zprávu"}
           </Button>
         </form>
       </Form>

@@ -14,17 +14,18 @@ import CaseStudiesSection from "@/components/case-studies-section";
 import MaintenancePackagesSection from "@/components/MaintenancePackagesSection";
 import AboutMeContent from "@/components/about-me-content";
 
-// Importujeme nové komponenty se složenými závorkami
 import { ForWhomSection } from "@/components/for-whom-section";
-import  ProcessSection  from "@/components/process-section";
-// OPRAVA: ServicePackagesSection importujeme jako výchozí (bez závorek)
+import ProcessSection from "@/components/process-section";
+
 import ServicePackagesSection from "@/components/service-packages-section";
 
 export default function Page() {
   return (
     <main>
       <HeroSection />
-      <Suspense fallback={<div className="container py-16 text-center">Načítám...</div>}>
+      <Suspense
+        fallback={<div className="container py-16 text-center">Načítám...</div>}
+      >
         <ProblemSection />
         <SolutionSection />
         <ForWhomSection />

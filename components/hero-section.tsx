@@ -1,13 +1,13 @@
 // components/hero-section.tsx
-'use client';
+"use client";
 
-import Image from 'next/image';
-import Link from 'next/link';
-import { motion, Variants } from 'framer-motion';
-import { ArrowRight, Zap, ShieldCheck, BrainCircuit } from 'lucide-react';
+import Image from "next/image";
+import Link from "next/link";
+import { motion, Variants } from "framer-motion";
+import { ArrowRight, Zap, ShieldCheck, BrainCircuit } from "lucide-react";
 
-import { Button } from '@/components/ui/button';
-import InquirySheet from './InquirySheet';
+import { Button } from "@/components/ui/button";
+import InquirySheet from "./InquirySheet";
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -26,15 +26,15 @@ const itemVariants: Variants = {
     y: 0,
     transition: {
       duration: 0.6,
-      ease: 'easeOut',
+      ease: "easeOut",
     },
   },
 };
 
 const premiumSignals = [
-  { icon: Zap, text: 'Moderní technologie' },
-  { icon: ShieldCheck, text: 'Výkon a bezpečnost' },
-  { icon: BrainCircuit, text: 'Strategický přístup' },
+  { icon: Zap, text: "Moderní technologie" },
+  { icon: ShieldCheck, text: "Výkon a bezpečnost" },
+  { icon: BrainCircuit, text: "Strategický přístup" },
 ];
 
 export function HeroSection() {
@@ -48,7 +48,6 @@ export function HeroSection() {
       <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] dark:bg-grid-slate-700/25"></div>
 
       <div className="relative container grid items-center gap-12 px-4 md:px-6 lg:grid-cols-2 lg:gap-16">
-        
         <div className="flex flex-col justify-center space-y-8 text-center lg:text-left">
           <motion.div variants={itemVariants}>
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
@@ -91,7 +90,6 @@ export function HeroSection() {
             variants={itemVariants}
             className="flex flex-col gap-4 sm:flex-row sm:justify-center lg:justify-start"
           >
-            {/* === OPRAVA ZDE === */}
             <InquirySheet
               trigger={
                 <Button
@@ -104,9 +102,10 @@ export function HeroSection() {
               }
               title="Pojďme společně nastartovat váš projekt"
               description="Vyplňte krátký dotazník a já se vám co nejdříve ozvu s konkrétními návrhy a dalším postupem."
-              serviceInfo={undefined} 
+              serviceInfo={undefined}
+              formComponent="contact"
             />
-            
+
             <Button
               asChild
               variant="outline"
@@ -120,7 +119,10 @@ export function HeroSection() {
           </motion.div>
         </div>
 
-        <motion.div variants={itemVariants} className="relative flex justify-center lg:justify-end">
+        <motion.div
+          variants={itemVariants}
+          className="relative flex justify-center lg:justify-end"
+        >
           <div className="absolute inset-0 scale-105 transform rounded-2xl bg-gradient-to-r from-blue-400 to-blue-600 opacity-20 rotate-3"></div>
           <div className="absolute inset-0 scale-110 transform rounded-2xl bg-gradient-to-r from-blue-500 to-blue-700 opacity-10 -rotate-2"></div>
 
@@ -149,19 +151,19 @@ export function HeroSection() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'WebSite',
-            name: 'Web na míru',
-            description: 'Vývoj ziskových webových aplikací v Kraji Vysočina',
-            url: 'https://webnamiru.site',
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            name: "Web na míru",
+            description: "Vývoj ziskových webových aplikací v Kraji Vysočina",
+            url: "https://webnamiru.site",
             areaServed: {
-              '@type': 'State',
-              name: 'Kraj Vysočina',
+              "@type": "State",
+              name: "Kraj Vysočina",
             },
             founder: {
-              '@type': 'Person',
-              name: 'Taras Ishchuk',
-              jobTitle: 'Web Developer & Business Analyst',
+              "@type": "Person",
+              name: "Taras Ishchuk",
+              jobTitle: "Web Developer & Business Analyst",
             },
           }),
         }}

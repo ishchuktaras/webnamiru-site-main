@@ -1,13 +1,20 @@
 // components/service-packages-section.tsx
-'use client';
+"use client";
 
-import { motion, Variants } from 'framer-motion';
-import { Check, ArrowRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
-import { cn } from '@/lib/utils';
-import SectionWrapper from './SectionWrapper';
-import InquirySheet from './InquirySheet';
+import { motion, Variants } from "framer-motion";
+import { Check, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+import SectionWrapper from "./SectionWrapper";
+import InquirySheet from "./InquirySheet";
 
 // Definuje typ pro balíček služeb
 interface ServicePackage {
@@ -23,47 +30,50 @@ interface ServicePackage {
 // Data pro balíčky podle nové prémiové strategie
 const servicePackages: ServicePackage[] = [
   {
-    title: 'Digitální Základ',
-    price: 'od 80 000 Kč',
-    description: 'Pro profesionály a menší firmy, které potřebují špičkovou a výkonnou online prezentaci.',
+    title: "Digitální Základ",
+    price: "od 80 000 Kč",
+    description:
+      "Pro profesionály a menší firmy, které potřebují špičkovou a výkonnou online prezentaci.",
     features: [
-      'Zakázkový design na míru',
-      'Vývoj na moderní technologii (Next.js)',
-      'Responzivita pro všechna zařízení',
-      'Základní SEO optimalizace',
-      'Nasazení a konfigurace',
+      "Zakázkový design na míru",
+      "Vývoj na moderní technologii (Next.js)",
+      "Responzivita pro všechna zařízení",
+      "Základní SEO optimalizace",
+      "Nasazení a konfigurace",
     ],
-    ctaText: 'Mám zájem',
-    serviceInfo: 'webova-aplikace',
+    ctaText: "Mám zájem",
+    serviceInfo: "webova-aplikace",
   },
   {
-    title: 'Motor Růstu',
-    price: 'od 150 000 Kč',
-    description: 'Pro rostoucí firmy a prémiové služby, které vyžadují pokročilé funkce a integrace.',
+    title: "Motor Růstu",
+    price: "od 150 000 Kč",
+    description:
+      "Pro rostoucí firmy a prémiové služby, které vyžadují pokročilé funkce a integrace.",
     features: [
-      'Vše z balíčku Digitální Základ',
-      'Rezervační systémy',
-      'Platební brány a e-commerce funkce',
-      'Integrace s CRM a API třetích stran',
-      'Pokročilá analytika a reporting',
+      "Vše z balíčku Digitální Základ",
+      "Rezervační systémy",
+      "Platební brány a e-commerce funkce",
+      "Integrace s CRM a API třetích stran",
+      "Pokročilá analytika a reporting",
     ],
     isFeatured: true,
-    ctaText: 'Chci nastartovat růst',
-    serviceInfo: 'e-commerce',
+    ctaText: "Chci nastartovat růst",
+    serviceInfo: "e-commerce",
   },
   {
-    title: 'Řešení na Míru',
-    price: 'Individuální',
-    description: 'Pro zavedené B2B firmy a projekty se specifickými požadavky na míru.',
+    title: "Řešení na Míru",
+    price: "Individuální",
+    description:
+      "Pro zavedené B2B firmy a projekty se specifickými požadavky na míru.",
     features: [
-      'Vše z balíčku Motor Růstu',
-      'B2B klientské portály',
-      'Integrace s ERP a firemními systémy',
-      'Pokročilé bezpečnostní protokoly',
-      'Neomezená škálovatelnost',
+      "Vše z balíčku Motor Růstu",
+      "B2B klientské portály",
+      "Integrace s ERP a firemními systémy",
+      "Pokročilé bezpečnostní protokoly",
+      "Neomezená škálovatelnost",
     ],
-    ctaText: 'Poptat řešení',
-    serviceInfo: 'dlouhodoba-spoluprace',
+    ctaText: "Poptat řešení",
+    serviceInfo: "dlouhodoba-spoluprace",
   },
 ];
 
@@ -81,7 +91,7 @@ const itemVariants: Variants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5, ease: 'easeOut' },
+    transition: { duration: 0.5, ease: "easeOut" },
   },
 };
 
@@ -104,8 +114,8 @@ export default function ServicePackagesSection() {
           <motion.div key={pkg.title} variants={itemVariants}>
             <Card
               className={cn(
-                'flex h-full flex-col',
-                pkg.isFeatured && 'border-primary shadow-2xl'
+                "flex h-full flex-col",
+                pkg.isFeatured && "border-primary shadow-2xl"
               )}
             >
               <CardHeader className="relative">
@@ -135,16 +145,16 @@ export default function ServicePackagesSection() {
                   trigger={
                     <Button
                       size="lg"
-                      className="group w-full"
-                      variant={pkg.isFeatured ? 'default' : 'outline'}
+                      className="group h-12 bg-gradient-to-r from-blue-600 to-blue-700 px-8 text-base font-medium text-white shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl"
                     >
-                      {pkg.ctaText}
-                      <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                      Nezávazná poptávka
+                      <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
                     </Button>
                   }
-                  title={`Poptávka: ${pkg.title}`}
-                  description="Skvělý výběr! Vyplňte prosím krátký dotazník a já se vám co nejdříve ozvu."
-                  serviceInfo={pkg.serviceInfo}
+                  title="Pojďme společně nastartovat váš projekt"
+                  description="Vyplňte krátký dotazník a já se vám co nejdříve ozvu s konkrétními návrhy a dalším postupem."
+                  serviceInfo={undefined}
+                  formComponent="contact" 
                 />
               </CardFooter>
             </Card>
