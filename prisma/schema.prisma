@@ -28,8 +28,8 @@ model User {
   createdAt DateTime  @default(now())
   posts     Post[]
   comments  Comment[]
-  accounts  Account[]
-  sessions  Session[]
+  accounts  Account[] // Pokud je tento model pro externí autentizaci (Google/GitHub), která už nebude použita, můžeš ho zvážit smazat.
+  sessions  Session[] // Pokud je tento model pro relace s externí autentizací, která už nebude použita, můžeš ho zvážit smazat.
 }
 
 model Session {
@@ -65,6 +65,7 @@ model Account {
 
   @@unique([provider, providerAccountId])
 }
+
 
 model Category {
   id    String @id @default(cuid())
@@ -187,28 +188,6 @@ model Campaign {
   updatedAt   DateTime  @updatedAt
 }
 
-model ProjectInquiry {
-  id          String          @id @default(cuid())
-  clientName  String
-  clientEmail String
-  projectName String
-  projectType String?
-  description String?         @db.Text
-  status      String          @default("new")
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime?        @updatedAt
-  answers     InquiryAnswer[]
-  project     Project?
-}
-
-model InquiryAnswer {
-  id        String         @id @default(cuid())
-  question  String
-  answer    String         @db.Text
-  inquiry   ProjectInquiry @relation(fields: [inquiryId], references: [id], onDelete: Cascade)
-  inquiryId String
-}
-
 // ===================================
 // ROZŠÍŘENÁ SPRÁVA PROJEKTŮ
 // ===================================
@@ -223,8 +202,8 @@ model Project {
   price       Float?
   clientName  String
   clientEmail String
-  inquiryId   String?         @unique
-  inquiry     ProjectInquiry? @relation(fields: [inquiryId], references: [id])
+  // inquiryId   String?         @unique // ODSTRANĚNO: Již se nepropojuje s ProjectInquiry
+  // inquiry     ProjectInquiry? @relation(fields: [inquiryId], references: [id]) // ODSTRANĚNO
   tasks       ProjectTask[]
 
   // Vylepšené propojení na dokumenty
