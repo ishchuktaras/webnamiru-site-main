@@ -1,6 +1,9 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  /* Zde můžete v budoucnu definovat vlastní barvy pro v4, 
+     pro shadcn proměnné níže to ale není nutné. */
+}
 
 @layer base {
   :root {
